@@ -16,28 +16,21 @@ const { ccclass, property } = _decorator;
 
 @ccclass('DragDropHandle')
 export class DragDropHandle extends Component {
-
     @property([Node])
     dragNodes: Node[] = [];
-
     @property([Node])
     dropTargets: Node[] = [];
-
     @property(Prefab)
     dropResultPrefab: Prefab = null!;
-
     private isDragging = false;
     private currentDragNode: Node | null = null;
     private originalPositions: Map<Node, Vec3> = new Map();
-
     // Lưu mối quan hệ: dropResult -> { dragNode, dropTarget }
     private resultMapping: Map<Node, { dragNode: Node, dropTarget: Node }> = new Map();
-
     onLoad() {
         // Lưu vị trí gốc của dragNodes
         this.dragNodes.forEach(node => {
             this.originalPositions.set(node, node.position.clone());
-
             node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
             node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
             node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
@@ -52,7 +45,6 @@ export class DragDropHandle extends Component {
 
     onTouchMove(event: EventTouch) {
         if (!this.isDragging || !this.currentDragNode) return;
-
         const delta = event.getDelta();
         const pos = this.currentDragNode.position;
         this.currentDragNode.setPosition(pos.x + delta.x, pos.y + delta.y);
@@ -61,34 +53,24 @@ export class DragDropHandle extends Component {
     onTouchEnd(event: EventTouch) {
         if (!this.isDragging || !this.currentDragNode) return;
         this.isDragging = false;
-
         const dragWorldPos = this.currentDragNode.getWorldPosition();
         const dragWorldPos2D = new Vec2(dragWorldPos.x, dragWorldPos.y);
-
         for (let target of this.dropTargets) {
             const targetRect = target.getComponent(UITransform)!.getBoundingBoxToWorld();
 
             if (targetRect.contains(dragWorldPos2D)) {
-                // Kéo thành công
                 this.currentDragNode.active = false;
                 target.active = false;
-
                 const parent = target.parent!;
                 const localPos = parent.getComponent(UITransform)!.convertToNodeSpaceAR(target.worldPosition);
                 const prefabInstance = instantiate(this.dropResultPrefab);
                 prefabInstance.setPosition(localPos);
                 parent.addChild(prefabInstance);
-
-                // Ghi nhớ mối liên kết
                 this.resultMapping.set(prefabInstance, {
                     dragNode: this.currentDragNode,
                     dropTarget: target
                 });
-
-                // Lắng nghe sự kiện click vào dropResultPrefab
                 prefabInstance.on(Node.EventType.TOUCH_END, this.onResultClick, this);
-
-                // Phát animation nếu có
                 const anim = prefabInstance.getComponent(Animation);
                 if (anim) anim.play();
 
@@ -103,30 +85,19 @@ export class DragDropHandle extends Component {
         this.currentDragNode = null;
     }
 
-    // 👇 Khi click vào dropResultPrefab
     onResultClick(event: EventTouch) {
         const resultNode = event.target as Node;
-
         const data = this.resultMapping.get(resultNode);
         if (!data) return;
-
         const { dragNode, dropTarget } = data;
-
-        // 1. Ẩn dropResult
         resultNode.active = false;
-
-        // 2. Hiện lại dragNode và tween về vị trí gốc
         dragNode.active = true;
         const origin = this.originalPositions.get(dragNode)!;
-
         tween(dragNode)
             .to(0.3, { position: origin }, { easing: 'quadOut' })
             .start();
 
-        // 3. Hiện lại dropTarget
         dropTarget.active = true;
-
-        // 4. Xóa mapping nếu không dùng nữa
         this.resultMapping.delete(resultNode);
     }
 }
