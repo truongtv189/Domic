@@ -1,0 +1,15 @@
+{
+  "domix": [
+    { "image": "images/tophit",  "name": "TopHit", "title": "Top Hit", "color": [39, 203, 45], "maxStage": 10 },
+    { "image": "images/rock",  "name": "Rock", "title": "Rock", "color": [253, 136, 43], "maxStage": 10 },
+    { "image": "images/rap",  "name": "Rap", "title": "Rap", "color": [253, 121, 34], "maxStage": 10 },
+    { "image": "images/pop",  "name": "Pop", "title": "Pop", "color": [242, 66, 187], "maxStage": 10 },
+    { "image": "images/brazil",  "name": "Brazil", "title": "Brazil", "color": [20, 205, 25], "maxStage": 10 },
+    { "image": "images/uk",  "name": "UK", "title": "UK", "color": [0, 75, 183], "maxStage": 10 },
+    { "image": "images/france",  "name": "France", "title": "France", "color": [19, 118, 216], "maxStage": 10 },
+    { "image": "images/germany",  "name": "Germany", "title": "Germany", "color": [216, 25, 75], "maxStage": 10 },
+    { "image": "images/russian",  "name": "Russian", "title": "Russian", "color": [0, 57, 166], "maxStage": 10 }
+  ]
+
+}
+
