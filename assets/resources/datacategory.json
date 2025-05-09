@@ -1,0 +1,148 @@
+{
+  "CATEGORY": [
+    {
+      "id": 1,
+      "name": "RAINBOW",
+      "image": "image/rainbow",
+      "isAds": false
+    },
+    {
+      "id": 2,
+      "name": "KINO",
+      "image": "image/kino",
+      "isAds": false
+    },
+    {
+      "id": 3,
+      "name": "MUSTARD",
+      "image": "image/mustard",
+      "isAds": false
+    },
+    {
+      "id": 4,
+      "name": "PARA",
+      "image": "image/para",
+      "isAds": false
+    },
+    {
+      "id": 5,
+      "name": "RETAKE",
+      "image": "image/retake",
+      "isAds": false
+    },
+    {
+      "id": 6,
+      "name": "PYRAMIXED",
+      "image": "image/pyramixed",
+      "isAds": false
+    },
+    {
+      "id": 7,
+      "name": "CUSTOM",
+      "image": "image/custom",
+      "isAds": false
+    },
+    {
+      "id": 8,
+      "name": "ORIGINAL",
+      "image": "image/original",
+      "isAds": false
+    },
+    {
+      "id": 9,
+      "name": "PHASE9",
+      "image": "image/phase9",
+      "isAds": false
+    },
+    {
+      "id": 10,
+      "name": "PHASE5",
+      "image": "image/phase5",
+      "isAds": false
+    },
+    {
+      "id": 11,
+      "name": "phase11",
+      "image": "image/phase11",
+      "isAds": false
+    },
+    {
+      "id": 12,
+      "name": "PROSTY",
+      "image": "image/frosty",
+      "isAds": false
+    },
+    {
+      "id": 13,
+      "name": "PHASE510",
+      "image": "image/phase10",
+      "isAds": false
+    },
+    {
+      "id": 14,
+      "name": "PHASE6",
+      "image": "image/phase6",
+      "isAds": false
+    },
+    {
+      "id": 15,
+      "name": "PHASE99",
+      "image": "image/phase99",
+      "isAds": false
+    },
+    {
+      "id": 16,
+      "name": "SPOOKY",
+      "image": "image/spooky",
+      "isAds": false
+    },
+    {
+      "id": 17,
+      "name": "PHASE3",
+      "image": "image/phase3",
+      "isAds": false
+    },
+    {
+      "id": 18,
+      "name": "PHASE7",
+      "image": "image/phase7",
+      "isAds": false
+    },
+    {
+      "id": 19,
+      "name": "PHASE100",
+      "image": "image/phase100",
+      "isAds": false
+    },
+    {
+      "id": 20,
+      "name": "PHASE2",
+      "image": "image/phase2",
+      "isAds": false
+    },
+    {
+      "id": 21,
+      "name": "PHASE4",
+      "image": "image/phase4",
+      "isAds": false
+    },
+    {
+      "id": 22,
+      "name": "PHASE8",
+      "image": "image/phase8",
+      "isAds": false
+    },
+    {
+      "id": 24,
+      "name": "PROZEN",
+      "image": "image/frozen",
+      "isAds": false
+    },
+    {
+      "id": 25,
+      "name": "CHONKY",
+      "image": "image/chonky",
+      "isAds": false
+    }
+  ]
+}

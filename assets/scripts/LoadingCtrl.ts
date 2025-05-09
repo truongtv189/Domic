@@ -11,7 +11,6 @@ export class LoadingCtrl extends Component {
     async startLoading(targetScene: string) {
         let progress = 0;
         let loadingDone = false;
-
         const interval = setInterval(() => {
             if (progress < 0.98) {
                 progress += 0.01;
