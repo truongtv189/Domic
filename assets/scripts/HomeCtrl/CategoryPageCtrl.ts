@@ -34,40 +34,40 @@ export class CategoryPageCtrl extends Component {
     }
 
     // Tạo ảnh từ dữ liệu JSON
-  private createImages() {
-    const totalPages = this.pageView.getPages().length;
-    const itemsPerPage = Math.ceil(this.imageData.length / totalPages);
+    private createImages() {
+        const totalPages = this.pageView.getPages().length;
+        const itemsPerPage = Math.ceil(this.imageData.length / totalPages);
 
-    // Chia dữ liệu thành mảng con theo số lượng page
-    const dataPerPage: any[][] = [];
-    for (let i = 0; i < totalPages; i++) {
-        dataPerPage.push(this.imageData.slice(i * itemsPerPage, (i + 1) * itemsPerPage));
-    }
+        // Chia dữ liệu thành mảng con theo số lượng page
+        const dataPerPage: any[][] = [];
+        for (let i = 0; i < totalPages; i++) {
+            dataPerPage.push(this.imageData.slice(i * itemsPerPage, (i + 1) * itemsPerPage));
+        }
 
-    const pages = this.pageView.getPages();
-    pages.forEach((pageNode, pageIndex) => {
-        const layout = pageNode.getChildByName('Layout');
-        if (!layout) return;
+        const pages = this.pageView.getPages();
+        pages.forEach((pageNode, pageIndex) => {
+            const layout = pageNode.getChildByName('Layout');
+            if (!layout) return;
 
-        // Xoá các node cũ nếu có
-        layout.removeAllChildren();
+            // Xoá các node cũ nếu có
+            layout.removeAllChildren();
 
-        const items = dataPerPage[pageIndex] || [];
-        items.forEach((itemData) => {
-            const itemNode = instantiate(this.itemPrefab);
-            const icon = itemNode.getComponent(Sprite);
-            const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
-            if (nameLabel) nameLabel.string = itemData.name;
+            const items = dataPerPage[pageIndex] || [];
+            items.forEach((itemData) => {
+                const itemNode = instantiate(this.itemPrefab);
+                const icon = itemNode.getComponent(Sprite);
+                const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
+                if (nameLabel) nameLabel.string = itemData.name;
 
-            this.loadImageFromPath(`${itemData.image}${/\.(png|jpe?g)$/.test(itemData.image) ? '' : '.png'}`, (spriteFrame) => {
-                if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
+                this.loadImageFromPath(`${itemData.image}${/\.(png|jpe?g)$/.test(itemData.image) ? '' : '.png'}`, (spriteFrame) => {
+                    if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
 
-                // Add the item to the layout only after image loading is complete
-                layout.addChild(itemNode);
+                    // Add the item to the layout only after image loading is complete
+                    layout.addChild(itemNode);
+                });
             });
         });
-    });
-}
+    }
 
 
     // Hàm load ảnh từ đường dẫn ngoài assets

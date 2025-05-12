@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.SceneAsset",
-    "_name": "Playgame",
+    "_name": "playgame",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -59,7 +59,7 @@
     "_globals": {
       "__id__": 80
     },
-    "_id": "43d53dd3-d4f3-41a5-9196-b3cf3b06937f"
+    "_id": "c4c5a11a-454e-4ae7-9806-c6042ef2dc9c"
   },
   {
     "__type__": "cc.Node",
