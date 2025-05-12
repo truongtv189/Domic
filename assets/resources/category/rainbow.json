@@ -1,5 +1,99 @@
 {
-    "RAINBOW":[
-        {"id":1, "_deltaTime":0.3}
+    "RAINBOW": [
+            {
+                "id": 1,
+                "image": "rainbow/rainbow1",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 2,
+                "image": "rainbow/rainbow2",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 3,
+                "image": "rainbow/rainbow3",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 4,
+                "image": "rainbow/rainbow4",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 5,
+                "image": "rainbow/rainbow5",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 6,
+                "image": "rainbow/rainbow6",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 7,
+                "image": "rainbow/rainbow7",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 8,
+                "image": "rainbow/rainbow8",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 9,
+                "image": "rainbow/rainbow9",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 10,
+                "image": "rainbow/rainbow10",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 11,
+                "image": "rainbow/rainbow11",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 12,
+                "image": "rainbow/rainbow12",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 13,
+                "image": "rainbow/rainbow13",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 14,
+                "image": "rainbow/rainbow14",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 15,
+                "image": "rainbow/rainbow15",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 16,
+                "image": "rainbow/rainbow16",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 17,
+                "image": "rainbow/rainbow17",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 18,
+                "image": "rainbow/rainbow18",
+                "_deltaTime": 0.3
+            },
+            {
+                "id": 19,
+                "image": "rainbow/rainbow19",
+                "_deltaTime": 0.3
+            }
     ]
 }

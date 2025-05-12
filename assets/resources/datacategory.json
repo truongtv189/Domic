@@ -1,148 +1,220 @@
 {
   "CATEGORY": [
     {
-      "id": 1,
+      "code": "rainbow",
       "name": "RAINBOW",
       "image": "image/rainbow",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "figure/rainbow",
+      "animation": "Animator/animationRainBow"
     },
     {
-      "id": 2,
+      "code": "kino",
       "name": "KINO",
       "image": "image/kino",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 3,
+      "code": "mustard",
       "name": "MUSTARD",
       "image": "image/mustard",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 4,
+      "code": "para",
       "name": "PARA",
       "image": "image/para",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 5,
+      "code": "retake",
       "name": "RETAKE",
       "image": "image/retake",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 6,
+      "code": "pyramixed",
       "name": "PYRAMIXED",
       "image": "image/pyramixed",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 7,
+      "code": "custom",
       "name": "CUSTOM",
       "image": "image/custom",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 8,
+      "code": "original",
       "name": "ORIGINAL",
       "image": "image/original",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 9,
+      "code": "phase9",
       "name": "PHASE9",
       "image": "image/phase9",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 10,
+      "code": "phase5",
       "name": "PHASE5",
       "image": "image/phase5",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 11,
+      "code": "phase11",
       "name": "PHASE11",
       "image": "image/phase11",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 12,
+      "code": "frosty",
       "name": "PROSTY",
       "image": "image/frosty",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 13,
+      "code": "phase10",
       "name": "PHASE510",
       "image": "image/phase10",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 14,
+      "code": "phase6",
       "name": "PHASE6",
       "image": "image/phase6",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 15,
+      "code": "phase99",
       "name": "PHASE99",
       "image": "image/phase99",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 16,
+      "code": "spooky",
       "name": "SPOOKY",
       "image": "image/spooky",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 17,
+      "code": "phase3",
       "name": "PHASE3",
       "image": "image/phase3",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 18,
+      "code": "phase7",
       "name": "PHASE7",
       "image": "image/phase7",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 19,
+      "code": "phase100",
       "name": "PHASE100",
       "image": "image/phase100",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 20,
+      "code": "phase2",
       "name": "PHASE2",
       "image": "image/phase2",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 21,
+      "code": "phase4",
       "name": "PHASE4",
       "image": "image/phase4",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 22,
+      "code": "phase8",
       "name": "PHASE8",
       "image": "image/phase8",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 24,
+      "code": "frozen",
       "name": "PROZEN",
       "image": "image/frozen",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     },
     {
-      "id": 25,
+      "code": "chonky",
       "name": "CHONKY",
       "image": "image/chonky",
-      "isAds": false
+      "isAds": false,
+      "backgorund": "DuoMix-select-bg",
+      "figure": "CharDefault-1",
+      "animation": "animation"
     }
   ]
 }

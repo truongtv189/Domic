@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.AnimationClip",
-    "_name": "animation1",
+    "_name": "animationRainBow",
     "_objFlags": 0,
     "__editorExtras__": {
       "embeddedPlayerGroups": []
@@ -11,7 +11,7 @@
     "speed": 0.1,
     "wrapMode": 2,
     "enableTrsBlending": false,
-    "_duration": 5.016666666666667,
+    "_duration": 1.85,
     "_hash": 500763545,
     "_tracks": [
       {
@@ -62,24 +62,25 @@
     "__type__": "cc.ObjectCurve",
     "_times": [
       0,
+      0.16666666666666666,
+      0.3333333333333333,
       0.5,
+      0.6666666666666666,
+      0.8333333333333334,
       1,
+      1.1666666666666667,
+      1.3333333333333333,
       1.5,
-      2,
-      2.5,
-      3,
-      3.5,
-      4.016666666666667,
-      4.5,
-      5
+      1.6666666666666667,
+      1.8333333333333333
     ],
     "_values": [
       {
-        "__uuid__": "fb9275b9-9a1f-477c-9d85-a817231871e0@f9941",
+        "__uuid__": "2c2581d0-e08f-4ca9-b45d-67beeaed47af@f9941",
         "__expectedType__": "cc.SpriteFrame"
       },
       {
-        "__uuid__": "2c2581d0-e08f-4ca9-b45d-67beeaed47af@f9941",
+        "__uuid__": "fb9275b9-9a1f-477c-9d85-a817231871e0@f9941",
         "__expectedType__": "cc.SpriteFrame"
       },
       {
@@ -107,6 +108,10 @@
         "__expectedType__": "cc.SpriteFrame"
       },
       {
+        "__uuid__": "fb9275b9-9a1f-477c-9d85-a817231871e0@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
         "__uuid__": "2c2581d0-e08f-4ca9-b45d-67beeaed47af@f9941",
         "__expectedType__": "cc.SpriteFrame"
       },
@@ -115,7 +120,7 @@
         "__expectedType__": "cc.SpriteFrame"
       },
       {
-        "__uuid__": "fb9275b9-9a1f-477c-9d85-a817231871e0@f9941",
+        "__uuid__": "b3e824b0-b0b2-4c22-b105-b4317aba2c91@f9941",
         "__expectedType__": "cc.SpriteFrame"
       }
     ]

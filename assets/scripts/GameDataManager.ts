@@ -1,12 +1,20 @@
 import CryptoJS from "crypto-js";
 
+export interface ItemSelect {
+    core: string;
+    image: string;
+    isAds: boolean;
+    name: string;
+    figure: string;
+    animation: string;
+}
 
 export interface GameDataType {
-    language:string;
+    language: string;
     masterVolume: number;
     bgmVolume: number;
     sfxVolume: number;
-  
+    ItemSelect: ItemSelect
 }
 
 const KEY = 'GameData';
@@ -46,6 +54,10 @@ export class GameDataManager {
             masterVolume: 1,
             bgmVolume: 1,
             sfxVolume: 1,
+            ItemSelect: {
+                core: "", image: "", isAds: false, name: "", figure: "",
+                animation: ""
+            },
         };
 
         let raw: any = {};
@@ -126,7 +138,7 @@ export class GameDataManager {
                         }
                     }
                 }
-            
+
                 cb?.();
             });
         } else {

@@ -1,4 +1,5 @@
-import { _decorator, Asset, Component, ImageAsset, instantiate, JsonAsset, Label, Layout, Node, PageView, Prefab, resources, Sprite, SpriteFrame, Texture2D } from 'cc';
+import { _decorator, Asset, Component, director, ImageAsset, instantiate, JsonAsset, Label, Layout, Node, PageView, Prefab, resources, Sprite, SpriteFrame, Texture2D } from 'cc';
+import { GameDataManager } from '../GameDataManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('CategoryPageCtrl')
@@ -38,7 +39,6 @@ export class CategoryPageCtrl extends Component {
         const totalPages = this.pageView.getPages().length;
         const itemsPerPage = Math.ceil(this.imageData.length / totalPages);
 
-        // Chia dữ liệu thành mảng con theo số lượng page
         const dataPerPage: any[][] = [];
         for (let i = 0; i < totalPages; i++) {
             dataPerPage.push(this.imageData.slice(i * itemsPerPage, (i + 1) * itemsPerPage));
@@ -49,7 +49,6 @@ export class CategoryPageCtrl extends Component {
             const layout = pageNode.getChildByName('Layout');
             if (!layout) return;
 
-            // Xoá các node cũ nếu có
             layout.removeAllChildren();
 
             const items = dataPerPage[pageIndex] || [];
@@ -59,14 +58,37 @@ export class CategoryPageCtrl extends Component {
                 const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
                 if (nameLabel) nameLabel.string = itemData.name;
 
+                // Gán dữ liệu cho node
+                itemNode['itemData'] = itemData;
+
+                // Thêm sự kiện click
+                itemNode.on(Node.EventType.TOUCH_END, () => {
+                    this.onItemClicked(itemNode);
+                });
+
                 this.loadImageFromPath(`${itemData.image}${/\.(png|jpe?g)$/.test(itemData.image) ? '' : '.png'}`, (spriteFrame) => {
                     if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
-
-                    // Add the item to the layout only after image loading is complete
                     layout.addChild(itemNode);
                 });
             });
         });
+    }
+    private onItemClicked(itemNode: Node) {
+        const data = itemNode['itemData'];
+        if (data) {
+            console.log("Item selected:", data);
+            const logoData = {
+                core: data.core,
+                image: data.image,
+                isAds: data.isAds,
+                name: data.name,
+                figure: data.figure,
+                animation: data.animation
+            };
+            // Lưu xuống localStorage (convert sang string trước)
+            GameDataManager.getInstance().updateField('ItemSelect', logoData);
+            director.loadScene('Playgame')
+        }
     }
 
 

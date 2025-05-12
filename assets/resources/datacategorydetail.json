@@ -1,5 +1,11 @@
 {
   "domixdetail": [
-    {}
+   {
+      "id": 1,
+      "idcategory": 1,
+      "name": "RAINBOW",
+      "image": "image/rainbow",
+      "isAds": false
+    }
   ]
 }
