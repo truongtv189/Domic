@@ -87,7 +87,7 @@ export class CategoryPageCtrl extends Component {
             };
             // Lưu xuống localStorage (convert sang string trước)
             GameDataManager.getInstance().updateField('ItemSelect', logoData);
-            director.loadScene('Playgame')
+            director.loadScene('PlayGame')
         }
     }
 

@@ -1,34 +1,44 @@
-import { _decorator, Component, Sprite, SpriteFrame, AudioSource } from 'cc';
+import { _decorator, Component, Sprite, SpriteFrame, AudioSource, Node } from 'cc';
 const { ccclass, property } = _decorator;
+
 @ccclass('AudioSpritePlayer')
 export class AudioSpritePlayer extends Component {
-    @property(AudioSource)
-    audioSource: AudioSource = null!;
     @property(Sprite)
     sprite: Sprite = null!;
+
     @property
-    duration: number = 1.5; // Tổng thời gian chạy animation
+    duration: number = 1.5;
+
     @property([SpriteFrame])
     spriteFrames: SpriteFrame[] = [];
+
+    private _audioSource: AudioSource | null = null;
     private _frameIndex = 0;
     private _deltaTime = 0;
     private _timer = 0;
     private _isPlaying = false;
 
     start() {
-        this.play();
+        // Nếu đã gán audioSource động trước khi start
+        if (this._audioSource) {
+            this.play();
+        }
+    }
+
+    public setAudioSource(source: AudioSource) {
+        this._audioSource = source;
     }
 
     public play() {
-        if (!this.audioSource || this.spriteFrames.length === 0) return;
+        if (!this._audioSource || this.spriteFrames.length === 0) return;
+
         this._frameIndex = 0;
         this._timer = 0;
         this._isPlaying = true;
-
-        // Tính thời gian giữa các frame
         this._deltaTime = this.duration / this.spriteFrames.length;
-        this.audioSource.stop();
-        this.audioSource.play();
+
+        this._audioSource.stop();
+        this._audioSource.play();
         this.sprite.spriteFrame = this.spriteFrames[this._frameIndex];
     }
 
@@ -45,7 +55,7 @@ export class AudioSpritePlayer extends Component {
                 this.sprite.spriteFrame = this.spriteFrames[this._frameIndex];
             } else {
                 this._isPlaying = false;
-                // Nếu muốn lặp lại animation + audio:
+                // Lặp lại nếu muốn
                 // this.play();
             }
         }
