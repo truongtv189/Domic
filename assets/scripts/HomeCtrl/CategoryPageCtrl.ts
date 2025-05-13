@@ -1,6 +1,7 @@
 import { _decorator, Asset, Component, director, ImageAsset, instantiate, JsonAsset, Label, Layout, Node, PageView, Prefab, resources, Sprite, SpriteFrame, Texture2D } from 'cc';
 import { GameDataManager } from '../GameDataManager';
-import { AudioManager } from '../AudioManager';
+import { LoadingCtrl } from '../LoadingCtrl';
+import { LoadingManager } from '../LoadingManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('CategoryPageCtrl')
@@ -15,13 +16,16 @@ export class CategoryPageCtrl extends Component {
     @property(Node)
     Loading: Node;
     private spriteCache: Map<string, SpriteFrame> = new Map();
+
     protected onLoad(): void {
         const loadingNode = instantiate(this.LoadingContainer);
         this.Loading.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
+        const loadingCtrl = loadingNode.getComponent(LoadingCtrl);
         this.loadJsonData();
         this.Loading.active = false;
     }
+
     // Load JSON data
     async loadJsonData() {
         try {
@@ -33,6 +37,7 @@ export class CategoryPageCtrl extends Component {
             console.error("Failed to load JSON:", err);
         }
     }
+
     // Load resource helper function
     private loadResource<T>(path: string): Promise<T> {
         return new Promise((resolve, reject) => {
@@ -73,13 +78,16 @@ export class CategoryPageCtrl extends Component {
                     this.onItemClicked(itemNode);
                 });
 
-                this.loadImageFromPath(`${itemData.image}${/\.(png|jpe?g)$/.test(itemData.image) ? '' : '.png'}`, (spriteFrame) => {
+                // Sửa phần load ảnh từ resources
+                const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
+                this.loadImageFromResource(imagePath, (spriteFrame) => {
                     if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
                     layout.addChild(itemNode);
                 });
             });
         });
     }
+
     private onItemClicked(itemNode: Node) {
         const data = itemNode['itemData'];
         if (data) {
@@ -101,25 +109,16 @@ export class CategoryPageCtrl extends Component {
         }
     }
 
-    // Hàm load ảnh từ đường dẫn ngoài assets
-    loadImageFromPath(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
-        const img = new Image();
-        img.src = path;
-        img.onload = () => {
-            const imageAsset = new ImageAsset(img);
-            const texture = new Texture2D();
-            texture.image = imageAsset;
-            const spriteFrame = new SpriteFrame();
-            spriteFrame.texture = texture;
-            callback(spriteFrame);
-        };
-
-        img.onerror = () => {
-            console.warn("Load image failed:", path);
-            callback(null);
-        };
-    }
-    onGoHome() {
-        director.loadScene('Home')
+    // Hàm load ảnh từ resources
+    loadImageFromResource(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
+        resources.load(path, SpriteFrame, (err, spriteFrame) => {
+            if (err) {
+                console.warn("Load image failed:", path);
+                callback(null);
+            } else {
+                callback(spriteFrame);
+                console.log(spriteFrame)
+            }
+        });
     }
 }

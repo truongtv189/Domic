@@ -1,140 +1,148 @@
-import {
-    _decorator, Component, Node, Sprite, SpriteFrame, resources,
-    instantiate, Prefab, Animation, AnimationClip, director, JsonAsset
-} from 'cc';
-import { DraggableItem } from './DraggableItem';
-import { AudioManager } from '../AudioManager';
+import { _decorator, Asset, Component, director, ImageAsset, instantiate, JsonAsset, Label, Layout, Node, PageView, Prefab, resources, Sprite, SpriteFrame } from 'cc';
 import { GameDataManager } from '../GameDataManager';
+import { AudioManager } from '../AudioManager';
 
 const { ccclass, property } = _decorator;
 
-@ccclass('GameController')
-export class GameController extends Component {
-    @property(Node) container1: Node = null;
-    @property(Node) container2: Node = null;
-    private animClips: AnimationClip[] = [];
-
-    @property(Node) nodeFigure: Node = null;
+@ccclass('CategoryPageCtrl')
+export class CategoryPageCtrl extends Component {
     private imageData: any[] = [];
-    @property(Prefab) itemPrefab: Prefab = null;
-    @property([Node]) dropSlots: Node[] = [];
-    @property(Node) nodeCategoryFigure: Node = null;
+    @property(PageView)
+    pageView: PageView = null;
+    @property(Prefab)
+    itemPrefab: Prefab = null;
+    @property(Prefab)
+    LoadingContainer: Prefab = null;
+    @property(Node)
+    Loading: Node;
 
-    onLoad() {
-        this.nodeFigure.active = true;
-        AudioManager.instance.stopBGM();
+    private spriteCache: Map<string, SpriteFrame> = new Map();
 
-        this.loadAnimClips(() => {
-            let imagePath = GameDataManager.getInstance().data.ItemSelect.figure;
-            imagePath = imagePath.replace(/\.png$/, ''); // Remove extension if exists
-            const cleanPath = `PlayGame/${imagePath}/spriteFrame`;
-
-            this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
-                if (spriteFrame) {
-                    this.setSprites(this.container1, spriteFrame);
-                    this.setSprites(this.container2, spriteFrame);
-                } else {
-                    console.error('Failed to load figure sprite:', cleanPath);
-                }
-            });
-        });
-
+    protected onLoad(): void {
+        this.setupLoadingIndicator();
         this.loadJsonData();
     }
 
-    loadAnimClips(callback: () => void) {
-        resources.loadDir('Animator/animationRainBow', AnimationClip, (err, clips) => {
-            if (err) {
-                console.error('Failed to load animation clips:', err);
-                callback();
-                return;
-            }
-            this.animClips = clips;
-            callback();
-        });
+    private setupLoadingIndicator(): void {
+        const loadingNode = instantiate(this.LoadingContainer);
+        this.Loading.addChild(loadingNode);
+        loadingNode.setPosition(0, 0, 0);
+        this.Loading.active = false;
     }
 
-    loadSpriteFrameFromResources(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
-        
-        resources.load(path, SpriteFrame, (err, spriteFrame) => {
-            if (err || !spriteFrame) {
-                console.error(`❌ SpriteFrame not found at path: ${path}`, err);
-                callback(null);
-                return;
-            }
-            callback(spriteFrame);
-        });
-    }
-
-    setSprites(container: Node, spriteFrame: SpriteFrame) {
-        if (!container) return;
-
-        const children = container.children;
-        for (let i = 0; i < Math.min(children.length, 7); i++) {
-            const spriteNode = children[i];
-            const sprite = spriteNode.getComponent(Sprite);
-            if (sprite) {
-                sprite.spriteFrame = spriteFrame;
-            }
-
-            if (this.animClips.length > 0) {
-                const randomClip = this.animClips[Math.floor(Math.random() * this.animClips.length)];
-                const anim = spriteNode.getComponent(Animation) || spriteNode.addComponent(Animation);
-                anim.addClip(randomClip);
-                anim.defaultClip = randomClip;
-                const state = anim.getState(randomClip.name);
-                anim.play(randomClip.name);
-                setTimeout(() => state.time = Math.random() * randomClip.duration, 0);
-            }
-        }
-    }
-
+    // Load JSON data
     async loadJsonData() {
         try {
-            const jsonAsset = await this.loadResource<JsonAsset>('category/rainbow');
-            this.imageData = jsonAsset.json.RAINBOW;
+            const jsonPaths = ['datacategory']; // Đảm bảo 'datacategory' là đúng đường dẫn
+            const [jsonAsset] = await Promise.all(jsonPaths.map(path => this.loadResource<JsonAsset>(path)));
+            this.imageData = jsonAsset.json.CATEGORY; // Dữ liệu có trong 'CATEGORY'
             this.createImages();
         } catch (err) {
-            console.error('❌ Failed to load JSON data:', err);
+            console.error("Failed to load JSON:", err);
         }
     }
 
+    // Load resource helper function
     private loadResource<T>(path: string): Promise<T> {
         return new Promise((resolve, reject) => {
             resources.load(path, (err, asset) => {
-                if (err || !asset) {
-                    reject(err || new Error('Asset not found'));
-                } else {
-                    resolve(asset as T);
-                }
+                if (err) reject(err);
+                else resolve(asset as T);
             });
         });
     }
 
+    // Tạo ảnh từ dữ liệu JSON
     private createImages() {
-        this.nodeCategoryFigure.removeAllChildren();
+        const totalPages = this.pageView.getPages().length;
+        const itemsPerPage = Math.ceil(this.imageData.length / totalPages);
 
-        for (let i = 0; i < this.imageData.length; i++) {
-            const data = this.imageData[i];
-            const imagePath = data.image.replace(/\.png$/, ''); // remove extension
-            const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
-            const itemNode = instantiate(this.itemPrefab);
-            this.nodeCategoryFigure.addChild(itemNode);
-
-            const dragComponent = itemNode.addComponent(DraggableItem);
-            dragComponent.init(this.dropSlots);
-
-            this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
-                if (spriteFrame) {
-                    const sprite = itemNode.getComponent(Sprite);
-                    if (sprite) {
-                        sprite.spriteFrame = spriteFrame;
-                    }
-                } else {
-                    console.error('❌ Could not load image for item:', cleanPath);
-                }
-            });
+        const dataPerPage: any[][] = [];
+        for (let i = 0; i < totalPages; i++) {
+            dataPerPage.push(this.imageData.slice(i * itemsPerPage, (i + 1) * itemsPerPage));
         }
+
+        const pages = this.pageView.getPages();
+        pages.forEach((pageNode, pageIndex) => {
+            const layout = pageNode.getChildByName('Layout');
+            if (!layout) return;
+
+            layout.removeAllChildren();
+
+            const items = dataPerPage[pageIndex] || [];
+            items.forEach((itemData) => {
+                const itemNode = instantiate(this.itemPrefab);
+                const icon = itemNode.getComponent(Sprite);
+                const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
+                if (nameLabel) nameLabel.string = itemData.name;
+
+                // Gán dữ liệu cho node
+                itemNode['itemData'] = itemData;
+
+                // Thêm sự kiện click
+                itemNode.on(Node.EventType.TOUCH_END, () => {
+                    this.onItemClicked(itemNode);
+                });
+
+                // Load image with caching mechanism
+                this.loadImageFromPath(`PlayGame/${itemData.image}/spriteFrame`, (spriteFrame) => {
+                    if (spriteFrame && icon) {
+                        // Kiểm tra và gán SpriteFrame cho Sprite component
+                        icon.spriteFrame = spriteFrame;
+                    }
+                    layout.addChild(itemNode);
+                });
+            });
+        });
+    }
+
+    private onItemClicked(itemNode: Node) {
+        const data = itemNode['itemData'];
+        if (data) {
+            console.log("Item selected:", data);
+            const logoData = {
+                core: data.core,
+                image: data.image,
+                isAds: data.isAds,
+                name: data.name,
+                figure: data.figure,
+                animation: data.animation
+            };
+
+            GameDataManager.getInstance().updateField('ItemSelect', logoData);
+            this.Loading.active = true;
+            setTimeout(() => {
+                director.loadScene('playgame');
+            }, 100);
+        }
+    }
+
+    // Hàm load ảnh từ resource của Cocos và trực tiếp tạo SpriteFrame
+    private loadImageFromPath(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
+        // Kiểm tra xem ảnh đã có trong cache chưa
+        if (this.spriteCache.has(path)) {
+            callback(this.spriteCache.get(path)!);
+            return;
+        }
+
+        // Load ảnh từ resources
+        resources.load(path, ImageAsset, (err, imageAsset) => {
+            if (err || !imageAsset) {
+                console.warn("Load image failed:", path, err);
+                callback(null);
+                return;
+            }
+
+            // Tạo SpriteFrame từ ImageAsset
+            const spriteFrame = new SpriteFrame();
+            spriteFrame.setTexture(imageAsset.texture);
+
+            // Lưu SpriteFrame vào cache để sử dụng lại sau
+            this.spriteCache.set(path, spriteFrame);
+
+            // Trả về SpriteFrame cho callback
+            callback(spriteFrame);
+        });
     }
 
     onGoHome() {
