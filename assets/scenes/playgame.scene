@@ -116,16 +116,16 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "container1": null,
+    "container2": null,
     "nodeFigure": {
       "__id__": 4
     },
-    "container1": null,
-    "container2": null,
     "itemPrefab": {
       "__uuid__": "f1058b73-4689-4a66-ab0d-d8fabf486178",
       "__expectedType__": "cc.Prefab"
     },
-    "dropTargets": [],
+    "dropSlots": [],
     "nodeCategoryFigure": {
       "__id__": 12
     },

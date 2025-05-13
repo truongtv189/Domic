@@ -1,5 +1,6 @@
 import { _decorator, Asset, Component, director, ImageAsset, instantiate, JsonAsset, Label, Layout, Node, PageView, Prefab, resources, Sprite, SpriteFrame, Texture2D } from 'cc';
 import { GameDataManager } from '../GameDataManager';
+import { AudioManager } from '../AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('CategoryPageCtrl')

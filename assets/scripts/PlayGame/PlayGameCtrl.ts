@@ -1,4 +1,7 @@
-import { _decorator, Component, Node, Sprite, SpriteFrame, Texture2D, resources, instantiate, Prefab, Animation, AnimationClip, ImageAsset, director, JsonAsset } from 'cc';
+import {
+    _decorator, Component, Node, Sprite, SpriteFrame, resources,
+    instantiate, Prefab, Animation, AnimationClip, director, JsonAsset
+} from 'cc';
 import { DraggableItem } from './DraggableItem';
 import { AudioManager } from '../AudioManager';
 import { GameDataManager } from '../GameDataManager';
@@ -7,43 +10,42 @@ const { ccclass, property } = _decorator;
 
 @ccclass('GameController')
 export class GameController extends Component {
-    // Properties for SetSprites logic
-    @property(Node)
-    container1: Node = null;  // Node container 1
-    @property(Node)
-    container2: Node = null;  // Node container 2
-    private animClips: AnimationClip[] = [];  // List of animation clips
+    @property(Node) container1: Node = null;
+    @property(Node) container2: Node = null;
+    private animClips: AnimationClip[] = [];
 
-    // Properties for PlayGameCtrl logic
-    @property(Node)
-    nodeFigure: Node = null;
+    @property(Node) nodeFigure: Node = null;
     private imageData: any[] = [];
-    @property(Prefab)
-    itemPrefab: Prefab = null;
-    @property([Node])
-    dropSlots: Node[] = [];  // Drop slots for draggable items
-    @property(Node)
-    nodeCategoryFigure: Node = null;
+    @property(Prefab) itemPrefab: Prefab = null;
+    @property([Node]) dropSlots: Node[] = [];
+    @property(Node) nodeCategoryFigure: Node = null;
 
     onLoad() {
         this.nodeFigure.active = true;
+        AudioManager.instance.stopBGM();
+
         this.loadAnimClips(() => {
-            const imageUrl = GameDataManager.getInstance().data.ItemSelect.figure;
-            const finalUrl = `${imageUrl}${/\.(png|jpe?g)$/.test(imageUrl) ? '' : '.png'}`;
-            this.loadImageFromPath(finalUrl, (spriteFrame) => {
+            let imagePath = GameDataManager.getInstance().data.ItemSelect.figure;
+            imagePath = imagePath.replace(/\.png$/, ''); // Remove extension if exists
+            const cleanPath = `PlayGame/${imagePath}/spriteFrame`;
+
+            this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
                 if (spriteFrame) {
                     this.setSprites(this.container1, spriteFrame);
                     this.setSprites(this.container2, spriteFrame);
+                } else {
+                    console.error('Failed to load figure sprite:', cleanPath);
                 }
             });
         });
+
         this.loadJsonData();
     }
 
-    // SetSprites Logic
     loadAnimClips(callback: () => void) {
         resources.loadDir('Animator/animationRainBow', AnimationClip, (err, clips) => {
             if (err) {
+                console.error('Failed to load animation clips:', err);
                 callback();
                 return;
             }
@@ -52,35 +54,22 @@ export class GameController extends Component {
         });
     }
 
-    loadImageFromPath(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
-        const image = new Image();
-        image.crossOrigin = 'anonymous';
-
-        image.onload = () => {
-            const imageAsset = new ImageAsset(image);
-            const texture = new Texture2D();
-            texture.image = imageAsset;
-
-            const spriteFrame = new SpriteFrame();
-            spriteFrame.texture = texture;
-
+    loadSpriteFrameFromResources(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
+        
+        resources.load(path, SpriteFrame, (err, spriteFrame) => {
+            if (err || !spriteFrame) {
+                console.error(`❌ SpriteFrame not found at path: ${path}`, err);
+                callback(null);
+                return;
+            }
             callback(spriteFrame);
-        };
-
-        image.onerror = () => {
-            callback(null);
-        };
-
-        image.src = path;
+        });
     }
 
     setSprites(container: Node, spriteFrame: SpriteFrame) {
-        if (!container) {
-            return;
-        }
+        if (!container) return;
+
         const children = container.children;
-        if (children.length === 0) {
-        }
         for (let i = 0; i < Math.min(children.length, 7); i++) {
             const spriteNode = children[i];
             const sprite = spriteNode.getComponent(Sprite);
@@ -89,65 +78,60 @@ export class GameController extends Component {
             }
 
             if (this.animClips.length > 0) {
-                const randomIndex = Math.floor(Math.random() * this.animClips.length);
-                const randomClip = this.animClips[randomIndex];
-
-                let anim = spriteNode.getComponent(Animation);
-                if (!anim) {
-                    anim = spriteNode.addComponent(Animation);
-                }
-
+                const randomClip = this.animClips[Math.floor(Math.random() * this.animClips.length)];
+                const anim = spriteNode.getComponent(Animation) || spriteNode.addComponent(Animation);
                 anim.addClip(randomClip);
                 anim.defaultClip = randomClip;
-
                 const state = anim.getState(randomClip.name);
                 anim.play(randomClip.name);
-
-                setTimeout(() => {
-                    const duration = randomClip.duration;
-                    const randomTime = Math.random() * duration;
-                    state.time = randomTime;
-                }, 0);
+                setTimeout(() => state.time = Math.random() * randomClip.duration, 0);
             }
         }
     }
 
-    // PlayGameCtrl Logic
     async loadJsonData() {
         try {
-            const jsonPaths = ['category/rainbow'];
-            const [jsonAsset] = await Promise.all(jsonPaths.map(path => this.loadResource<JsonAsset>(path)));
+            const jsonAsset = await this.loadResource<JsonAsset>('category/rainbow');
             this.imageData = jsonAsset.json.RAINBOW;
             this.createImages();
         } catch (err) {
+            console.error('❌ Failed to load JSON data:', err);
         }
     }
 
     private loadResource<T>(path: string): Promise<T> {
         return new Promise((resolve, reject) => {
             resources.load(path, (err, asset) => {
-                if (err) reject(err);
-                else resolve(asset as T);
+                if (err || !asset) {
+                    reject(err || new Error('Asset not found'));
+                } else {
+                    resolve(asset as T);
+                }
             });
         });
     }
 
     private createImages() {
         this.nodeCategoryFigure.removeAllChildren();
+
         for (let i = 0; i < this.imageData.length; i++) {
             const data = this.imageData[i];
-            const imageUrl = `image/${data.image}${/\.(png|jpe?g)$/.test(data.image) ? '' : '.png'}`;
+            const imagePath = data.image.replace(/\.png$/, ''); // remove extension
+            const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
             const itemNode = instantiate(this.itemPrefab);
             this.nodeCategoryFigure.addChild(itemNode);
+
             const dragComponent = itemNode.addComponent(DraggableItem);
             dragComponent.init(this.dropSlots);
 
-            this.loadImageFromPath(imageUrl, (spriteFrame) => {
+            this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
                 if (spriteFrame) {
                     const sprite = itemNode.getComponent(Sprite);
                     if (sprite) {
                         sprite.spriteFrame = spriteFrame;
                     }
+                } else {
+                    console.error('❌ Could not load image for item:', cleanPath);
                 }
             });
         }
