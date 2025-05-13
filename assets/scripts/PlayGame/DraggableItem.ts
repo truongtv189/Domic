@@ -1,80 +1,62 @@
-import { _decorator, Component, Node, Vec3, EventTouch, CameraComponent, UITransform } from 'cc';
-
+import { _decorator, Component, Node, EventTouch, UITransform, Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('DraggableItem')
 export class DraggableItem extends Component {
     @property(Node)
-    dropTargets: Node[] = [];  // Array of drop slots
-    private isDragging: boolean = false;
-    private originalPosition: Vec3 = new Vec3();
-    private camera: CameraComponent = null;  // Reference to the camera component
-    private ghostNode: Node | null = null;
+    targetDropZone: Node | null = null;
 
-    start() {
-        this.originalPosition = this.node.position.clone();
-        this.camera = this.node.scene?.getComponentInChildren(CameraComponent); // Get the camera component from the scene
+    public dropTargets: Node[] = [];
+    public originalPosition: Vec3 = new Vec3();
+    public originalParent: Node = null;
+
+    private isDragging: boolean = false;
+
+    onLoad() {
         this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         this.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
     }
 
-    onTouchStart(event: EventTouch) {
+    onTouchStart(touch: EventTouch) {
         this.isDragging = true;
+        // Đảm bảo node luôn trên cùng khi kéo
+        this.node.setSiblingIndex(this.node.parent.children.length - 1);
     }
 
-    onTouchMove(event: EventTouch) {
-        if (this.isDragging) {
-            // Get the touch position in screen space
-            const touchPos = event.getLocation();
-
-            // Convert the touch position (screen space) to world space
-            const worldPos = this.camera!.screenToWorld(new Vec3(touchPos.x, touchPos.y, 0));
-
-            // Update the position of the node to follow the mouse in world space
-            this.node.setWorldPosition(worldPos);
-        }
+    onTouchMove(touch: EventTouch) {
+        if (!this.isDragging) return;
+        const delta = touch.getUIDelta();
+        this.node.setPosition(this.node.position.add3f(delta.x, delta.y, 0));
     }
-    onTouchEnd(event: EventTouch) {
+
+    onTouchEnd(touch: EventTouch) {
         this.isDragging = false;
 
-        // Check if the item is dropped on a valid drop slot
-        let droppedOnSlot = false;
-        for (let slot of this.dropTargets) {
-            if (this.isNodeInSlot(slot)) {
-                droppedOnSlot = true;
-                this.node.setWorldPosition(slot.getWorldPosition());  // Đặt node vào vị trí trung tâm của slot
-                break;
+        const worldPos = this.node.worldPosition;
+
+        for (const dropZone of this.dropTargets) {
+            const dropBox = dropZone.getComponent(UITransform);
+            if (!dropBox) continue;
+
+            const localPos = dropBox.convertToNodeSpaceAR(worldPos);
+            const size = dropBox.contentSize;
+
+            if (
+                Math.abs(localPos.x) <= size.width / 2 &&
+                Math.abs(localPos.y) <= size.height / 2
+            ) {
+                this.node.setParent(dropZone);
+                const finalPos = dropZone.getComponent(UITransform)!.convertToNodeSpaceAR(worldPos);
+                this.node.setPosition(finalPos);
+                return;
             }
         }
 
-        if (!droppedOnSlot) {
-            // Nếu không thả đúng slot nào thì trả về vị trí ban đầu
-            this.node.setPosition(this.originalPosition);
-        }
-    }
-
-
-    // Check if the node is inside a drop slot
-    isNodeInSlot(slot: Node): boolean {
-        const itemBox = this.node.getComponent(UITransform)!.getBoundingBoxToWorld();
-        const slotBox = slot.getComponent(UITransform)!.getBoundingBoxToWorld();
-        const nodeWorldPos = this.node.getWorldPosition();  // Get the global position of the node
-        const slotWorldPos = slot.getWorldPosition();  // Get the global position of the slot
-        const slotWidth = slot.getContentSize().width;  // Width of the slot
-        const slotHeight = slot.getContentSize().height;  // Height of the slot
-
-        // Check if the node is within the bounds of the slot
-        const withinX = nodeWorldPos.x >= slotWorldPos.x - slotWidth / 2 &&
-            nodeWorldPos.x <= slotWorldPos.x + slotWidth / 2;
-        const withinY = nodeWorldPos.y >= slotWorldPos.y - slotHeight / 2 &&
-            nodeWorldPos.y <= slotWorldPos.y + slotHeight / 2;
-
-        return withinX && withinY;  // Return true if node is inside the slot
-    }
-
-    init(dropTargets: Node[]) {
-        this.dropTargets = dropTargets;
+        // Không thả đúng → quay lại vị trí cũ
+        this.node.setParent(this.originalParent);
+        const returnPos = this.originalParent.getComponent(UITransform)!.convertToNodeSpaceAR(worldPos);
+        this.node.setPosition(returnPos);
     }
 }

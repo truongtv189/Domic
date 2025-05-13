@@ -1,34 +1,27 @@
-import {
-    _decorator, Component, Node, Sprite, SpriteFrame, resources,
-    instantiate, Prefab, Animation, AnimationClip, director, JsonAsset
-} from 'cc';
+import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3 } from 'cc';
 import { DraggableItem } from './DraggableItem';
-import { AudioManager } from '../AudioManager';
 import { GameDataManager } from '../GameDataManager';
 
 const { ccclass, property } = _decorator;
 
 @ccclass('GameController')
 export class GameController extends Component {
-    @property(Node) container1: Node = null;
-    @property(Node) container2: Node = null;
- 
+    @property([Node]) dropTargets: Node[] = [];  // Mảng chứa các điểm thả
     @property(Prefab) itemPrefab: Prefab = null;
-    @property([Node]) dropSlots: Node[] = [];
     @property(Node) nodeCategoryFigure: Node = null;
-   private animClips: AnimationClip[] = [];
+
+    private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
+    private originalPositions: { [key: string]: Node } = {};  // Lưu trữ các vị trí gốc của các đối tượng
+
     onLoad() {
-        AudioManager.instance.stopBGM();
         this.loadAnimClips(() => {
             let imagePath = GameDataManager.getInstance().data.ItemSelect.figure;
             imagePath = imagePath.replace(/\.png$/, ''); // Remove extension if exists
             const cleanPath = `PlayGame/${imagePath}/spriteFrame`;
-
             this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
                 if (spriteFrame) {
-                    this.setSprites(this.container1, spriteFrame);
-                    this.setSprites(this.container2, spriteFrame);
+                    this.setSprites(this.dropTargets, spriteFrame);  // Cập nhật sprite cho các node
                 } else {
                     console.error('Failed to load figure sprite:', cleanPath);
                 }
@@ -51,7 +44,6 @@ export class GameController extends Component {
     }
 
     loadSpriteFrameFromResources(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
-        
         resources.load(path, SpriteFrame, (err, spriteFrame) => {
             if (err || !spriteFrame) {
                 console.error(`❌ SpriteFrame not found at path: ${path}`, err);
@@ -62,12 +54,9 @@ export class GameController extends Component {
         });
     }
 
-    setSprites(container: Node, spriteFrame: SpriteFrame) {
-        if (!container) return;
-
-        const children = container.children;
-        for (let i = 0; i < Math.min(children.length, 7); i++) {
-            const spriteNode = children[i];
+    setSprites(nodes: Node[], spriteFrame: SpriteFrame) {
+        for (let i = 0; i < Math.min(nodes.length, 7); i++) {
+            const spriteNode = nodes[i];
             const sprite = spriteNode.getComponent(Sprite);
             if (sprite) {
                 sprite.spriteFrame = spriteFrame;
@@ -106,32 +95,31 @@ export class GameController extends Component {
             });
         });
     }
-
-    private createImages() {
+    createImages() {
         this.nodeCategoryFigure.removeAllChildren();
-
+    
         for (let i = 0; i < this.imageData.length; i++) {
             const data = this.imageData[i];
-            const imagePath = data.image.replace(/\.png$/, ''); // remove extension
+            const imagePath = data.image.replace(/\.png$/, '');
             const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
+    
             const itemNode = instantiate(this.itemPrefab);
             this.nodeCategoryFigure.addChild(itemNode);
-
-            const dragComponent = itemNode.addComponent(DraggableItem);
-            dragComponent.init(this.dropSlots);
-
+    
+            const dragComponent = itemNode.getComponent(DraggableItem) || itemNode.addComponent(DraggableItem);
+            dragComponent.targetDropZone = this.dropTargets[i] ?? null;
+            dragComponent.originalParent = this.nodeCategoryFigure;
+            dragComponent.originalPosition = itemNode.getPosition();
+            dragComponent.dropTargets = this.dropTargets; // Gán mảng các vùng thả
+    
             this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
-                if (spriteFrame) {
-                    const sprite = itemNode.getComponent(Sprite);
-                    if (sprite) {
-                        sprite.spriteFrame = spriteFrame;
-                    }
-                } else {
-                    console.error('❌ Could not load image for item:', cleanPath);
-                }
+                const sprite = itemNode.getComponent(Sprite);
+                if (sprite) sprite.spriteFrame = spriteFrame;
             });
         }
     }
+    
+
 
     onGoHome() {
         director.loadScene('Home');
