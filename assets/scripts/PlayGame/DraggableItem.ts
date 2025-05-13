@@ -9,7 +9,7 @@ export class DraggableItem extends Component {
     public dropTargets: Node[] = [];
     public originalPosition: Vec3 = new Vec3();
     public originalParent: Node = null;
-
+    private offset = new Vec3();
     private isDragging: boolean = false;
 
     onLoad() {
@@ -19,16 +19,16 @@ export class DraggableItem extends Component {
         this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
     }
 
-    onTouchStart(touch: EventTouch) {
-        this.isDragging = true;
-        // Đảm bảo node luôn trên cùng khi kéo
-        this.node.setSiblingIndex(this.node.parent.children.length - 1);
+    onTouchStart(event: EventTouch) {
+        const touchPos = event.getUILocation(); // Lấy vị trí chuột trong không gian UI
+        const nodePos = this.node.getWorldPosition(); // Vị trí node trong không gian thế giới
+        this.offset.set(nodePos.x - touchPos.x, nodePos.y - touchPos.y, 0); // Lưu lại offset
     }
 
-    onTouchMove(touch: EventTouch) {
-        if (!this.isDragging) return;
-        const delta = touch.getUIDelta();
-        this.node.setPosition(this.node.position.add3f(delta.x, delta.y, 0));
+    onTouchMove(event: EventTouch) {
+        const touchPos = event.getUILocation(); // Lấy vị trí chuột trong không gian UI
+        // Chuyển vị trí chuột từ UI space thành world space rồi áp dụng offset
+        this.node.setWorldPosition(touchPos.x + this.offset.x, touchPos.y + this.offset.y, 0);
     }
 
     onTouchEnd(touch: EventTouch) {
