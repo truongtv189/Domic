@@ -5,34 +5,38 @@ const { ccclass, property } = _decorator;
 export class LoadingCtrl extends Component {
     @property(ProgressBar)
     progressBar: ProgressBar = null!;
+
     @property(Label)
     progressLabel: Label = null!;
 
-    async startLoading(targetScene: string) {
+    start() {
+        this.startLoading();
+    }
+
+    startLoading() {
         let progress = 0;
-        let loadingDone = false;
         const interval = setInterval(() => {
-            if (progress < 0.98) {
+            if (progress < 1) {
                 progress += 0.01;
                 this.updateProgress(progress);
-            } else if (!loadingDone) {
-                // Gọi loadScene khi đạt ~98%
-                loadingDone = true;
-                this.updateProgress(0.98);
-                director.loadScene(targetScene);
+            } else {
+                clearInterval(interval);
+                this.updateProgress(1);
             }
         }, 20);
-
-        // // Khi scene mới được load xong thì loading UI sẽ tự bị phá hủy hoặc ẩn
-        // director.once(director.EVENT_AFTER_SCENE_LAUNCH, () => {
-        //     clearInterval(interval);
-        //     this.updateProgress(1);
-        //     this.node.active = false;
-        // });
     }
 
     updateProgress(value: number) {
-        this.progressBar.progress = value;
-        this.progressLabel.string = `${Math.floor(value * 100)}%`;
+        if (this.progressBar) {
+            this.progressBar.progress = value;
+            this.progressLabel.string = `${Math.floor(value * 100)}%`;
+        } else {
+        }
     }
+
+    onDestroy() {
+        // Dừng lại nếu component bị hủy
+        this.unschedule(this.updateProgress);
+    }
+  
 }

@@ -6,19 +6,22 @@ const { ccclass, property } = _decorator;
 export class HomeCtrl extends Component {
     @property(Prefab)
     PopUpLanguagePrefab: Prefab;
-
     @property(Node)
     PopUpLanguage: Node;
-
     @property(Prefab)
     popUpSettingPrefabs: Prefab;
-
     @property(Node)
     popUpSetting: Node;
-
+    @property(Prefab)
+    LoadingContainer: Prefab = null;
+    @property(Node) Loading: Node
     onLoad() {
+        const loadingNode = instantiate(this.LoadingContainer);
+        this.Loading.addChild(loadingNode);
+        loadingNode.setPosition(0, 0, 0);
         this.PopUpLanguage.active = false;
         this.popUpSetting.active = false;
+          this.Loading.active = false;
     }
     onShowPopupSetting() {
         const loadingNode = instantiate(this.popUpSettingPrefabs);

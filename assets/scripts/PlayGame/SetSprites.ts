@@ -19,19 +19,15 @@ const { ccclass, property } = _decorator;
 export class SetSprites extends Component {
     @property(Node)
     container1: Node = null;  // Node cha 1
-
     @property(Node)
     container2: Node = null;  // Node cha 2
-
     private animClips: AnimationClip[] = []; // Danh sách các animation clip
-
     onLoad() {
         this.loadAnimClips(() => {
             const imageUrl = GameDataManager.getInstance().data.ItemSelect.figure;
             const finalUrl = `${imageUrl}${/\.(png|jpe?g)$/.test(imageUrl) ? '' : '.png'}`;
             this.loadImageFromPath(finalUrl, (spriteFrame) => {
                 if (!spriteFrame) {
-                    console.warn('Không thể load ảnh từ:', finalUrl);
                     return;
                 }
                 this.setSprites(this.container1, spriteFrame);
@@ -44,7 +40,6 @@ export class SetSprites extends Component {
         // Load tất cả animation clip từ thư mục 'Animator/animationRainBow'
         resources.loadDir('Animator/animationRainBow', AnimationClip, (err, clips) => {
             if (err) {
-                console.error('❌ Không thể load animation clips:', err);
                 callback();
                 return;
             }
@@ -69,7 +64,6 @@ export class SetSprites extends Component {
         };
 
         image.onerror = () => {
-            console.error(`❌ Load image failed from: ${path}`);
             callback(null);
         };
 

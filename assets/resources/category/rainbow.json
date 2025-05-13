@@ -3,17 +3,17 @@
             {
                 "id": 1,
                 "image": "rainbow/rainbow1",
-                "_deltaTime": 0.3
+                "_deltaTime": 0.911
             },
             {
                 "id": 2,
                 "image": "rainbow/rainbow2",
-                "_deltaTime": 0.3
+                "_deltaTime": 1.204
             },
             {
                 "id": 3,
                 "image": "rainbow/rainbow3",
-                "_deltaTime": 0.3
+                "_deltaTime": 0.172
             },
             {
                 "id": 4,

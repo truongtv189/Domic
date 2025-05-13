@@ -9,9 +9,17 @@ export class CategoryPageCtrl extends Component {
     pageView: PageView = null;
     @property(Prefab)
     itemPrefab: Prefab = null;
+    @property(Prefab)
+    LoadingContainer: Prefab = null;
+    @property(Node)
+    Loading: Node;
     private spriteCache: Map<string, SpriteFrame> = new Map();
     protected onLoad(): void {
+        const loadingNode = instantiate(this.LoadingContainer);
+        this.Loading.addChild(loadingNode);
+        loadingNode.setPosition(0, 0, 0);
         this.loadJsonData();
+        this.Loading.active = false;
     }
     // Load JSON data
     async loadJsonData() {
@@ -57,10 +65,8 @@ export class CategoryPageCtrl extends Component {
                 const icon = itemNode.getComponent(Sprite);
                 const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
                 if (nameLabel) nameLabel.string = itemData.name;
-
                 // Gán dữ liệu cho node
                 itemNode['itemData'] = itemData;
-
                 // Thêm sự kiện click
                 itemNode.on(Node.EventType.TOUCH_END, () => {
                     this.onItemClicked(itemNode);
@@ -85,12 +91,14 @@ export class CategoryPageCtrl extends Component {
                 figure: data.figure,
                 animation: data.animation
             };
-            // Lưu xuống localStorage (convert sang string trước)
+
             GameDataManager.getInstance().updateField('ItemSelect', logoData);
-            director.loadScene('PlayGame')
+            this.Loading.active = true;
+            setTimeout(() => {
+                director.loadScene('playgame');
+            }, 100);
         }
     }
-
 
     // Hàm load ảnh từ đường dẫn ngoài assets
     loadImageFromPath(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
@@ -109,5 +117,8 @@ export class CategoryPageCtrl extends Component {
             console.warn("Load image failed:", path);
             callback(null);
         };
+    }
+    onGoHome() {
+        director.loadScene('Home')
     }
 }
