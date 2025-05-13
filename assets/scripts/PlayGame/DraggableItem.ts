@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Vec3, EventTouch, CameraComponent } from 'cc';
+import { _decorator, Component, Node, Vec3, EventTouch, CameraComponent, UITransform } from 'cc';
 
 const { ccclass, property } = _decorator;
 
@@ -9,6 +9,7 @@ export class DraggableItem extends Component {
     private isDragging: boolean = false;
     private originalPosition: Vec3 = new Vec3();
     private camera: CameraComponent = null;  // Reference to the camera component
+    private ghostNode: Node | null = null;
 
     start() {
         this.originalPosition = this.node.position.clone();
@@ -35,7 +36,6 @@ export class DraggableItem extends Component {
             this.node.setWorldPosition(worldPos);
         }
     }
-
     onTouchEnd(event: EventTouch) {
         this.isDragging = false;
 
@@ -44,19 +44,22 @@ export class DraggableItem extends Component {
         for (let slot of this.dropTargets) {
             if (this.isNodeInSlot(slot)) {
                 droppedOnSlot = true;
-                this.node.setPosition(slot.position);  // Place the image at the center of the drop slot
+                this.node.setWorldPosition(slot.getWorldPosition());  // Đặt node vào vị trí trung tâm của slot
                 break;
             }
         }
 
         if (!droppedOnSlot) {
-            // If not dropped on any valid slot, return to the original position
+            // Nếu không thả đúng slot nào thì trả về vị trí ban đầu
             this.node.setPosition(this.originalPosition);
         }
     }
 
+
     // Check if the node is inside a drop slot
     isNodeInSlot(slot: Node): boolean {
+        const itemBox = this.node.getComponent(UITransform)!.getBoundingBoxToWorld();
+        const slotBox = slot.getComponent(UITransform)!.getBoundingBoxToWorld();
         const nodeWorldPos = this.node.getWorldPosition();  // Get the global position of the node
         const slotWorldPos = slot.getWorldPosition();  // Get the global position of the slot
         const slotWidth = slot.getContentSize().width;  // Width of the slot
