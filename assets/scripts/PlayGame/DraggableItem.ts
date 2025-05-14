@@ -85,6 +85,12 @@ export class DraggableItem extends Component {
             this.loadAndPlayAssets(this.dragData.image);
 
         }
+        else {
+            if (this.originalParent) {
+                this.node.setParent(this.originalParent);
+                this.node.setPosition(this.originalPosition); // Quay lại vị trí gốc
+            }
+        }
     }
     private loadAndPlayAssets(imagePath: string) {
         const spriteFolderPath = `PlayGame/image/${imagePath}`;
