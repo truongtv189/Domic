@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3 } from 'cc';
+import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform } from 'cc';
 import { DraggableItem } from './DraggableItem';
 import { GameDataManager } from '../GameDataManager';
 
@@ -13,7 +13,7 @@ export class GameController extends Component {
     private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
     private originalPositions: { [key: string]: Node } = {};  // Lưu trữ các vị trí gốc của các đối tượng
-
+    private dropTargetRects: { node: Node, rect: Rect }[] = [];
     onLoad() {
         this.loadAnimClips(() => {
             let imagePath = GameDataManager.getInstance().data.ItemSelect.figure;
@@ -27,7 +27,9 @@ export class GameController extends Component {
                 }
             });
         });
-
+        this.scheduleOnce(() => {
+            this.cacheDropTargetRects();
+        }, 0);
         this.loadJsonData();
     }
 
@@ -97,29 +99,48 @@ export class GameController extends Component {
     }
     createImages() {
         this.nodeCategoryFigure.removeAllChildren();
-    
+
         for (let i = 0; i < this.imageData.length; i++) {
             const data = this.imageData[i];
             const imagePath = data.image.replace(/\.png$/, '');
             const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
-    
             const itemNode = instantiate(this.itemPrefab);
             this.nodeCategoryFigure.addChild(itemNode);
-    
             const dragComponent = itemNode.getComponent(DraggableItem) || itemNode.addComponent(DraggableItem);
-            dragComponent.targetDropZone = this.dropTargets[i] ?? null;
-            dragComponent.originalParent = this.nodeCategoryFigure;
-            dragComponent.originalPosition = itemNode.getPosition();
-            dragComponent.dropTargets = this.dropTargets; // Gán mảng các vùng thả
-    
+            this.scheduleOnce(() => {
+                dragComponent.originalParent = this.nodeCategoryFigure;
+                dragComponent.originalPosition = itemNode.getPosition().clone();
+                dragComponent.dropTargets = this.dropTargets;
+                dragComponent.dragData = data;
+            }, 0);
             this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
                 const sprite = itemNode.getComponent(Sprite);
                 if (sprite) sprite.spriteFrame = spriteFrame;
             });
         }
     }
-    
 
+    cacheDropTargetRects() {
+        this.dropTargetRects = this.dropTargets.map(node => {
+            const uiTransform = node.getComponent(UITransform);
+            const worldPos = node.getWorldPosition();
+            const size = uiTransform.contentSize;
+            const anchor = uiTransform.anchorPoint;
+
+            const rect = new Rect(
+                worldPos.x - size.width * anchor.x,
+                worldPos.y - size.height * anchor.y,
+                size.width,
+                size.height
+            );
+
+            return { node, rect };
+        });
+    }
+
+    getDropTargetRects(): { node: Node, rect: Rect }[] {
+        return this.dropTargetRects;
+    }
 
     onGoHome() {
         director.loadScene('Home');
