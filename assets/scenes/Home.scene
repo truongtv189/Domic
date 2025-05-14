@@ -2177,7 +2177,7 @@
     "pageEvents": [],
     "_sizeMode": 0,
     "_direction": 0,
-    "_scrollThreshold": 0.5,
+    "_scrollThreshold": 0.3,
     "_pageTurningEventTiming": 0.1,
     "_indicator": {
       "__id__": 55

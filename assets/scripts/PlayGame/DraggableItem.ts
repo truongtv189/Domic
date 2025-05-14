@@ -61,7 +61,10 @@ export class DraggableItem extends Component {
                 this.node.setParent(this.originalParent);
                 this.node.setPosition(this.originalPosition);
             }
-
+            const dropZoneSprite = matchedDropZone.getComponent(Sprite);
+            if (dropZoneSprite) {
+                dropZoneSprite.enabled = false; // Ẩn ảnh tại vị trí thả
+            }
             const sprite = this.node.getComponent(Sprite);
             if (sprite) sprite.color = new Color(180, 180, 180);
             this.isDropped = true;
@@ -85,7 +88,7 @@ export class DraggableItem extends Component {
     }
     private loadAndPlayAssets(imagePath: string) {
         const spriteFolderPath = `PlayGame/image/${imagePath}`;
-        const audioPath = `PlayGame/image/${imagePath}/rainbow1`;  // Ví dụ: image/rainbow/rainbow1/rainbow1.mp3
+        const audioPath = `PlayGame/image/${imagePath.split("/")[0]}/${imagePath.split("/")[1]}/${imagePath.split("/")[1]}`;  // Ví dụ: image/rainbow/rainbow1/rainbow1.mp3
         resources.loadDir(spriteFolderPath, SpriteFrame, (err, assets: SpriteFrame[]) => {
             if (err) {
                 console.error('Failed to load sprite frames:', err);
