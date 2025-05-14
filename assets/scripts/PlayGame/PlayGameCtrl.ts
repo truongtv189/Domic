@@ -9,10 +9,15 @@ export class PlayGameCtrl extends Component {
     @property([Node]) dropTargets: Node[] = [];  // Mảng chứa các điểm thả
     @property(Prefab) itemPrefab: Prefab = null;
     @property(Node) nodeCategoryFigure: Node = null;
-
+    private animationStates: {
+        isPlaying: boolean,
+        frameIndex: number,
+        timer: number,
+        spriteFrames: SpriteFrame[],
+        deltaTime: number,
+    }[] = [];
     private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
-    private originalPositions: { [key: string]: Node } = {};  // Lưu trữ các vị trí gốc của các đối tượng
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
     onLoad() {
         this.loadAnimClips(() => {
@@ -48,7 +53,7 @@ export class PlayGameCtrl extends Component {
     loadSpriteFrameFromResources(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
         resources.load(path, SpriteFrame, (err, spriteFrame) => {
             if (err || !spriteFrame) {
-                console.error(`❌ SpriteFrame not found at path: ${path}`, err);
+                console.error(` SpriteFrame not found at path: ${path}`, err);
                 callback(null);
                 return;
             }
@@ -59,23 +64,18 @@ export class PlayGameCtrl extends Component {
     setSprites(nodes: Node[], spriteFrame: SpriteFrame) {
         for (let i = 0; i < nodes.length; i++) {
             const spriteNode = nodes[i];
-
             let sprite = spriteNode.getComponent(Sprite);
             if (!sprite) {
                 sprite = spriteNode.addComponent(Sprite);
             }
             sprite.spriteFrame = spriteFrame;
-
             if (this.animClips.length > 0) {
                 const randomClip = this.animClips[Math.floor(Math.random() * this.animClips.length)];
-
                 const anim = spriteNode.getComponent(Animation) || spriteNode.addComponent(Animation);
                 anim.addClip(randomClip);
                 anim.defaultClip = randomClip;
-
                 // Gọi play trước
                 anim.play(randomClip.name);
-
                 // Set thời gian bắt đầu ngẫu nhiên
                 const state = anim.getState(randomClip.name);
                 if (state) {
@@ -83,23 +83,17 @@ export class PlayGameCtrl extends Component {
                     state.time = randomTime;
                     state.sample(); // cập nhật khung hình đúng thời điểm
                 }
-
-                console.log(`🎞 Node ${spriteNode.name} playing '${randomClip.name}' at ${state.time.toFixed(2)}s`);
             }
         }
     }
-
-
     async loadJsonData() {
         try {
             const jsonAsset = await this.loadResource<JsonAsset>('category/rainbow');
             this.imageData = jsonAsset.json.RAINBOW;
             this.createImages();
         } catch (err) {
-            console.error('❌ Failed to load JSON data:', err);
         }
     }
-
     private loadResource<T>(path: string): Promise<T> {
         return new Promise((resolve, reject) => {
             resources.load(path, (err, asset) => {
@@ -113,7 +107,6 @@ export class PlayGameCtrl extends Component {
     }
     createImages() {
         this.nodeCategoryFigure.removeAllChildren();
-
         for (let i = 0; i < this.imageData.length; i++) {
             const data = this.imageData[i];
             const imagePath = data.image.replace(/\.png$/, '');
@@ -140,7 +133,6 @@ export class PlayGameCtrl extends Component {
             const worldPos = node.getWorldPosition();
             const size = uiTransform.contentSize;
             const anchor = uiTransform.anchorPoint;
-
             const rect = new Rect(
                 worldPos.x - size.width * anchor.x,
                 worldPos.y - size.height * anchor.y,
@@ -155,7 +147,6 @@ export class PlayGameCtrl extends Component {
     getDropTargetRects(): { node: Node, rect: Rect }[] {
         return this.dropTargetRects;
     }
-
     onGoHome() {
         director.loadScene('Home');
     }

@@ -25,10 +25,8 @@ export class AudioSpritePlayer extends Component {
     }
 
     public setData(spriteFrames: SpriteFrame[], audioClip: AudioClip, duration: number = 1.5) {
-        debugger
         this._spriteFrames = spriteFrames;
         this._duration = duration;
-
         // If there's no AudioSource, add one
         if (!this._audioSource) {
             this._audioSource = this.node.getComponent(AudioSource) || this.node.addComponent(AudioSource);
@@ -38,7 +36,6 @@ export class AudioSpritePlayer extends Component {
         // Ensure the sprite starts with the first frame
         this.sprite.spriteFrame = this._spriteFrames[0];
     }
-
     public play() {
         if (!this._audioSource || this._spriteFrames.length === 0) return;
         this._frameIndex = 0;
@@ -49,7 +46,6 @@ export class AudioSpritePlayer extends Component {
         this._audioSource.play();
         this.sprite.spriteFrame = this._spriteFrames[this._frameIndex];
     }
-
     update(dt: number) {
         if (!this._isPlaying) return;
 

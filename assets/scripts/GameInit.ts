@@ -17,26 +17,26 @@ export class GameInit extends Component {
         loadingNode.setPosition(0, 0, 0);
         this.Loading.active = true;
 
-        this.loadPrefabs().then(() => {
+        // this.loadPrefabs().then(() => {
             const loadingCtrl = loadingNode.getComponent('LoadingCtrl');
             if (loadingCtrl) {
                 LoadingManager.loadSceneWithLoading('Home');
             }
-        });
+        // });
     }
 
-    loadPrefabs(): Promise<void> {
-        return new Promise((resolve) => {
-            resources.load("prefabs/AudioManagerNode", Prefab, (err, prefab) => {
-                if (err || !prefab) {
-                    console.error("Failed to load AudioManagerNode prefab", err);
-                    resolve();
-                    return;
-                }
-                const audioNode = instantiate(prefab);
-                director.getScene().addChild(audioNode);
-                resolve();
-            });
-        });
-    }
+    // loadPrefabs(): Promise<void> {
+    //     return new Promise((resolve) => {
+    //         resources.load("prefabs/AudioManagerNode", Prefab, (err, prefab) => {
+    //             if (err || !prefab) {
+    //                 console.error("Failed to load AudioManagerNode prefab", err);
+    //                 resolve();
+    //                 return;
+    //             }
+    //             const audioNode = instantiate(prefab);
+    //             director.getScene().addChild(audioNode);
+    //             resolve();
+    //         });
+    //     });
+    // }
 }
