@@ -92,60 +92,34 @@ export class DraggableItem extends Component {
             }
         }
         this.targetDropZone = matchedDropZone;
-        matchedDropZone.on(Node.EventType.TOUCH_END, this.onDropZoneClick, this, true);
     }
-    private onDropZoneClick() {
-    if (!this.isDropped || !this.targetDropZone) return;
-
-    // Xóa animation node con bên trong drop zone (nếu có)
-    const animNode = this.targetDropZone.getChildByName('AnimationNode');
-    if (animNode) {
-        animNode.destroy();
-    }
-
-    // Hiện lại sprite gốc
-    const sprite = this.node.getComponent(Sprite);
-    if (sprite) {
-        sprite.color = new Color(255, 255, 255); // Trả lại màu bình thường
-    }
-
-    // Di chuyển node về vị trí gốc
-    if (this.originalParent) {
-        this.node.setParent(this.originalParent);
-        this.node.setPosition(this.originalPosition);
-    }
-
-    // Hiện lại dropZone nếu trước đó bị ẩn
-    const dropZoneSprite = this.targetDropZone.getComponent(Sprite);
-    if (dropZoneSprite) {
-        dropZoneSprite.enabled = true;
-    }
-
-    // Reset lại state
-    this.isDropped = false;
-    this.targetDropZone.off(Node.EventType.TOUCH_END, this.onDropZoneClick, this, true);
-    this.targetDropZone = null;
-}
 
     private loadAndPlayAssets(imagePath: string) {
         const spriteFolderPath = `PlayGame/image/${imagePath}`;
-        const audioPath = `PlayGame/image/${imagePath.split("/")[0]}/${imagePath.split("/")[1]}/${imagePath.split("/")[1]}`;  // Ví dụ: image/rainbow/rainbow1/rainbow1.mp3
+        const audioPath = `audio/${imagePath.split("/")[1]}`;  // Ví dụ: image/rainbow/rainbow1/rainbow1.mp3
         resources.loadDir(spriteFolderPath, SpriteFrame, (err, assets: SpriteFrame[]) => {
             if (err) {
                 console.error('Failed to load sprite frames:', err);
                 return;
             }
-            this._spriteFrames = assets;
+            // Lọc các sprite frame theo _name bắt đầu từ phần tử thứ 2 (bỏ qua phần tử đầu tiên)
+            const filteredAssets = assets.slice(1).filter((asset) => {
+                const fileName = asset['_name'];  // Lấy tên file từ _name của SpriteFrame, ví dụ: "1.png"
+                const fileNumber = parseInt(fileName.replace(/\D/g, '')); // Loại bỏ ký tự không phải số và lấy phần số
+                return fileNumber >= 1;  // Lọc các tệp từ số 1 trở đi
+            });
+    
+            this._spriteFrames = filteredAssets;
             resources.load<AudioClip>(audioPath, AudioClip, (err, audioClip) => {
                 if (err || !audioClip) {
-                    console.error(` Không thể load audio tại ${audioPath}`, err);
+                    console.error(`Không thể load audio tại ${audioPath}`, err);
                     return;
                 }
-                this.setData(assets, audioClip, 0.911);
+                this.setData(filteredAssets, audioClip, 0.911);
             });
         });
-
     }
+    
 
     public setData(spriteFrames: SpriteFrame[], audioClip: AudioClip, duration: number = 0.911) {
         this._spriteFrames = spriteFrames;
