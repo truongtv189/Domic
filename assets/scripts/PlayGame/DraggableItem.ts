@@ -92,7 +92,57 @@ export class DraggableItem extends Component {
             }
         }
         this.targetDropZone = matchedDropZone;
+        matchedDropZone.on(Node.EventType.TOUCH_END, this.onDropZoneClick, this, true);
     }
+    private onDropZoneClick() {
+        if (!this.isDropped || !this.targetDropZone) return;
+    
+        // Xoá animation node cũ
+        const animNode = this.targetDropZone.getChildByName('AnimationNode');
+        if (animNode) {
+            animNode.destroy();
+        }
+    
+        // Trả lại màu bình thường cho sprite gốc
+        const sprite = this.node.getComponent(Sprite);
+        if (sprite) {
+            sprite.color = new Color(255, 255, 255);
+        } else {
+            console.warn("Sprite component không còn tồn tại.");
+        }
+    
+        // Trả lại vị trí gốc
+        if (this.originalParent) {
+            this.node.setParent(this.originalParent);
+            this.node.setPosition(this.originalPosition);
+        }
+    
+        // Hiển thị lại drop zone nếu có
+        const dropZoneSprite = this.targetDropZone.getComponent(Sprite);
+        if (dropZoneSprite) {
+            dropZoneSprite.enabled = true;
+        }
+    
+        // Reset state
+        this.isDropped = false;
+        this.targetDropZone.off(Node.EventType.TOUCH_END, this.onDropZoneClick, this, true);
+        this.targetDropZone = null;
+    
+        // Stop audio + animation nếu đang chạy
+        if (this._audioSource) {
+            this._audioSource.stop();
+        }
+        this._isPlaying = false;
+    
+        // Reset lại animation frame nếu muốn
+        if (this.sprite && this._spriteFrames.length > 0) {
+            this.sprite.spriteFrame = this._spriteFrames[0];
+        }
+    
+        // (Tuỳ chọn) Nếu muốn animation phát lại sau khi click dropZone
+        // this.play();
+    }
+    
 
     private loadAndPlayAssets(imagePath: string) {
         const spriteFolderPath = `PlayGame/image/${imagePath}`;
@@ -108,7 +158,7 @@ export class DraggableItem extends Component {
                 const fileNumber = parseInt(fileName.replace(/\D/g, '')); // Loại bỏ ký tự không phải số và lấy phần số
                 return fileNumber >= 1;  // Lọc các tệp từ số 1 trở đi
             });
-    
+
             this._spriteFrames = filteredAssets;
             resources.load<AudioClip>(audioPath, AudioClip, (err, audioClip) => {
                 if (err || !audioClip) {
@@ -119,7 +169,7 @@ export class DraggableItem extends Component {
             });
         });
     }
-    
+
 
     public setData(spriteFrames: SpriteFrame[], audioClip: AudioClip, duration: number = 0.911) {
         this._spriteFrames = spriteFrames;
