@@ -4,8 +4,8 @@ import { GameDataManager } from '../GameDataManager';
 
 const { ccclass, property } = _decorator;
 
-@ccclass('GameController')
-export class GameController extends Component {
+@ccclass('PlayGameCtrl')
+export class PlayGameCtrl extends Component {
     @property([Node]) dropTargets: Node[] = [];  // Mảng chứa các điểm thả
     @property(Prefab) itemPrefab: Prefab = null;
     @property(Node) nodeCategoryFigure: Node = null;
@@ -57,24 +57,38 @@ export class GameController extends Component {
     }
 
     setSprites(nodes: Node[], spriteFrame: SpriteFrame) {
-        for (let i = 0; i < Math.min(nodes.length, 7); i++) {
+        for (let i = 0; i < nodes.length; i++) {
             const spriteNode = nodes[i];
-            const sprite = spriteNode.getComponent(Sprite);
-            if (sprite) {
-                sprite.spriteFrame = spriteFrame;
+
+            let sprite = spriteNode.getComponent(Sprite);
+            if (!sprite) {
+                sprite = spriteNode.addComponent(Sprite);
             }
+            sprite.spriteFrame = spriteFrame;
 
             if (this.animClips.length > 0) {
                 const randomClip = this.animClips[Math.floor(Math.random() * this.animClips.length)];
+
                 const anim = spriteNode.getComponent(Animation) || spriteNode.addComponent(Animation);
                 anim.addClip(randomClip);
                 anim.defaultClip = randomClip;
-                const state = anim.getState(randomClip.name);
+
+                // Gọi play trước
                 anim.play(randomClip.name);
-                setTimeout(() => state.time = Math.random() * randomClip.duration, 0);
+
+                // Set thời gian bắt đầu ngẫu nhiên
+                const state = anim.getState(randomClip.name);
+                if (state) {
+                    const randomTime = Math.random() * randomClip.duration;
+                    state.time = randomTime;
+                    state.sample(); // cập nhật khung hình đúng thời điểm
+                }
+
+                console.log(`🎞 Node ${spriteNode.name} playing '${randomClip.name}' at ${state.time.toFixed(2)}s`);
             }
         }
     }
+
 
     async loadJsonData() {
         try {

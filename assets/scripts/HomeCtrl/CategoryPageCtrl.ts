@@ -117,7 +117,6 @@ export class CategoryPageCtrl extends Component {
                 callback(null);
             } else {
                 callback(spriteFrame);
-                console.log(spriteFrame)
             }
         });
     }

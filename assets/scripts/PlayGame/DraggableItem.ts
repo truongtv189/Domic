@@ -6,10 +6,8 @@ export class DraggableItem extends Component {
     public targetDropZone: Node | null = null;
     public originalParent: Node | null = null;
     public originalPosition: Vec3 = new Vec3();
-
     public dropTargets: Node[] = [];
     public dragData: { id: number, image: string, _deltaTime: number };
-
     private offset = new Vec3();
     private isDropped = false;
 
