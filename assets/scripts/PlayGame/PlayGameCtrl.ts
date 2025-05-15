@@ -37,6 +37,8 @@ export class PlayGameCtrl extends Component {
 
         this.loadJsonData();
 
+        // Listen for reset event from LoadingPlayAudio
+        this.node.on('reset-all-items', this.resetAllItems, this);
     }
 
     loadAnimClips(callback: () => void) {
@@ -114,6 +116,13 @@ export class PlayGameCtrl extends Component {
             const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
             const itemNode = instantiate(this.itemPrefab);
             this.nodeCategoryFigure.addChild(itemNode);
+
+            // Handle ADS node visibility
+            const adsNode = itemNode.getChildByName("ADS");
+            if (adsNode) {
+                adsNode.active = data.isAds === true;
+            }
+
             const dragComponent = itemNode.getComponent(DraggableItem) || itemNode.addComponent(DraggableItem);
             this.scheduleOnce(() => {
                 dragComponent.originalParent = this.nodeCategoryFigure;
@@ -149,5 +158,28 @@ export class PlayGameCtrl extends Component {
     }
     onGoHome() {
         director.loadScene('Home');
+    }
+
+    resetAllItems() {
+        // Get all DraggableItem components in nodeCategoryFigure
+        const items = this.nodeCategoryFigure.children;
+        items.forEach(itemNode => {
+            const dragComponent = itemNode.getComponent(DraggableItem);
+            if (dragComponent) {
+                // Reset position to original
+                itemNode.setPosition(dragComponent.originalPosition);
+                // Reset parent if needed
+                if (itemNode.parent !== dragComponent.originalParent) {
+                    dragComponent.originalParent.addChild(itemNode);
+                }
+                // Reset any other state in DraggableItem if needed
+                dragComponent.resetState();
+            }
+        });
+    }
+
+    onDestroy() {
+        // Clean up event listener
+        this.node.off('reset-all-items', this.resetAllItems, this);
     }
 }

@@ -72,6 +72,12 @@ export class CategoryPageCtrl extends Component {
                 const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
                 if (nameLabel) nameLabel.string = itemData.name;
 
+                // Handle ADS node visibility
+                const adsNode = itemNode.getChildByName("ADS");
+                if (adsNode) {
+                    adsNode.active = itemData.isAds === true;
+                }
+
                 // Gán dữ liệu cho node
                 itemNode['itemData'] = itemData;
 

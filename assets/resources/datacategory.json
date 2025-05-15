@@ -4,7 +4,7 @@
       "code": "rainbow",
       "name": "RAINBOW",
       "image": "image/rainbow",
-      "isAds": false,
+      "isAds": true,
       "backgorund": "DuoMix-select-bg",
       "figure": "figure/rainbow",
       "animation": "Animator/animationRainBow"
@@ -13,7 +13,7 @@
       "code": "kino",
       "name": "KINO",
       "image": "image/kino",
-      "isAds": false,
+      "isAds": true,
       "backgorund": "DuoMix-select-bg",
       "figure": "CharDefault-1",
       "animation": "animation"
@@ -22,7 +22,7 @@
       "code": "mustard",
       "name": "MUSTARD",
       "image": "image/mustard",
-      "isAds": false,
+      "isAds": true,
       "backgorund": "DuoMix-select-bg",
       "figure": "CharDefault-1",
       "animation": "animation"

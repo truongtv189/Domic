@@ -1,11 +1,15 @@
-import { _decorator, Component, Node, resources, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Component, Node, resources, Sprite, SpriteFrame, director } from 'cc';
 const { ccclass, property } = _decorator;
+
+// Define a constant for the event name
+const RESET_AUDIO_FRAME_EVENT = 'reset-audio-frame';
 
 @ccclass('LoadingPlayAudio')
 export class LoadingPlayAudio extends Component {
 
     @property(Sprite)
     targetSprite: Sprite = null;
+    @property(Node) ResetNode: Node = null;
     private spriteFrames: SpriteFrame[] = [];
     private currentIndex: number = 0;
     private timer: number = 0;
@@ -23,7 +27,7 @@ export class LoadingPlayAudio extends Component {
         console.log("setOnLoadComplete called, hasCompletedOneCycle:", this.hasCompletedOneCycle);
         // Luôn thêm callback vào queue, bất kể đã hoàn thành hay chưa
         this.waitingCallbacks.push(callback);
-        
+
         // Nếu đã hoàn thành một vòng và không đang xử lý callbacks
         if (this.hasCompletedOneCycle && !this.isProcessingCallbacks) {
             this.processWaitingCallbacks();
@@ -100,8 +104,16 @@ export class LoadingPlayAudio extends Component {
         this.currentIndex = 0;
         this.timer = 0;
         this.isProcessingCallbacks = false;
-        // Không xóa callbacks đang đợi khi reset
-        // this.waitingCallbacks = [];
+        // Reset the sprite frame to the first frame
+        if (this.targetSprite && this.spriteFrames.length > 0) {
+            this.targetSprite.spriteFrame = this.spriteFrames[0];
+        }
+    }
+
+    onClickReset() {
+        this.resetLoadingState();
+        // Emit global event for resetting audio and frames
+        director.emit(RESET_AUDIO_FRAME_EVENT);
     }
 }
 

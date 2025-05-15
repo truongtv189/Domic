@@ -1,6 +1,9 @@
-import { _decorator, Component, Node, EventTouch, UITransform, Vec3, Sprite, Color, AudioSource, SpriteFrame, AudioClip, resources, Widget } from 'cc';
+import { _decorator, Component, Node, EventTouch, UITransform, Vec3, Sprite, Color, AudioSource, SpriteFrame, AudioClip, resources, Widget, director } from 'cc';
 import { LoadingPlayAudio } from '../LoadingPlayAudio/LoadingPlayAudio';
 const { ccclass, property } = _decorator;
+
+// Define the same constant for the event name
+const RESET_AUDIO_FRAME_EVENT = 'reset-audio-frame';
 
 @ccclass('DraggableItem')
 export class DraggableItem extends Component {
@@ -30,6 +33,34 @@ export class DraggableItem extends Component {
         this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
         this.originalPosition = this.node.getPosition().clone();
         this.originalParent = this.node.parent;
+
+        // Add listener for reset event
+        director.on(RESET_AUDIO_FRAME_EVENT, this.handleReset, this);
+    }
+
+    onDestroy() {
+        // Clean up event listener
+        director.off(RESET_AUDIO_FRAME_EVENT, this.handleReset, this);
+    }
+
+    private handleReset = () => {
+        // Stop any ongoing animations and audio
+        if (this._audioSource) {
+            this._audioSource.stop();
+        }
+
+        // Reset frame index and timer
+        this._frameIndex = 0;
+        this._timer = 0;
+        this._isPlaying = false;
+
+        // Reset sprite to first frame if available
+        if (this.sprite && this._spriteFrames.length > 0) {
+            this.sprite.spriteFrame = this._spriteFrames[0];
+        }
+
+        // Call resetState to handle all other cleanup
+        this.resetState();
     }
 
     onTouchStart(event: EventTouch) {
@@ -62,7 +93,7 @@ export class DraggableItem extends Component {
             // Dừng animation cũ nếu có
             const oldItem = DraggableItem.dropZoneMap.get(matchedDropZone);
             if (oldItem && oldItem !== this) {
-                oldItem.resetPosition();
+                oldItem.resetState();
             }
             DraggableItem.dropZoneMap.set(matchedDropZone, this);
 
@@ -158,7 +189,7 @@ export class DraggableItem extends Component {
             }
         }
     }
-    public resetPosition() {
+    public resetState() {
         // 1. Gỡ dropZone khỏi map nếu đang giữ
         if (this.targetDropZone) {
             DraggableItem.dropZoneMap.delete(this.targetDropZone);
@@ -194,8 +225,6 @@ export class DraggableItem extends Component {
         this._audioSource = null!;
         this.sprite = null!;
     }
-
-
 
     private onDropZoneClick() {
         if (!this.isDropped || !this.targetDropZone) return;
@@ -235,7 +264,6 @@ export class DraggableItem extends Component {
             loadingPlayAudio.resetLoadingState();
         }
     }
-
 
     private loadAssetsAndWaitForLoading(imagePath: string) {
         const spriteFolderPath = `PlayGame/image/${imagePath}`;
@@ -379,6 +407,4 @@ export class DraggableItem extends Component {
             }
         }
     }
-
-
 }
