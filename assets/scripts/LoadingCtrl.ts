@@ -18,19 +18,7 @@ export class LoadingCtrl extends Component {
         this.startLoading();
         this.loadAndSetSprite();
     }
-    startLoading() {
-        let progress = 0;
-        const interval = setInterval(() => {
-            if (progress < 1) {
-                progress += 0.01;
-                this.updateProgress(progress);
-            } else {
-                clearInterval(interval);
-                this.updateProgress(1);
-            }
-        }, 20);
-    }
-    loadAndSetSprite() {
+        loadAndSetSprite() {
         // Nếu đã load rồi thì lấy luôn spriteFrame từ static frames
         if (LoadingCtrl.frames.length > 0) {
             this.setSpriteByIndex();
@@ -48,6 +36,19 @@ export class LoadingCtrl extends Component {
             this.setSpriteByIndex();
         });
     }
+    startLoading() {
+        let progress = 0;
+        const interval = setInterval(() => {
+            if (progress < 1) {
+                progress += 0.01;
+                this.updateProgress(progress);
+            } else {
+                clearInterval(interval);
+                this.updateProgress(1);
+            }
+        }, 20);
+    }
+
     setSpriteByIndex() {
         if (!this.targetSprite || LoadingCtrl.frames.length === 0) return;
         // Lấy spriteFrame theo currentIndex, vòng lại đầu khi hết

@@ -21,10 +21,7 @@ export class DraggableItem extends Component {
     private _timer = 0;
     private _isPlaying = false;
     private _spriteFrames: SpriteFrame[] = [];
-    private _duration: number = 0.911;
-    private assetsLoaded = false;
     private static dropZoneMap: Map<Node, DraggableItem> = new Map();
-    private canPlayAndUpdate: boolean = false;
 
     onLoad() {
         this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
@@ -367,7 +364,6 @@ export class DraggableItem extends Component {
     private startPlayback(spriteFrames: SpriteFrame[], audioClip: AudioClip, duration: number) {
         console.log("Starting playback with duration:", duration);
         this._spriteFrames = spriteFrames;
-        this._duration = duration;
         this._frameIndex = 0;
         this._timer = 0;
         this._isPlaying = true;

@@ -12,19 +12,36 @@ export class PlayGameCtrl extends Component {
     private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
+
     onLoad() {
+        if (!this.itemPrefab) {
+            console.error('PlayGameCtrl: Item Prefab is not assigned!');
+            return;
+        }
+        if (!this.nodeCategoryFigure) {
+            console.error('PlayGameCtrl: Category Figure Node is not assigned!');
+            return;
+        }
+
         this.loadAnimClips(() => {
-            let imagePath = GameDataManager.getInstance().data.ItemSelect.figure;
+            const gameData = GameDataManager.getInstance()?.data;
+            if (!gameData || !gameData.ItemSelect || !gameData.ItemSelect.figure) {
+                console.error('PlayGameCtrl: Game data or figure path is missing!');
+                return;
+            }
+
+            let imagePath = gameData.ItemSelect.figure;
             imagePath = imagePath.replace(/\.png$/, ''); // Remove extension if exists
             const cleanPath = `PlayGame/${imagePath}/spriteFrame`;
             this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
                 if (spriteFrame) {
-                    this.setSprites(this.dropTargets, spriteFrame);  // Cập nhật sprite cho các node
+                    this.setSprites(this.dropTargets, spriteFrame);
                 } else {
                     console.error('Failed to load figure sprite:', cleanPath);
                 }
             });
         });
+
         this.cacheDropTargetRects();
         console.log("dropTargetRects", this.dropTargetRects)
 
@@ -41,7 +58,7 @@ export class PlayGameCtrl extends Component {
                 callback();
                 return;
             }
-            this.animClips = clips;
+            this.animClips = clips || [];
             callback();
         });
     }
@@ -49,7 +66,7 @@ export class PlayGameCtrl extends Component {
     loadSpriteFrameFromResources(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
         resources.load(path, SpriteFrame, (err, spriteFrame) => {
             if (err || !spriteFrame) {
-                console.error(` SpriteFrame not found at path: ${path}`, err);
+                console.error(`SpriteFrame not found at path: ${path}`, err);
                 callback(null);
                 return;
             }
@@ -58,38 +75,54 @@ export class PlayGameCtrl extends Component {
     }
 
     setSprites(nodes: Node[], spriteFrame: SpriteFrame) {
+        if (!nodes || !spriteFrame || !this.animClips) {
+            console.error('PlayGameCtrl: Invalid parameters in setSprites');
+            return;
+        }
+
         for (let i = 0; i < nodes.length; i++) {
             const spriteNode = nodes[i];
+            if (!spriteNode) continue;
+
             let sprite = spriteNode.getComponent(Sprite);
             if (!sprite) {
                 sprite = spriteNode.addComponent(Sprite);
             }
             sprite.spriteFrame = spriteFrame;
-            if (this.animClips.length > 0) {
+
+            if (this.animClips && this.animClips.length > 0) {
                 const randomClip = this.animClips[Math.floor(Math.random() * this.animClips.length)];
+                if (!randomClip) continue;
+
                 const anim = spriteNode.getComponent(Animation) || spriteNode.addComponent(Animation);
                 anim.addClip(randomClip);
                 anim.defaultClip = randomClip;
-                // Gọi play trước
                 anim.play(randomClip.name);
-                // Set thời gian bắt đầu ngẫu nhiên
+
                 const state = anim.getState(randomClip.name);
                 if (state) {
                     const randomTime = Math.random() * randomClip.duration;
                     state.time = randomTime;
-                    state.sample(); // cập nhật khung hình đúng thời điểm
+                    state.sample();
                 }
             }
         }
     }
+
     async loadJsonData() {
         try {
             const jsonAsset = await this.loadResource<JsonAsset>('category/rainbow');
-            this.imageData = jsonAsset.json.RAINBOW;
-            this.createImages();
+            if (jsonAsset && jsonAsset.json && jsonAsset.json.RAINBOW) {
+                this.imageData = jsonAsset.json.RAINBOW;
+                this.createImages();
+            } else {
+                console.error('Invalid JSON data structure');
+            }
         } catch (err) {
+            console.error('Failed to load JSON data:', err);
         }
     }
+
     private loadResource<T>(path: string): Promise<T> {
         return new Promise((resolve, reject) => {
             resources.load(path, (err, asset) => {
@@ -101,16 +134,24 @@ export class PlayGameCtrl extends Component {
             });
         });
     }
+
     createImages() {
+        if (!this.nodeCategoryFigure || !this.imageData || !this.itemPrefab) {
+            console.error('PlayGameCtrl: Required components missing for createImages');
+            return;
+        }
+
         this.nodeCategoryFigure.removeAllChildren();
+
         for (let i = 0; i < this.imageData.length; i++) {
             const data = this.imageData[i];
+            if (!data || !data.image) continue;
+
             const imagePath = data.image.replace(/\.png$/, '');
             const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
             const itemNode = instantiate(this.itemPrefab);
             this.nodeCategoryFigure.addChild(itemNode);
 
-            // Handle ADS node visibility
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
                 adsNode.active = data.isAds === true;
@@ -123,16 +164,25 @@ export class PlayGameCtrl extends Component {
                 dragComponent.dropTargets = this.dropTargets;
                 dragComponent.dragData = data;
             }, 0);
+
             this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
                 const sprite = itemNode.getComponent(Sprite);
-                if (sprite) sprite.spriteFrame = spriteFrame;
+                if (sprite && spriteFrame) sprite.spriteFrame = spriteFrame;
             });
         }
     }
 
     cacheDropTargetRects() {
+        if (!this.dropTargets) {
+            console.error('PlayGameCtrl: No drop targets defined');
+            return;
+        }
+
         this.dropTargetRects = this.dropTargets.map(node => {
+            if (!node) return null;
             const uiTransform = node.getComponent(UITransform);
+            if (!uiTransform) return null;
+
             const worldPos = node.getWorldPosition();
             const size = uiTransform.contentSize;
             const anchor = uiTransform.anchorPoint;
@@ -143,36 +193,35 @@ export class PlayGameCtrl extends Component {
                 size.height
             );
             return { node, rect };
-        });
+        }).filter(item => item !== null);
     }
 
     getDropTargetRects(): { node: Node, rect: Rect }[] {
-        return this.dropTargetRects;
+        return this.dropTargetRects || [];
     }
+
     onGoHome() {
         director.loadScene('Home');
     }
 
     resetAllItems() {
-        // Get all DraggableItem components in nodeCategoryFigure
+        if (!this.nodeCategoryFigure) return;
+
         const items = this.nodeCategoryFigure.children;
         items.forEach(itemNode => {
+            if (!itemNode) return;
             const dragComponent = itemNode.getComponent(DraggableItem);
-            if (dragComponent) {
-                // Reset position to original
+            if (dragComponent && dragComponent.originalPosition && dragComponent.originalParent) {
                 itemNode.setPosition(dragComponent.originalPosition);
-                // Reset parent if needed
                 if (itemNode.parent !== dragComponent.originalParent) {
                     dragComponent.originalParent.addChild(itemNode);
                 }
-                // Reset any other state in DraggableItem if needed
                 dragComponent.resetState();
             }
         });
     }
 
     onDestroy() {
-        // Clean up event listener
         this.node.off('reset-all-items', this.resetAllItems, this);
     }
 }
