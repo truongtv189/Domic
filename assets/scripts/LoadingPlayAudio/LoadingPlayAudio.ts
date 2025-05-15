@@ -10,9 +10,10 @@ export class LoadingPlayAudio extends Component {
     private currentIndex: number = 0;
     private timer: number = 0;
     private interval: number = 0.1;
-    private onLoadComplete: (() => void) | null = null;
     private isLoaded: boolean = false;
     private hasCompletedOneCycle: boolean = false;
+    private waitingCallbacks: (() => void)[] = [];
+    private isProcessingCallbacks: boolean = false;
 
     onLoad() {
         this.loadFrames();
@@ -20,7 +21,38 @@ export class LoadingPlayAudio extends Component {
 
     public setOnLoadComplete(callback: () => void) {
         console.log("setOnLoadComplete called, hasCompletedOneCycle:", this.hasCompletedOneCycle);
-        this.onLoadComplete = callback;
+        // Luôn thêm callback vào queue, bất kể đã hoàn thành hay chưa
+        this.waitingCallbacks.push(callback);
+        
+        // Nếu đã hoàn thành một vòng và không đang xử lý callbacks
+        if (this.hasCompletedOneCycle && !this.isProcessingCallbacks) {
+            this.processWaitingCallbacks();
+        }
+    }
+
+    private processWaitingCallbacks() {
+        if (this.waitingCallbacks.length === 0 || this.isProcessingCallbacks) return;
+
+        this.isProcessingCallbacks = true;
+        console.log("Processing callbacks, count:", this.waitingCallbacks.length);
+
+        // Tạo một bản sao của callbacks để xử lý
+        const callbacksToProcess = [...this.waitingCallbacks];
+        this.waitingCallbacks = [];
+
+        // Gọi tất cả callbacks
+        callbacksToProcess.forEach(callback => {
+            if (callback) {
+                callback();
+            }
+        });
+
+        this.isProcessingCallbacks = false;
+
+        // Kiểm tra nếu có callbacks mới được thêm vào trong quá trình xử lý
+        if (this.waitingCallbacks.length > 0) {
+            this.processWaitingCallbacks();
+        }
     }
 
     private loadFrames() {
@@ -30,11 +62,9 @@ export class LoadingPlayAudio extends Component {
                 return;
             }
 
-            // Sắp xếp tên tăng dần nếu cần (ví dụ frame1, frame2,...)
             this.spriteFrames = frames.sort((a, b) => a.name.localeCompare(b.name));
 
             if (this.spriteFrames.length > 0) {
-                // Tính khoảng thời gian giữa các frame để vòng lặp hoàn thành trong 4.5 giây
                 this.interval = 4.5 / this.spriteFrames.length;
                 this.isLoaded = true;
                 console.log("Frames loaded, count:", this.spriteFrames.length);
@@ -56,13 +86,9 @@ export class LoadingPlayAudio extends Component {
             if (this.currentIndex >= this.spriteFrames.length) {
                 this.currentIndex = 0;
                 if (!this.hasCompletedOneCycle) {
-                    console.log("Completed one cycle, calling callback");
+                    console.log("Completed one cycle");
                     this.hasCompletedOneCycle = true;
-                    if (this.onLoadComplete) {
-                        const callback = this.onLoadComplete;
-                        this.onLoadComplete = null;
-                        callback();
-                    }
+                    this.processWaitingCallbacks();
                 }
             }
         }
@@ -73,7 +99,9 @@ export class LoadingPlayAudio extends Component {
         this.hasCompletedOneCycle = false;
         this.currentIndex = 0;
         this.timer = 0;
-        this.onLoadComplete = null;
+        this.isProcessingCallbacks = false;
+        // Không xóa callbacks đang đợi khi reset
+        // this.waitingCallbacks = [];
     }
 }
 

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, EventTouch, UITransform, Vec3, Sprite, Color, AudioSource, SpriteFrame, AudioClip, resources } from 'cc';
+import { _decorator, Component, Node, EventTouch, UITransform, Vec3, Sprite, Color, AudioSource, SpriteFrame, AudioClip, resources, Widget } from 'cc';
 import { LoadingPlayAudio } from '../LoadingPlayAudio/LoadingPlayAudio';
 const { ccclass, property } = _decorator;
 
@@ -69,21 +69,59 @@ export class DraggableItem extends Component {
             // Tạo và setup animation node
             const animationNode = new Node('AnimationNode');
             matchedDropZone.addChild(animationNode);
+            
+            // Lấy kích thước từ dropTarget và thiết lập cho animation node
+            const dropZoneTransform = matchedDropZone.getComponent(UITransform);
+            const dropZoneWidget = matchedDropZone.getComponent(Widget);
+            const newTransform = animationNode.addComponent(UITransform);
+
+            if (dropZoneTransform && newTransform) {
+                // Tăng kích thước thêm 20px cho cả width và height
+                const extraSize = 20;
+                newTransform.setContentSize(
+                    dropZoneTransform.contentSize.width + extraSize,
+                    dropZoneTransform.contentSize.height + extraSize
+                );
+                newTransform.anchorPoint = dropZoneTransform.anchorPoint;
+            }
+
+            // Copy Widget properties từ dropZone
+            if (dropZoneWidget) {
+                const newWidget = animationNode.addComponent(Widget);
+                // Copy tất cả các thuộc tính từ widget gốc
+                newWidget.alignFlags = dropZoneWidget.alignFlags;
+                newWidget.alignMode = dropZoneWidget.alignMode;
+                newWidget.left = dropZoneWidget.left;
+                newWidget.right = dropZoneWidget.right;
+                newWidget.top = dropZoneWidget.top;
+                newWidget.bottom = dropZoneWidget.bottom;
+                newWidget.horizontalCenter = dropZoneWidget.horizontalCenter;
+                newWidget.verticalCenter = dropZoneWidget.verticalCenter;
+                newWidget.isAlignLeft = dropZoneWidget.isAlignLeft;
+                newWidget.isAlignRight = dropZoneWidget.isAlignRight;
+                newWidget.isAlignTop = dropZoneWidget.isAlignTop;
+                newWidget.isAlignBottom = dropZoneWidget.isAlignBottom;
+                newWidget.isAlignHorizontalCenter = dropZoneWidget.isAlignHorizontalCenter;
+                newWidget.isAlignVerticalCenter = dropZoneWidget.isAlignVerticalCenter;
+                // Cập nhật widget ngay lập tức
+                newWidget.updateAlignment();
+            }
+
+            // Set position về center của dropZone
             animationNode.setPosition(Vec3.ZERO);
             
-            // Lấy kích thước từ dropTarget
-            const dropZoneTransform = matchedDropZone.getComponent(UITransform);
-            const newTransform = animationNode.addComponent(UITransform);
-            if (dropZoneTransform && newTransform) {
-                newTransform.setContentSize(dropZoneTransform.contentSize);
-            }
-            
-            // Đảm bảo scale là 1
-            animationNode.setScale(new Vec3(1, 1, 1));
-            
+            // Setup Sprite với kích thước phù hợp
             const newSprite = animationNode.addComponent(Sprite);
             newSprite.sizeMode = Sprite.SizeMode.CUSTOM;
             newSprite.trim = false;
+
+            // Đảm bảo scale để fit với dropZone và giữ tỷ lệ
+            if (dropZoneTransform) {
+                const size = dropZoneTransform.contentSize;
+                // Tính toán scale để item fit vừa với dropZone
+                const scale = Math.min(1, size.height / size.width);
+                animationNode.setScale(new Vec3(scale, scale, 1));
+            }
             
             const audioSource = animationNode.addComponent(AudioSource);
 
