@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "2b73086c-00d9-4b12-8fa6-b5f61a720ba1",
+  "uuid": "205bb549-924b-494f-9570-57aba7589830",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "PopUpThem"
+    "syncNodeName": "ThemeItem"
   }
 }

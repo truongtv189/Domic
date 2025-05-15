@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "327b8fcb-a882-4882-8fb1-0982f653b70b",
+  "uuid": "a88147f5-b91c-4035-bc59-989fb44f999d",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "327b8fcb-a882-4882-8fb1-0982f653b70b@6c48a",
-      "displayName": "CherryWave",
+      "uuid": "a88147f5-b91c-4035-bc59-989fb44f999d@6c48a",
+      "displayName": "theme11",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "327b8fcb-a882-4882-8fb1-0982f653b70b",
+        "imageUuidOrDatabaseUri": "a88147f5-b91c-4035-bc59-989fb44f999d",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,8 +34,8 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "327b8fcb-a882-4882-8fb1-0982f653b70b@f9941",
-      "displayName": "CherryWave",
+      "uuid": "a88147f5-b91c-4035-bc59-989fb44f999d@f9941",
+      "displayName": "theme11",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
@@ -114,7 +114,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "327b8fcb-a882-4882-8fb1-0982f653b70b@6c48a",
+        "imageUuidOrDatabaseUri": "a88147f5-b91c-4035-bc59-989fb44f999d@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.12",
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "327b8fcb-a882-4882-8fb1-0982f653b70b@6c48a"
+    "redirect": "a88147f5-b91c-4035-bc59-989fb44f999d@6c48a"
   }
 }

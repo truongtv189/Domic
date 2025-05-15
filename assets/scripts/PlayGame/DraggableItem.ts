@@ -270,6 +270,7 @@ export class DraggableItem extends Component {
         const audioPath = `audio/${imagePath.split("/")[1]}`;
 
         console.log("Loading assets for:", imagePath);
+        console.log("Using deltaTime from item:", this.dragData._deltaTime);
 
         // Load sprite frames
         resources.loadDir(spriteFolderPath, SpriteFrame, (err, assets: SpriteFrame[]) => {
@@ -318,8 +319,8 @@ export class DraggableItem extends Component {
                         console.log("Found LoadingPlayAudio component");
                         loadingPlayAudio.resetLoadingState(); // Reset trạng thái trước khi set callback mới
                         loadingPlayAudio.setOnLoadComplete(() => {
-                            console.log("LoadingPlayAudio completed, starting playback");
-                            this.startPlayback(this._spriteFrames, audioClip, 0.911);
+                            console.log("LoadingPlayAudio completed, starting playback with deltaTime:", this.dragData._deltaTime);
+                            this.startPlayback(this._spriteFrames, audioClip, this.dragData._deltaTime);
                         });
                     } else {
                         console.error("Could not find LoadingPlayAudio component anywhere in the scene");
@@ -364,7 +365,7 @@ export class DraggableItem extends Component {
     }
 
     private startPlayback(spriteFrames: SpriteFrame[], audioClip: AudioClip, duration: number) {
-        console.log("Starting playback");
+        console.log("Starting playback with duration:", duration);
         this._spriteFrames = spriteFrames;
         this._duration = duration;
         this._frameIndex = 0;

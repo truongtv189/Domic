@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "a88147f5-b91c-4035-bc59-989fb44f999d",
+  "uuid": "c44216d5-b1ca-45af-93af-0d70f9f27de7",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "a88147f5-b91c-4035-bc59-989fb44f999d@6c48a",
-      "displayName": "Mango",
+      "uuid": "c44216d5-b1ca-45af-93af-0d70f9f27de7@6c48a",
+      "displayName": "theme21",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "a88147f5-b91c-4035-bc59-989fb44f999d",
+        "imageUuidOrDatabaseUri": "c44216d5-b1ca-45af-93af-0d70f9f27de7",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,8 +34,8 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "a88147f5-b91c-4035-bc59-989fb44f999d@f9941",
-      "displayName": "Mango",
+      "uuid": "c44216d5-b1ca-45af-93af-0d70f9f27de7@f9941",
+      "displayName": "theme21",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
@@ -114,7 +114,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "a88147f5-b91c-4035-bc59-989fb44f999d@6c48a",
+        "imageUuidOrDatabaseUri": "c44216d5-b1ca-45af-93af-0d70f9f27de7@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.12",
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "a88147f5-b91c-4035-bc59-989fb44f999d@6c48a"
+    "redirect": "c44216d5-b1ca-45af-93af-0d70f9f27de7@6c48a"
   }
 }

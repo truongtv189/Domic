@@ -9,13 +9,6 @@ export class PlayGameCtrl extends Component {
     @property([Node]) dropTargets: Node[] = [];  // Mảng chứa các điểm thả
     @property(Prefab) itemPrefab: Prefab = null;
     @property(Node) nodeCategoryFigure: Node = null;
-    private animationStates: {
-        isPlaying: boolean,
-        frameIndex: number,
-        timer: number,
-        spriteFrames: SpriteFrame[],
-        deltaTime: number,
-    }[] = [];
     private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
