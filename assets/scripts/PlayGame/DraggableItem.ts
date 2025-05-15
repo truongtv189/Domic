@@ -19,7 +19,7 @@ export class DraggableItem extends Component {
     private _spriteFrames: SpriteFrame[] = [];
     private _duration: number = 0.911;
     private assetsLoaded = false;
-
+    private static dropZoneMap: Map<Node, DraggableItem> = new Map();
     onLoad() {
         this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -55,35 +55,58 @@ export class DraggableItem extends Component {
                 break;
             }
         }
-
         if (matchedDropZone) {
+            // Dừng animation cũ nếu có
+            const oldItem = DraggableItem.dropZoneMap.get(matchedDropZone);
+            if (oldItem && oldItem !== this) {
+                oldItem.resetPosition(); // ← Dừng update/play của item cũ
+            }
+            DraggableItem.dropZoneMap.set(matchedDropZone, this);
             if (this.originalParent) {
                 this.node.setParent(this.originalParent);
                 this.node.setPosition(this.originalPosition);
             }
+            const oldAnimNode = matchedDropZone.getChildByName('AnimationNode');
+            if (oldAnimNode) {
+                const oldAudio = oldAnimNode.getComponent(AudioSource);
+                if (oldAudio) oldAudio.stop();
+
+                const oldSprite = oldAnimNode.getComponent(Sprite);
+                if (oldSprite) {
+                    const oldFrames = this._spriteFrames;
+                    if (oldFrames && oldFrames.length > 0) {
+                        oldSprite.spriteFrame = oldFrames[0];
+                    }
+                }
+
+                oldAnimNode.destroy();
+            }
+
+            // Giữ nguyên logic cũ của bạn bên dưới
+            if (this.originalParent) {
+                this.node.setParent(this.originalParent);
+                this.node.setPosition(this.originalPosition);
+            }
+
             const dropZoneSprite = matchedDropZone.getComponent(Sprite);
             if (dropZoneSprite) {
-                dropZoneSprite.enabled = false; // Ẩn ảnh tại vị trí thả
+                dropZoneSprite.enabled = false;
             }
+
             const sprite = this.node.getComponent(Sprite);
             if (sprite) sprite.color = new Color(180, 180, 180);
             this.isDropped = true;
             this.sprite = sprite;
 
-            // Tạo node mới tại vị trí dropZone
             const animationNode = new Node('AnimationNode');
             matchedDropZone.addChild(animationNode);
-            animationNode.setPosition(Vec3.ZERO); // Hoặc tuỳ chỉnh nếu muốn offset
+            animationNode.setPosition(Vec3.ZERO);
             const newSprite = animationNode.addComponent(Sprite);
-
-            // Gán AudioSource cho animation node nếu cần
             const audioSource = animationNode.addComponent(AudioSource);
 
-            // Lưu sprite mới vào class để điều khiển animation
             this.sprite = newSprite;
             this._audioSource = audioSource;
             this.loadAndPlayAssets(this.dragData.image);
-
         }
         else {
             if (this.originalParent) {
@@ -92,17 +115,58 @@ export class DraggableItem extends Component {
             }
         }
         this.targetDropZone = matchedDropZone;
-        matchedDropZone.on(Node.EventType.TOUCH_END, this.onDropZoneClick, this, true);
+        if (matchedDropZone) {
+            matchedDropZone.on(Node.EventType.TOUCH_END, this.onDropZoneClick, this, true);
+        }
     }
+    public resetPosition() {
+        // 1. Gỡ dropZone khỏi map nếu đang giữ
+        if (this.targetDropZone) {
+            DraggableItem.dropZoneMap.delete(this.targetDropZone);
+
+            // Hiện lại drop zone
+            const dropZoneSprite = this.targetDropZone.getComponent(Sprite);
+            if (dropZoneSprite) dropZoneSprite.enabled = true;
+
+            // Xoá animationNode nếu có
+            const animNode = this.targetDropZone.getChildByName('AnimationNode');
+            if (animNode) {
+                const audio = animNode.getComponent(AudioSource);
+                if (audio) audio.stop();
+                animNode.destroy();
+            }
+
+            this.targetDropZone.off(Node.EventType.TOUCH_END, this.onDropZoneClick, this);
+            this.targetDropZone = null;
+        }
+
+        // 2. Quay về vị trí ban đầu
+        if (this.originalParent) {
+            this.node.setParent(this.originalParent);
+            this.node.setPosition(this.originalPosition);
+        }
+
+        // 3. Trả lại màu trắng
+        const sprite = this.node.getComponent(Sprite);
+        if (sprite) sprite.color = new Color(255, 255, 255);
+
+        // 4. Dừng update/play
+        this.isDropped = false;
+        this._audioSource = null!;
+        this.sprite = null!;
+    }
+
+
+
     private onDropZoneClick() {
         if (!this.isDropped || !this.targetDropZone) return;
-    
+
         // Xoá animation node cũ
         const animNode = this.targetDropZone.getChildByName('AnimationNode');
         if (animNode) {
             animNode.destroy();
         }
-    
+
         // Trả lại màu bình thường cho sprite gốc
         const sprite = this.node.getComponent(Sprite);
         if (sprite) {
@@ -110,39 +174,39 @@ export class DraggableItem extends Component {
         } else {
             console.warn("Sprite component không còn tồn tại.");
         }
-    
+
         // Trả lại vị trí gốc
         if (this.originalParent) {
             this.node.setParent(this.originalParent);
             this.node.setPosition(this.originalPosition);
         }
-    
+
         // Hiển thị lại drop zone nếu có
         const dropZoneSprite = this.targetDropZone.getComponent(Sprite);
         if (dropZoneSprite) {
             dropZoneSprite.enabled = true;
         }
-    
+
         // Reset state
         this.isDropped = false;
         this.targetDropZone.off(Node.EventType.TOUCH_END, this.onDropZoneClick, this, true);
         this.targetDropZone = null;
-    
+
         // Stop audio + animation nếu đang chạy
         if (this._audioSource) {
             this._audioSource.stop();
         }
         this._isPlaying = false;
-    
+
         // Reset lại animation frame nếu muốn
         if (this.sprite && this._spriteFrames.length > 0) {
             this.sprite.spriteFrame = this._spriteFrames[0];
         }
-    
+
         // (Tuỳ chọn) Nếu muốn animation phát lại sau khi click dropZone
         // this.play();
     }
-    
+
 
     private loadAndPlayAssets(imagePath: string) {
         const spriteFolderPath = `PlayGame/image/${imagePath}`;
@@ -184,7 +248,7 @@ export class DraggableItem extends Component {
         }
     }
     public play() {
-        if (!this._audioSource || this._spriteFrames.length === 0) return;
+        if (!this.isDropped || !this.sprite || !this.sprite.node.isValid) return;
         this._frameIndex = 0;
         this._timer = 0;
         this._isPlaying = true;
@@ -194,7 +258,7 @@ export class DraggableItem extends Component {
         this.sprite.spriteFrame = this._spriteFrames[this._frameIndex];
     }
     update(dt: number) {
-        if (!this._isPlaying) return;
+        if (!this.isDropped || !this.sprite || !this.sprite.node.isValid) return;
         this._timer += dt;
         if (this._timer >= this._deltaTime) {
             this._timer -= this._deltaTime;
