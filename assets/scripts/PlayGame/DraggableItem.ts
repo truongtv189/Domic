@@ -101,7 +101,22 @@ export class DraggableItem extends Component {
             const animationNode = new Node('AnimationNode');
             matchedDropZone.addChild(animationNode);
             animationNode.setPosition(Vec3.ZERO);
+            
+            // Lấy kích thước từ dropTarget
+            const dropZoneTransform = matchedDropZone.getComponent(UITransform);
+            const newTransform = animationNode.addComponent(UITransform);
+            if (dropZoneTransform && newTransform) {
+                newTransform.setContentSize(dropZoneTransform.contentSize);
+            }
+            
+            // Đảm bảo scale là 1
+            animationNode.setScale(new Vec3(1, 1, 1));
+            
             const newSprite = animationNode.addComponent(Sprite);
+            // Thiết lập sprite để fit với kích thước của UITransform
+            newSprite.sizeMode = Sprite.SizeMode.CUSTOM;
+            newSprite.trim = false;
+            
             const audioSource = animationNode.addComponent(AudioSource);
 
             this.sprite = newSprite;
@@ -210,26 +225,44 @@ export class DraggableItem extends Component {
 
     private loadAndPlayAssets(imagePath: string) {
         const spriteFolderPath = `PlayGame/image/${imagePath}`;
-        const audioPath = `audio/${imagePath.split("/")[1]}`;  // Ví dụ: image/rainbow/rainbow1/rainbow1.mp3
+        const audioPath = `audio/${imagePath.split("/")[1]}`;
+
+        // Đảm bảo sprite frames được load xong trước
         resources.loadDir(spriteFolderPath, SpriteFrame, (err, assets: SpriteFrame[]) => {
             if (err) {
                 console.error('Failed to load sprite frames:', err);
                 return;
             }
-            // Lọc các sprite frame theo _name bắt đầu từ phần tử thứ 2 (bỏ qua phần tử đầu tiên)
+
+            // Lọc các sprite frame theo _name bắt đầu từ phần tử thứ 2
             const filteredAssets = assets.slice(1).filter((asset) => {
-                const fileName = asset['_name'];  // Lấy tên file từ _name của SpriteFrame, ví dụ: "1.png"
-                const fileNumber = parseInt(fileName.replace(/\D/g, '')); // Loại bỏ ký tự không phải số và lấy phần số
-                return fileNumber >= 1;  // Lọc các tệp từ số 1 trở đi
+                const fileName = asset['_name'];
+                const fileNumber = parseInt(fileName.replace(/\D/g, ''));
+                return fileNumber >= 1;
             });
 
-            this._spriteFrames = filteredAssets;
+            // Sort frames theo thứ tự tên để đảm bảo animation đúng
+            this._spriteFrames = filteredAssets.sort((a, b) => {
+                const numA = parseInt(a['_name'].replace(/\D/g, ''));
+                const numB = parseInt(b['_name'].replace(/\D/g, ''));
+                return numA - numB;
+            });
+
+            // Sau khi load xong sprite frames, load audio
             resources.load<AudioClip>(audioPath, AudioClip, (err, audioClip) => {
                 if (err || !audioClip) {
                     console.error(`Không thể load audio tại ${audioPath}`, err);
                     return;
                 }
-                this.setData(filteredAssets, audioClip, 0.911);
+
+                // Chỉ set data và play khi cả sprite frames và audio đã load xong
+                if (this._spriteFrames.length > 0) {
+                    this.setData(this._spriteFrames, audioClip, 0.911);
+                    // Set frame đầu tiên ngay lập tức
+                    if (this.sprite && this._spriteFrames[0]) {
+                        this.sprite.spriteFrame = this._spriteFrames[0];
+                    }
+                }
             });
         });
     }
@@ -238,13 +271,15 @@ export class DraggableItem extends Component {
     public setData(spriteFrames: SpriteFrame[], audioClip: AudioClip, duration: number = 0.911) {
         this._spriteFrames = spriteFrames;
         this._duration = duration;
-        this.play()
+        
         if (!this._audioSource) {
             this._audioSource = this.node.getComponent(AudioSource) || this.node.addComponent(AudioSource);
         }
         this._audioSource.clip = audioClip;
-        if (this._spriteFrames.length > 0) {
-            this.sprite.spriteFrame = this._spriteFrames[0];
+        
+        // Đảm bảo sprite và node vẫn hợp lệ trước khi play
+        if (this.sprite && this.sprite.node.isValid && this._spriteFrames.length > 0) {
+            this.play();
         }
     }
     public play() {

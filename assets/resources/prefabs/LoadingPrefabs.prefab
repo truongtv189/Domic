@@ -196,7 +196,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 0,
+      "width": 505.926,
       "height": 28
     },
     "_anchorPoint": {
@@ -517,7 +517,7 @@
     },
     "_mode": 0,
     "_totalLength": 500,
-    "_progress": 0,
+    "_progress": 1,
     "_reverse": false,
     "_id": ""
   },
@@ -561,8 +561,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": -76.10500000000002,
+      "x": 3.463,
+      "y": -62.198999999999955,
       "z": 0
     },
     "_lrot": {
@@ -602,8 +602,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 384,
-      "height": 485
+      "width": 351.738,
+      "height": 412.784
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -638,13 +638,10 @@
       "b": 255,
       "a": 255
     },
-    "_spriteFrame": {
-      "__uuid__": "782bc260-ade5-4408-acd9-aefdd7dc18dc@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
+    "_spriteFrame": null,
     "_type": 0,
     "_fillType": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 2,
     "_fillCenter": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -755,6 +752,9 @@
     },
     "progressLabel": {
       "__id__": 12
+    },
+    "targetSprite": {
+      "__id__": 25
     },
     "_id": ""
   },

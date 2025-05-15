@@ -71,20 +71,25 @@ export class CategoryPageCtrl extends Component {
                 const icon = itemNode.getComponent(Sprite);
                 const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
                 if (nameLabel) nameLabel.string = itemData.name;
+
                 // Gán dữ liệu cho node
                 itemNode['itemData'] = itemData;
+
                 // Thêm sự kiện click
                 itemNode.on(Node.EventType.TOUCH_END, () => {
                     this.onItemClicked(itemNode);
                 });
 
-                // Sửa phần load ảnh từ resources
+                // Thêm node vào layout ngay lập tức (đảm bảo thứ tự)
+                layout.addChild(itemNode);
+
+                // Load ảnh và gán spriteFrame sau, không ảnh hưởng thứ tự hiển thị node
                 const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
                 this.loadImageFromResource(imagePath, (spriteFrame) => {
                     if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
-                    layout.addChild(itemNode);
                 });
             });
+
         });
     }
 

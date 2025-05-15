@@ -32,10 +32,11 @@ export class PlayGameCtrl extends Component {
                 }
             });
         });
-        this.scheduleOnce(() => {
-            this.cacheDropTargetRects();
-        }, 0);
+        this.cacheDropTargetRects();
+        console.log("dropTargetRects", this.dropTargetRects)
+
         this.loadJsonData();
+
     }
 
     loadAnimClips(callback: () => void) {
@@ -139,7 +140,6 @@ export class PlayGameCtrl extends Component {
                 size.width,
                 size.height
             );
-
             return { node, rect };
         });
     }
