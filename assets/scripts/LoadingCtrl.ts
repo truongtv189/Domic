@@ -37,7 +37,7 @@ export class LoadingCtrl extends Component {
             return;
         }
         // Nếu chưa load, load lần đầu
-        resources.loadDir('Images/LoadingIcon', SpriteFrame, (err, assets) => {
+        resources.loadDir('Loading', SpriteFrame, (err, assets) => {
             if (err) {
                 return;
             }
