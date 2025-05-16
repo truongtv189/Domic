@@ -4,7 +4,7 @@ import AdsManager from '../AdsPlatform/AdsManager';
 import { GameDataManager } from '../GameDataManager';
 const { ccclass, property } = _decorator;
 
-// Define the same constant for the event name
+// Định nghĩa hằng số cho tên sự kiện
 const RESET_AUDIO_FRAME_EVENT = 'reset-audio-frame';
 
 @ccclass('DraggableItem')
@@ -34,43 +34,67 @@ export class DraggableItem extends Component {
         this.originalPosition = this.node.getPosition().clone();
         this.originalParent = this.node.parent;
 
-        // Add listener for reset event
+        // Thêm listener cho sự kiện reset
         director.on(RESET_AUDIO_FRAME_EVENT, this.handleReset, this);
+
+        // Kiểm tra trạng thái đã xem ads dựa vào core của item
+        this.scheduleOnce(() => {
+            if (this.dragData && this.dragData.core) {
+                const watched = GameDataManager.getInstance().data.watchedAdsItems || {};
+                // Kiểm tra dựa vào core của item (ví dụ: rainbow1, rainbow2,...)
+                if (watched[this.dragData.core] === true) {
+                    // Ẩn node ads nếu đã xem
+                    const adsNode = this.node.getChildByName("ADS");
+                    if (adsNode) {
+                        adsNode.active = false;
+                    }
+                    this.dragData.isAds = false;
+                }
+            }
+        }, 0);
     }
     onDestroy() {
-        // Clean up event listener
+        // Dọn dẹp event listener
         director.off(RESET_AUDIO_FRAME_EVENT, this.handleReset, this);
     }
     private handleReset = () => {
-        // Stop any ongoing animations and audio
+        // Dừng các animation và audio đang chạy
         if (this._audioSource) {
             this._audioSource.stop();
         }
-        // Reset frame index and timer
+        // Reset frame index và timer
         this._frameIndex = 0;
         this._timer = 0;
         this._isPlaying = false;
-        // Reset sprite to first frame if available
+        // Reset sprite về frame đầu tiên nếu có
         if (this.sprite && this._spriteFrames.length > 0) {
             this.sprite.spriteFrame = this._spriteFrames[0];
         }
-        // Call resetState to handle all other cleanup
+        // Gọi resetState để xử lý các cleanup khác
         this.resetState();
     }
 
     onTouchStart(event: EventTouch) {
         if (this.isDropped) return;
         const touchPos = event.getUILocation();
-        const nodePos = this.node.getPosition(); // Thay vì getWorldPosition
-        this.offset.set(nodePos.x - touchPos.x, nodePos.y - touchPos.y, 0); // Tính offset chuẩn
+        const nodePos = this.node.getPosition();
+        this.offset.set(nodePos.x - touchPos.x, nodePos.y - touchPos.y, 0);
     }
     private onClickOriginalItem(event: EventTouch) {
         if (this.dragData.isAds == true) {
             AdsManager.showRewarded((status) => {
                 if (status) {
                     const watched = GameDataManager.getInstance().data.watchedAdsItems;
+                    // Lưu trạng thái đã xem ads theo core của item
                     watched[this.dragData.core] = true;
                     GameDataManager.getInstance().updateField('watchedAdsItems', watched);
+                    // Ẩn node quảng cáo sau khi xem xong
+                    const adsNode = this.node.getChildByName("ADS");
+                    if (adsNode) {
+                        adsNode.active = false;
+                    }
+                    // Cập nhật dragData để phản ánh rằng không cần quảng cáo nữa
+                    this.dragData.isAds = false;
                 }
             });
         }
@@ -80,7 +104,7 @@ export class DraggableItem extends Component {
         if (this.isDropped) return;
         const touchPos = event.getUILocation();
         const newPos = new Vec3(touchPos.x + this.offset.x, touchPos.y + this.offset.y, 0);
-        this.node.setPosition(newPos); // Di chuyển node theo vị trí mới
+        this.node.setPosition(newPos);
     }
     onTouchEnd(event: EventTouch) {
         if (this.isDropped) return;
@@ -111,7 +135,7 @@ export class DraggableItem extends Component {
             const dropZoneWidget = matchedDropZone.getComponent(Widget);
             const newTransform = animationNode.addComponent(UITransform);
             if (dropZoneTransform && newTransform) {
-                // Tăng kích thước thêm 20px cho cả width và height
+                // Tăng kích thước thêm 30px cho cả width và height
                 const extraSize = 30;
                 newTransform.setContentSize(
                     dropZoneTransform.contentSize.width + extraSize,
@@ -120,10 +144,10 @@ export class DraggableItem extends Component {
                 newTransform.anchorPoint = dropZoneTransform.anchorPoint;
             }
 
-            // Copy Widget properties từ dropZone
+            // Sao chép các thuộc tính Widget từ dropZone
             if (dropZoneWidget) {
                 const newWidget = animationNode.addComponent(Widget);
-                // Copy tất cả các thuộc tính từ widget gốc
+                // Sao chép tất cả các thuộc tính từ widget gốc
                 newWidget.alignFlags = dropZoneWidget.alignFlags;
                 newWidget.alignMode = dropZoneWidget.alignMode;
                 newWidget.left = dropZoneWidget.left;
@@ -142,9 +166,9 @@ export class DraggableItem extends Component {
                 newWidget.updateAlignment();
             }
 
-            // Set position về center của dropZone
+            // Đặt vị trí về trung tâm của dropZone
             animationNode.setPosition(Vec3.ZERO);
-            // Setup Sprite với kích thước phù hợp
+            // Thiết lập Sprite với kích thước phù hợp
             const newSprite = animationNode.addComponent(Sprite);
             newSprite.sizeMode = Sprite.SizeMode.CUSTOM;
             newSprite.trim = false;
@@ -152,7 +176,7 @@ export class DraggableItem extends Component {
             // Đảm bảo scale để fit với dropZone và giữ tỷ lệ
             if (dropZoneTransform) {
                 const size = dropZoneTransform.contentSize;
-                // Tính toán scale để item fit vừa với dropZone
+                // Tính toán scale để item vừa với dropZone
                 const scale = Math.min(1, size.height / size.width);
                 animationNode.setScale(new Vec3(scale, scale, 1));
             }
@@ -163,15 +187,15 @@ export class DraggableItem extends Component {
             if (dropZoneSprite) {
                 dropZoneSprite.enabled = false;
             }
-            // Set màu cho sprite gốc
+            // Đặt màu cho sprite gốc
             const sprite = this.node.getComponent(Sprite);
             if (sprite) sprite.color = new Color(180, 180, 180);
-            // Set các thuộc tính
+            // Thiết lập các thuộc tính
             this.isDropped = true;
             this.sprite = newSprite;
             this._audioSource = audioSource;
             this.targetDropZone = matchedDropZone;
-            // Set parent và position
+            // Đặt parent và position
             if (this.originalParent) {
                 this.node.setParent(this.originalParent);
                 this.node.setPosition(this.originalPosition);
@@ -187,13 +211,13 @@ export class DraggableItem extends Component {
         }
     }
     public resetState() {
-        // 1. Gỡ dropZone khỏi map nếu đang giữ
+        // 1. Xóa dropZone khỏi map nếu đang giữ
         if (this.targetDropZone) {
             DraggableItem.dropZoneMap.delete(this.targetDropZone);
             // Hiện lại drop zone
             const dropZoneSprite = this.targetDropZone.getComponent(Sprite);
             if (dropZoneSprite) dropZoneSprite.enabled = true;
-            // Xoá animationNode nếu có
+            // Xóa animationNode nếu có
             const animNode = this.targetDropZone.getChildByName('AnimationNode');
             if (animNode) {
                 const audio = animNode.getComponent(AudioSource);
@@ -203,7 +227,7 @@ export class DraggableItem extends Component {
             this.targetDropZone.off(Node.EventType.TOUCH_END, this.onDropZoneClick, this);
             this.targetDropZone = null;
         }
-        //  Quay về vị trí ban đầu
+        // Quay về vị trí ban đầu
         if (this.originalParent) {
             this.node.setParent(this.originalParent);
             this.node.setPosition(this.originalPosition);
@@ -212,7 +236,7 @@ export class DraggableItem extends Component {
         const sprite = this.node.getComponent(Sprite);
         if (sprite) sprite.color = new Color(255, 255, 255);
 
-        //  Dừng update/play
+        // Dừng update/play
         this.isDropped = false;
         this._audioSource = null!;
         this.sprite = null!;
@@ -220,7 +244,7 @@ export class DraggableItem extends Component {
 
     private onDropZoneClick() {
         if (!this.isDropped || !this.targetDropZone) return;
-        // Xoá animation node cũ
+        // Xóa animation node cũ
         const animNode = this.targetDropZone.getChildByName('AnimationNode');
         if (animNode) {
             animNode.destroy();
@@ -242,7 +266,7 @@ export class DraggableItem extends Component {
         this.targetDropZone.off(Node.EventType.TOUCH_END, this.onDropZoneClick, this);
         this.targetDropZone = null;
 
-        // Stop audio
+        // Dừng audio
         if (this._audioSource) {
             this._audioSource.stop();
         }
@@ -279,11 +303,11 @@ export class DraggableItem extends Component {
                 }
 
                 if (this._spriteFrames.length > 0) {
-                    // Set initial frame
+                    // Đặt frame ban đầu
                     if (this.sprite && this._spriteFrames[0]) {
                         this.sprite.spriteFrame = this._spriteFrames[0];
                     }
-                    // Set audio clip
+                    // Đặt audio clip
                     if (this._audioSource) {
                         this._audioSource.clip = audioClip;
                     }
@@ -336,13 +360,12 @@ export class DraggableItem extends Component {
     }
 
     private startPlayback(spriteFrames: SpriteFrame[], audioClip: AudioClip, duration: number) {
-        debugger
         this._spriteFrames = spriteFrames;
         this._frameIndex = 0;
         this._timer = 0;
         this._isPlaying = true;
         this._deltaTime = duration / spriteFrames.length;
-        // Start audio and animation
+        // Bắt đầu audio và animation
         if (this._audioSource && this.sprite && this.sprite.node.isValid) {
             this._audioSource.play();
             this.sprite.spriteFrame = this._spriteFrames[this._frameIndex];

@@ -125,18 +125,26 @@ export class PlayGameCtrl extends Component {
         if (!this.nodeCategoryFigure || !this.imageData || !this.itemPrefab) {
             return;
         }
+        // Lấy danh sách các item đã xem ads
+        const watched = GameDataManager.getInstance().data.watchedAdsItems || {};
+
         this.nodeCategoryFigure.removeAllChildren();
         for (let i = 0; i < this.imageData.length; i++) {
             const data = this.imageData[i];
             if (!data || !data.image) continue;
+
             const imagePath = data.image.replace(/\.png$/, '');
             const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
             const itemNode = instantiate(this.itemPrefab);
             this.nodeCategoryFigure.addChild(itemNode);
+
+            // Kiểm tra và ẩn/hiện node ADS dựa vào trạng thái đã xem
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
-                adsNode.active = data.isAds === true;
+                // Chỉ hiển thị node ADS nếu item yêu cầu ads và chưa xem
+                adsNode.active = data.isAds === true && !watched[data.core];
             }
+
             const dragComponent = itemNode.getComponent(DraggableItem) || itemNode.addComponent(DraggableItem);
             this.scheduleOnce(() => {
                 dragComponent.originalParent = this.nodeCategoryFigure;

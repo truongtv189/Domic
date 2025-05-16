@@ -2,6 +2,8 @@ import {
     _decorator, Component, Node, Prefab, resources, JsonAsset,
     instantiate, Sprite, SpriteFrame, UITransform, Size, tween, Vec3, EventTarget
 } from 'cc';
+import AdsManager from '../AdsPlatform/AdsManager';
+import { GameDataManager } from '../GameDataManager';
 export { themeEventTarget };
 const { ccclass, property } = _decorator;
 const themeEventTarget = new EventTarget(); // Export nó
@@ -10,6 +12,7 @@ const themeEventTarget = new EventTarget(); // Export nó
 interface ThemeItem {
     image: string;
     isAds: boolean;
+    core?: string; // Thêm core để lưu trạng thái đã xem ads
 }
 
 @ccclass('ThemeCtrl')
@@ -75,15 +78,18 @@ export class ThemeCtrl extends Component {
 
     async createImages() {
         this.nodeCategoryFigure.removeAllChildren();
+        const watched = GameDataManager.getInstance().data.watchedAdsItems || {};
+        
         for (const data of this.imageData) {
             const itemNode = instantiate(this.itemPrefab);
             const checkNode = itemNode.getChildByName("Check");
             if (checkNode) checkNode.active = false;
             this.nodeCategoryFigure.addChild(itemNode);
-            // Hiển thị node ADS nếu cần
+            
+            // Hiển thị node ADS nếu item chưa được xem ads
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
-                adsNode.active = data.isAds;
+                adsNode.active = data.isAds && !watched[data.core];
             }
 
             try {
@@ -91,7 +97,7 @@ export class ThemeCtrl extends Component {
                 const sprite = itemNode.getComponent(Sprite) || itemNode.addComponent(Sprite);
                 sprite.spriteFrame = spriteFrame;
                 const uiTransform = itemNode.getComponent(UITransform) || itemNode.addComponent(UITransform);
-                uiTransform.setContentSize(new Size(100, 100)); // hoặc tuỳ chỉnh theo tỷ lệ ảnh
+                uiTransform.setContentSize(new Size(100, 100));
             } catch (err) {
             }
             if (!this.selectedItem) {
@@ -99,29 +105,58 @@ export class ThemeCtrl extends Component {
                 const checkNode = itemNode.getChildByName("Check");
                 if (checkNode) checkNode.active = true;
             }
+            
+            // Lưu data vào node để sử dụng sau này
+            itemNode['itemData'] = data;
+            
             itemNode.on(Node.EventType.TOUCH_END, () => {
                 this.onSelectItem(itemNode);
-                themeEventTarget.emit('theme-selected', data); // data là { color1: string, color2: string }
             }, this);
-
         }
     }
-    private onSelectItem(itemNode: Node) {
-        if (this.selectedItem === itemNode) return;
-        if (this.selectedItem) {
-            const selectedIndex = this.nodeCategoryFigure.children.indexOf(this.selectedItem);
-            const selectedTheme = this.imageData[selectedIndex];
-            themeEventTarget.emit('theme-selected', selectedTheme);
-        }
 
+    private onSelectItem(itemNode: Node) {
+        const data = itemNode['itemData'] as ThemeItem;
+        if (!data) return;
+        if (data.isAds) {
+            AdsManager.showRewarded((status) => {
+                if (status) {
+                    // Cập nhật trạng thái đã xem ads
+                    const watched = GameDataManager.getInstance().data.watchedAdsItems;
+                    watched[data.core] = true;
+                    GameDataManager.getInstance().updateField('watchedAdsItems', watched);
+                    // Ẩn node ads
+                    const adsNode = itemNode.getChildByName("ADS");
+                    if (adsNode) {
+                        adsNode.active = false;
+                    }
+                    // Cập nhật data
+                    data.isAds = false;
+                    // Xử lý chọn theme
+                    this.handleThemeSelection(itemNode, data);
+                }
+            });
+        } else {
+            // Xử lý chọn theme nếu không cần xem ads
+            this.handleThemeSelection(itemNode, data);
+        }
+    }
+
+    private handleThemeSelection(itemNode: Node, data: ThemeItem) {
+        if (this.selectedItem === itemNode) return;
         // Ẩn check ở item cũ
         const oldCheck = this.selectedItem?.getChildByName("Check");
         if (oldCheck) oldCheck.active = false;
+
         // Hiện check ở item mới
         const newCheck = itemNode.getChildByName("Check");
         if (newCheck) newCheck.active = true;
+
         this.selectedItem = itemNode;
         this.ScrollView.active = false;
+
+        // Emit sự kiện theme đã được chọn
+        themeEventTarget.emit('theme-selected', data);
     }
 
     onClickHideTheme() {
