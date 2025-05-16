@@ -2,6 +2,7 @@ import { _decorator, Asset, Component, director, ImageAsset, instantiate, JsonAs
 import { GameDataManager } from '../GameDataManager';
 import { LoadingCtrl } from '../LoadingCtrl';
 import { LoadingManager } from '../LoadingManager';
+import AdsManager from '../AdsPlatform/AdsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('CategoryPageCtrl')
@@ -46,6 +47,7 @@ export class CategoryPageCtrl extends Component {
     // Tạo ảnh từ dữ liệu JSON
     private createImages() {
         const totalPages = this.pageView.getPages().length;
+        const watched = GameDataManager.getInstance().data.watchedAdsItems || {}; // Tránh null
         const itemsPerPage = Math.ceil(this.imageData.length / totalPages);
         const dataPerPage: any[][] = [];
         for (let i = 0; i < totalPages; i++) {
@@ -62,28 +64,30 @@ export class CategoryPageCtrl extends Component {
                 const icon = itemNode.getComponent(Sprite);
                 const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
                 if (nameLabel) nameLabel.string = itemData.name;
+                // Check if item has been unlocked (watched ad)
+                const itemKey = itemData.code;
+                const isUnlocked = watched[itemKey] === true;
                 // Handle ADS node visibility
                 const adsNode = itemNode.getChildByName("ADS");
                 if (adsNode) {
-                    adsNode.active = itemData.isAds === true;
+                    adsNode.active = itemData.isAds === true && !isUnlocked;
                 }
                 // Gán dữ liệu cho node
                 itemNode['itemData'] = itemData;
-                // Thêm sự kiện click
+                // Gán sự kiện click
                 itemNode.on(Node.EventType.TOUCH_END, () => {
                     this.onItemClicked(itemNode);
                 });
-                // Thêm node vào layout ngay lập tức (đảm bảo thứ tự)
                 layout.addChild(itemNode);
-                // Load ảnh và gán spriteFrame sau, không ảnh hưởng thứ tự hiển thị node
+                // Load sprite image
                 const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
                 this.loadImageFromResource(imagePath, (spriteFrame) => {
                     if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
                 });
             });
-
         });
     }
+
 
     private onItemClicked(itemNode: Node) {
         const data = itemNode['itemData'];
@@ -95,14 +99,23 @@ export class CategoryPageCtrl extends Component {
                 name: data.name,
                 figure: data.figure,
                 animation: data.animation,
-                loadingCategory:data.loadingCategory
+                loadingCategory: data.loadingCategory
             };
-
-            GameDataManager.getInstance().updateField('ItemSelect', logoData);
-            this.Loading.active = true;
-            setTimeout(() => {
-                director.loadScene('playgame');
-            }, 100);
+            if (logoData.isAds === true) {
+                AdsManager.showRewarded((status) => {
+                    if (status) {
+                        // Đánh dấu item đã xem quảng cáo
+                        const watched = GameDataManager.getInstance().data.watchedAdsItems;
+                        watched[data.code] = true;
+                        GameDataManager.getInstance().updateField('watchedAdsItems', watched);
+                        GameDataManager.getInstance().updateField('ItemSelect', logoData);
+                        this.Loading.active = true;
+                        setTimeout(() => {
+                            director.loadScene('playgame');
+                        }, 100);
+                    }
+                });
+            }
         }
     }
 

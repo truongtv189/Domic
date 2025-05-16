@@ -44,7 +44,7 @@ export class PlayGameCtrl extends Component {
         this.node.on('reset-all-items', this.resetAllItems, this);
         themeEventTarget.on('theme-selected', this.applyThemeColors, this);
     }
-
+    //Thay đường dẫn phát animation động
     loadAnimClips(callback: () => void) {
         resources.loadDir('Animator/animationRainBow', AnimationClip, (err, clips) => {
             if (err) {

@@ -12,8 +12,8 @@ export interface ItemSelect {
 interface ThemeItem {
     image: string;
     isAds: boolean;
-    color1: string; // dạng hex: "892727"
-    color2: string; // dạng hex: "FF7C7C"
+    color1: string; 
+    color2: string; 
 }
 
 export interface GameDataType {
@@ -22,7 +22,10 @@ export interface GameDataType {
     bgmVolume: number;
     sfxVolume: number;
     ItemSelect: ItemSelect;
-    ItemSlectTheme: ThemeItem
+    ItemSlectTheme: ThemeItem;
+    watchedAdsItems: {
+    [key: string]: boolean;
+}
 }
 
 const KEY = 'GameData';
@@ -71,7 +74,8 @@ export class GameDataManager {
                 isAds: false,
                 color1: "",
                 color2: ""
-            }
+            },
+            watchedAdsItems:{}
         };
 
         let raw: any = {};
