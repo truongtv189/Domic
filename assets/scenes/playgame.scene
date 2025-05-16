@@ -1101,7 +1101,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "75846097-421d-4e24-8593-98d8a7d50282@f9941",
+      "__uuid__": "bf241d7b-fe49-4ae2-bd4d-3346a0ad4855@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -1235,7 +1235,7 @@
         "__id__": 56
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 60
@@ -1402,7 +1402,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 5,
-      "height": 156.25
+      "height": 50
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1462,7 +1462,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 5,
+      "width": 0,
       "height": 450
     },
     "_anchorPoint": {
@@ -1614,7 +1614,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 175,
+      "y": 146.562,
       "z": 0
     },
     "_lrot": {
@@ -1675,7 +1675,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": -28.437999999999988,
       "z": 0
     },
     "_lrot": {
@@ -1714,7 +1714,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 720,
-      "height": 450
+      "height": 393.124
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1793,7 +1793,7 @@
     "_target": null,
     "_left": 0,
     "_right": 0,
-    "_top": 0,
+    "_top": 56.87599999999996,
     "_bottom": 0,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
@@ -1854,7 +1854,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 700,
-      "height": 770.982
+      "height": 714.106
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1911,12 +1911,12 @@
       "height": 40
     },
     "_startAxis": 0,
-    "_paddingLeft": 20,
-    "_paddingRight": 20,
-    "_paddingTop": 20,
+    "_paddingLeft": 30,
+    "_paddingRight": 30,
+    "_paddingTop": 30,
     "_paddingBottom": 0,
-    "_spacingX": 20,
-    "_spacingY": 20,
+    "_spacingX": 30,
+    "_spacingY": 30,
     "_verticalDirection": 1,
     "_horizontalDirection": 0,
     "_constraint": 1,

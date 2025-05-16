@@ -1,6 +1,6 @@
 import {
     _decorator, Component, Node, Prefab, resources, JsonAsset,
-    instantiate, Sprite, SpriteFrame, UITransform, Size
+    instantiate, Sprite, SpriteFrame, UITransform, Size, tween, Vec3
 } from 'cc';
 import { DraggableItem } from './DraggableItem';
 
@@ -21,10 +21,15 @@ export class ThemeCtrl extends Component {
     @property(Node)
     nodeCategoryFigure: Node = null;
 
+    private readonly ANIMATION_DURATION = 0.2;
+    private readonly SLIDE_DISTANCE = 800;
+    private isAnimating = false;
+    private originalPosition: Vec3;
     private imageData: ThemeItem[] = [];
     onLoad() {
-        this.loadJsonData(); // Gọi hàm load khi scene khởi tạo
-         this.ScrollView.active  = false;
+        this.loadJsonData();
+        this.ScrollView.active = false;
+        this.originalPosition = this.ScrollView.getPosition(); // lưu vị trí gốc
     }
 
     private loadResource<T>(path: string): Promise<T> {
@@ -91,9 +96,21 @@ export class ThemeCtrl extends Component {
         }
     }
     onClickHideTheme() {
-        this.ScrollView.active  = false;
+        tween(this.ScrollView)
+            .to(this.ANIMATION_DURATION, { position: new Vec3(0, 500, 0) }, { easing: 'quartIn' })
+            .call(() => {
+                this.ScrollView.active = false;
+            })
+            .start();
     }
     onClickOpenTheme() {
-        this.ScrollView.active  = true;
+        this.ScrollView.active = true;
+        const startY = this.originalPosition.y + 600;
+        this.ScrollView.setPosition(new Vec3(this.originalPosition.x, startY, this.originalPosition.z));
+
+        tween(this.ScrollView)
+            .to(this.ANIMATION_DURATION, { position: this.originalPosition }, { easing: 'backOut' })
+            .start();
     }
+
 }

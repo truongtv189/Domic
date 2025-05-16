@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform } from 'cc';
 import { DraggableItem } from './DraggableItem';
 import { GameDataManager } from '../GameDataManager';
+import { ThemeCtrl } from './ThemeCtrl';
 
 const { ccclass, property } = _decorator;
 
@@ -12,24 +13,18 @@ export class PlayGameCtrl extends Component {
     private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
-
     onLoad() {
         if (!this.itemPrefab) {
-            console.error('PlayGameCtrl: Item Prefab is not assigned!');
             return;
         }
         if (!this.nodeCategoryFigure) {
-            console.error('PlayGameCtrl: Category Figure Node is not assigned!');
             return;
         }
-
         this.loadAnimClips(() => {
             const gameData = GameDataManager.getInstance()?.data;
             if (!gameData || !gameData.ItemSelect || !gameData.ItemSelect.figure) {
-                console.error('PlayGameCtrl: Game data or figure path is missing!');
                 return;
             }
-
             let imagePath = gameData.ItemSelect.figure;
             imagePath = imagePath.replace(/\.png$/, ''); // Remove extension if exists
             const cleanPath = `PlayGame/${imagePath}/spriteFrame`;
@@ -37,16 +32,12 @@ export class PlayGameCtrl extends Component {
                 if (spriteFrame) {
                     this.setSprites(this.dropTargets, spriteFrame);
                 } else {
-                    console.error('Failed to load figure sprite:', cleanPath);
                 }
             });
         });
 
         this.cacheDropTargetRects();
-        console.log("dropTargetRects", this.dropTargetRects)
-
         this.loadJsonData();
-
         // Listen for reset event from LoadingPlayAudio
         this.node.on('reset-all-items', this.resetAllItems, this);
     }
@@ -54,7 +45,6 @@ export class PlayGameCtrl extends Component {
     loadAnimClips(callback: () => void) {
         resources.loadDir('Animator/animationRainBow', AnimationClip, (err, clips) => {
             if (err) {
-                console.error('Failed to load animation clips:', err);
                 callback();
                 return;
             }
@@ -66,7 +56,6 @@ export class PlayGameCtrl extends Component {
     loadSpriteFrameFromResources(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
         resources.load(path, SpriteFrame, (err, spriteFrame) => {
             if (err || !spriteFrame) {
-                console.error(`SpriteFrame not found at path: ${path}`, err);
                 callback(null);
                 return;
             }
@@ -76,7 +65,6 @@ export class PlayGameCtrl extends Component {
 
     setSprites(nodes: Node[], spriteFrame: SpriteFrame) {
         if (!nodes || !spriteFrame || !this.animClips) {
-            console.error('PlayGameCtrl: Invalid parameters in setSprites');
             return;
         }
 
@@ -89,16 +77,13 @@ export class PlayGameCtrl extends Component {
                 sprite = spriteNode.addComponent(Sprite);
             }
             sprite.spriteFrame = spriteFrame;
-
             if (this.animClips && this.animClips.length > 0) {
                 const randomClip = this.animClips[Math.floor(Math.random() * this.animClips.length)];
                 if (!randomClip) continue;
-
                 const anim = spriteNode.getComponent(Animation) || spriteNode.addComponent(Animation);
                 anim.addClip(randomClip);
                 anim.defaultClip = randomClip;
                 anim.play(randomClip.name);
-
                 const state = anim.getState(randomClip.name);
                 if (state) {
                     const randomTime = Math.random() * randomClip.duration;
@@ -116,10 +101,8 @@ export class PlayGameCtrl extends Component {
                 this.imageData = jsonAsset.json.RAINBOW;
                 this.createImages();
             } else {
-                console.error('Invalid JSON data structure');
             }
         } catch (err) {
-            console.error('Failed to load JSON data:', err);
         }
     }
 
@@ -137,26 +120,20 @@ export class PlayGameCtrl extends Component {
 
     createImages() {
         if (!this.nodeCategoryFigure || !this.imageData || !this.itemPrefab) {
-            console.error('PlayGameCtrl: Required components missing for createImages');
             return;
         }
-
         this.nodeCategoryFigure.removeAllChildren();
-
         for (let i = 0; i < this.imageData.length; i++) {
             const data = this.imageData[i];
             if (!data || !data.image) continue;
-
             const imagePath = data.image.replace(/\.png$/, '');
             const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
             const itemNode = instantiate(this.itemPrefab);
             this.nodeCategoryFigure.addChild(itemNode);
-
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
                 adsNode.active = data.isAds === true;
             }
-
             const dragComponent = itemNode.getComponent(DraggableItem) || itemNode.addComponent(DraggableItem);
             this.scheduleOnce(() => {
                 dragComponent.originalParent = this.nodeCategoryFigure;
@@ -174,10 +151,8 @@ export class PlayGameCtrl extends Component {
 
     cacheDropTargetRects() {
         if (!this.dropTargets) {
-            console.error('PlayGameCtrl: No drop targets defined');
             return;
         }
-
         this.dropTargetRects = this.dropTargets.map(node => {
             if (!node) return null;
             const uiTransform = node.getComponent(UITransform);
@@ -195,7 +170,6 @@ export class PlayGameCtrl extends Component {
             return { node, rect };
         }).filter(item => item !== null);
     }
-
     getDropTargetRects(): { node: Node, rect: Rect }[] {
         return this.dropTargetRects || [];
     }
@@ -206,7 +180,6 @@ export class PlayGameCtrl extends Component {
 
     resetAllItems() {
         if (!this.nodeCategoryFigure) return;
-
         const items = this.nodeCategoryFigure.children;
         items.forEach(itemNode => {
             if (!itemNode) return;
