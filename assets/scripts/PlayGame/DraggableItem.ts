@@ -1,5 +1,7 @@
 import { _decorator, Component, Node, EventTouch, UITransform, Vec3, Sprite, Color, AudioSource, SpriteFrame, AudioClip, resources, Widget, director } from 'cc';
 import { LoadingPlayAudio } from '../LoadingPlayAudio/LoadingPlayAudio';
+import AdsManager from '../AdsPlatform/AdsManager';
+import { GameDataManager } from '../GameDataManager';
 const { ccclass, property } = _decorator;
 
 // Define the same constant for the event name
@@ -11,7 +13,7 @@ export class DraggableItem extends Component {
     public originalParent: Node | null = null;
     public originalPosition: Vec3 = new Vec3();
     public dropTargets: Node[] = [];
-    public dragData: { id: number, image: string, _deltaTime: number };
+    public dragData: { id: number, core: string, image: string, _deltaTime: number, isAds: boolean };
     private offset = new Vec3();
     private isDropped = false;
     private sprite: Sprite = null!;
@@ -25,6 +27,7 @@ export class DraggableItem extends Component {
 
     onLoad() {
         this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
+        this.node.on(Node.EventType.TOUCH_START, this.onClickOriginalItem, this);
         this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         this.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
@@ -60,6 +63,18 @@ export class DraggableItem extends Component {
         const touchPos = event.getUILocation();
         const nodePos = this.node.getPosition(); // Thay vì getWorldPosition
         this.offset.set(nodePos.x - touchPos.x, nodePos.y - touchPos.y, 0); // Tính offset chuẩn
+    }
+    private onClickOriginalItem(event: EventTouch) {
+        if (this.dragData.isAds == true) {
+            AdsManager.showRewarded((status) => {
+                if (status) {
+                    const watched = GameDataManager.getInstance().data.watchedAdsItems;
+                    watched[this.dragData.core] = true;
+                    GameDataManager.getInstance().updateField('watchedAdsItems', watched);
+                }
+            });
+        }
+        if (this.isDropped) return; // chỉ xử lý nếu chưa drop
     }
     onTouchMove(event: EventTouch) {
         if (this.isDropped) return;
@@ -332,7 +347,7 @@ export class DraggableItem extends Component {
             this._audioSource.play();
             this.sprite.spriteFrame = this._spriteFrames[this._frameIndex];
         } else {
-          
+
         }
     }
 
