@@ -20,7 +20,7 @@ export class ThemeCtrl extends Component {
     ScrollView: Node = null;
     @property(Node)
     nodeCategoryFigure: Node = null;
-
+    private selectedItem: Node | null = null;
     private readonly ANIMATION_DURATION = 0.2;
     private readonly SLIDE_DISTANCE = 800;
     private isAnimating = false;
@@ -75,6 +75,9 @@ export class ThemeCtrl extends Component {
         this.nodeCategoryFigure.removeAllChildren();
         for (const data of this.imageData) {
             const itemNode = instantiate(this.itemPrefab);
+            const checkNode = itemNode.getChildByName("Check");
+            if (checkNode) checkNode.active = false;
+
             this.nodeCategoryFigure.addChild(itemNode);
 
             // Hiển thị node ADS nếu cần
@@ -93,8 +96,34 @@ export class ThemeCtrl extends Component {
             } catch (err) {
                 console.error(`Failed to load image: ${data.image}`, err);
             }
+            if (!this.selectedItem) {
+                this.selectedItem = itemNode;
+                const checkNode = itemNode.getChildByName("Check");
+                if (checkNode) checkNode.active = true;
+            }
+            itemNode.on(Node.EventType.TOUCH_END, () => {
+                this.onSelectItem(itemNode);
+            }, this);
+
         }
     }
+    private onSelectItem(itemNode: Node) {
+        if (this.selectedItem === itemNode) return;
+
+        // Ẩn check ở item cũ
+        const oldCheck = this.selectedItem?.getChildByName("Check");
+        if (oldCheck) oldCheck.active = false;
+
+        // Hiện check ở item mới
+        const newCheck = itemNode.getChildByName("Check");
+        if (newCheck) newCheck.active = true;
+
+        this.selectedItem = itemNode;
+
+        // (Tùy chọn) lưu trạng thái đã chọn vào đâu đó
+        // console.log('Selected theme:', itemNode.name);
+    }
+
     onClickHideTheme() {
         tween(this.ScrollView)
             .to(this.ANIMATION_DURATION, { position: new Vec3(0, 500, 0) }, { easing: 'quartIn' })
