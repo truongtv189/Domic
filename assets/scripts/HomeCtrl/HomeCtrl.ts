@@ -1,5 +1,7 @@
 import { _decorator, Component, instantiate, Node, Prefab, Label } from 'cc';
 import { I18n } from '../I18n';
+import AdsManager from '../AdsPlatform/AdsManager';
+import { GameDataManager } from '../GameDataManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('HomeCtrl')
@@ -21,7 +23,30 @@ export class HomeCtrl extends Component {
         loadingNode.setPosition(0, 0, 0);
         this.PopUpLanguage.active = false;
         this.popUpSetting.active = false;
-          this.Loading.active = false;
+        const supportedLanguages = ['english', 'french', 'spanish', 'france', 'portuguese', 'deutsch', 'russian', 'turkey'];
+        const langMap: Record<string, string> = {
+            en: 'english',
+            fr: 'france',
+            es: 'spanish',
+            pt: 'portuguese',
+            de: 'deutsch',
+            ru: 'russian',
+            tr: 'turkey'
+        };
+       function normalizeLang(inputLang: string): string | null {
+            if (!inputLang) return null;
+            const lower = inputLang.toLowerCase();
+            const mapped = langMap[lower] || lower;
+            return supportedLanguages.includes(mapped) ? mapped : null;
+        }
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const urlLang = urlParams.get('lang');
+        const adsLang = AdsManager.getLanguage?.();
+        const normalizedAdsLang = normalizeLang(adsLang);
+        let currentLang = normalizedAdsLang || 'english';
+        GameDataManager.getInstance().updateField("language", currentLang);
+        this.Loading.active = false;
     }
     onShowPopupSetting() {
         const loadingNode = instantiate(this.popUpSettingPrefabs);

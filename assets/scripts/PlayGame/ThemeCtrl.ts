@@ -29,11 +29,6 @@ export class ThemeCtrl extends Component {
     private originalPosition: Vec3;
     private imageData: ThemeItem[] = [];
     onLoad() {
-        if (ThemeCtrl.instance && ThemeCtrl.instance !== this) {
-            this.destroy(); // Hủy nếu đã có instance khác
-            return;
-        }
-        ThemeCtrl.instance = this;
         this.originalPosition = this.ScrollView.getPosition(); // lưu vị trí gốc
         this.loadJsonData();
         this.ScrollView.active = false;

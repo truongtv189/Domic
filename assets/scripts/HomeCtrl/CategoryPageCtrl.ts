@@ -21,6 +21,7 @@ export class CategoryPageCtrl extends Component {
         const loadingNode = instantiate(this.LoadingContainer);
         this.Loading.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
+        this.Loading.active = true;
         this.loadJsonData();
         this.Loading.active = false;
     }

@@ -14,11 +14,11 @@ export class LoadingCtrl extends Component {
     private static frames: SpriteFrame[] = [];
     private static currentIndex: number = 0;
 
-    start() {
+    onLoad() {
         this.startLoading();
         this.loadAndSetSprite();
     }
-        loadAndSetSprite() {
+    loadAndSetSprite() {
         // Nếu đã load rồi thì lấy luôn spriteFrame từ static frames
         if (LoadingCtrl.frames.length > 0) {
             this.setSpriteByIndex();
@@ -68,5 +68,6 @@ export class LoadingCtrl extends Component {
     onDestroy() {
         this.unscheduleAllCallbacks();
     }
+
 }
 

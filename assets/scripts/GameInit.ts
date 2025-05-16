@@ -9,7 +9,6 @@ const { ccclass, property } = _decorator;
 export class GameInit extends Component {
     @property(Node)
     private Loading: Node | null = null;
-
     @property(Prefab)
     LoadingPrefabs: Prefab = null;
     @property({ type: Enum(GameDefines.GamePlatform) }) Platform: GamePlatform = GameDefines.GamePlatform.YANDEX;
