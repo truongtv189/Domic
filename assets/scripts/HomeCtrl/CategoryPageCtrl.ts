@@ -16,7 +16,6 @@ export class CategoryPageCtrl extends Component {
     @property(Node)
     Loading: Node;
     private spriteCache: Map<string, SpriteFrame> = new Map();
-
     protected onLoad(): void {
         const loadingNode = instantiate(this.LoadingContainer);
         this.Loading.addChild(loadingNode);
@@ -24,7 +23,6 @@ export class CategoryPageCtrl extends Component {
         this.loadJsonData();
         this.Loading.active = false;
     }
-
     // Load JSON data
     async loadJsonData() {
         try {
@@ -36,7 +34,6 @@ export class CategoryPageCtrl extends Component {
             console.error("Failed to load JSON:", err);
         }
     }
-
     // Load resource helper function
     private loadResource<T>(path: string): Promise<T> {
         return new Promise((resolve, reject) => {
@@ -46,48 +43,38 @@ export class CategoryPageCtrl extends Component {
             });
         });
     }
-
     // Tạo ảnh từ dữ liệu JSON
     private createImages() {
         const totalPages = this.pageView.getPages().length;
         const itemsPerPage = Math.ceil(this.imageData.length / totalPages);
-
         const dataPerPage: any[][] = [];
         for (let i = 0; i < totalPages; i++) {
             dataPerPage.push(this.imageData.slice(i * itemsPerPage, (i + 1) * itemsPerPage));
         }
-
         const pages = this.pageView.getPages();
         pages.forEach((pageNode, pageIndex) => {
             const layout = pageNode.getChildByName('Layout');
             if (!layout) return;
-
             layout.removeAllChildren();
-
             const items = dataPerPage[pageIndex] || [];
             items.forEach((itemData) => {
                 const itemNode = instantiate(this.itemPrefab);
                 const icon = itemNode.getComponent(Sprite);
                 const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
                 if (nameLabel) nameLabel.string = itemData.name;
-
                 // Handle ADS node visibility
                 const adsNode = itemNode.getChildByName("ADS");
                 if (adsNode) {
                     adsNode.active = itemData.isAds === true;
                 }
-
                 // Gán dữ liệu cho node
                 itemNode['itemData'] = itemData;
-
                 // Thêm sự kiện click
                 itemNode.on(Node.EventType.TOUCH_END, () => {
                     this.onItemClicked(itemNode);
                 });
-
                 // Thêm node vào layout ngay lập tức (đảm bảo thứ tự)
                 layout.addChild(itemNode);
-
                 // Load ảnh và gán spriteFrame sau, không ảnh hưởng thứ tự hiển thị node
                 const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
                 this.loadImageFromResource(imagePath, (spriteFrame) => {
@@ -101,14 +88,14 @@ export class CategoryPageCtrl extends Component {
     private onItemClicked(itemNode: Node) {
         const data = itemNode['itemData'];
         if (data) {
-            console.log("Item selected:", data);
             const logoData = {
                 core: data.core,
                 image: data.image,
                 isAds: data.isAds,
                 name: data.name,
                 figure: data.figure,
-                animation: data.animation
+                animation: data.animation,
+                loadingCategory:data.loadingCategory
             };
 
             GameDataManager.getInstance().updateField('ItemSelect', logoData);

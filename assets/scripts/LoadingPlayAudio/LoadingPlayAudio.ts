@@ -1,4 +1,5 @@
 import { _decorator, Component, Node, resources, Sprite, SpriteFrame, director } from 'cc';
+import { GameDataManager } from '../GameDataManager';
 const { ccclass, property } = _decorator;
 
 // Define a constant for the event name
@@ -6,7 +7,6 @@ const RESET_AUDIO_FRAME_EVENT = 'reset-audio-frame';
 
 @ccclass('LoadingPlayAudio')
 export class LoadingPlayAudio extends Component {
-
     @property(Sprite)
     targetSprite: Sprite = null;
     @property(Node) ResetNode: Node = null;
@@ -24,11 +24,7 @@ export class LoadingPlayAudio extends Component {
     }
 
     public setOnLoadComplete(callback: () => void) {
-        console.log("setOnLoadComplete called, hasCompletedOneCycle:", this.hasCompletedOneCycle);
-        // Luôn thêm callback vào queue, bất kể đã hoàn thành hay chưa
         this.waitingCallbacks.push(callback);
-
-        // Nếu đã hoàn thành một vòng và không đang xử lý callbacks
         if (this.hasCompletedOneCycle && !this.isProcessingCallbacks) {
             this.processWaitingCallbacks();
         }
@@ -36,42 +32,32 @@ export class LoadingPlayAudio extends Component {
 
     private processWaitingCallbacks() {
         if (this.waitingCallbacks.length === 0 || this.isProcessingCallbacks) return;
-
         this.isProcessingCallbacks = true;
-        console.log("Processing callbacks, count:", this.waitingCallbacks.length);
-
-        // Tạo một bản sao của callbacks để xử lý
         const callbacksToProcess = [...this.waitingCallbacks];
         this.waitingCallbacks = [];
-
-        // Gọi tất cả callbacks
         callbacksToProcess.forEach(callback => {
             if (callback) {
                 callback();
             }
         });
-
         this.isProcessingCallbacks = false;
-
         // Kiểm tra nếu có callbacks mới được thêm vào trong quá trình xử lý
         if (this.waitingCallbacks.length > 0) {
             this.processWaitingCallbacks();
         }
     }
-
     private loadFrames() {
-        resources.loadDir('Images/Icon/LoadingIcon/fame1', SpriteFrame, (err, frames) => {
+        const gameData = GameDataManager.getInstance()?.data;
+        const ResetPath = `${gameData.ItemSelect.loadingCategory}`;
+        resources.loadDir(ResetPath, SpriteFrame, (err, frames) => {
             if (err) {
-                console.error('Error loading frames:', err);
                 return;
             }
-
             this.spriteFrames = frames.sort((a, b) => a.name.localeCompare(b.name));
 
             if (this.spriteFrames.length > 0) {
                 this.interval = 4.5 / this.spriteFrames.length;
                 this.isLoaded = true;
-                console.log("Frames loaded, count:", this.spriteFrames.length);
             }
         });
     }
@@ -90,7 +76,6 @@ export class LoadingPlayAudio extends Component {
             if (this.currentIndex >= this.spriteFrames.length) {
                 this.currentIndex = 0;
                 if (!this.hasCompletedOneCycle) {
-                    console.log("Completed one cycle");
                     this.hasCompletedOneCycle = true;
                     this.processWaitingCallbacks();
                 }
@@ -99,7 +84,6 @@ export class LoadingPlayAudio extends Component {
     }
 
     public resetLoadingState() {
-        console.log("Resetting loading state");
         this.hasCompletedOneCycle = false;
         this.currentIndex = 0;
         this.timer = 0;

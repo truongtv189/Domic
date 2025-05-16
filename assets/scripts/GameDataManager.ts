@@ -7,6 +7,13 @@ export interface ItemSelect {
     name: string;
     figure: string;
     animation: string;
+    loadingCategory: string;
+}
+interface ThemeItem {
+    image: string;
+    isAds: boolean;
+    color1: string; // dạng hex: "892727"
+    color2: string; // dạng hex: "FF7C7C"
 }
 
 export interface GameDataType {
@@ -14,7 +21,8 @@ export interface GameDataType {
     masterVolume: number;
     bgmVolume: number;
     sfxVolume: number;
-    ItemSelect: ItemSelect
+    ItemSelect: ItemSelect;
+    ItemSlectTheme: ThemeItem
 }
 
 const KEY = 'GameData';
@@ -56,8 +64,14 @@ export class GameDataManager {
             sfxVolume: 1,
             ItemSelect: {
                 core: "", image: "", isAds: false, name: "", figure: "",
-                animation: ""
+                animation: "", loadingCategory: ""
             },
+            ItemSlectTheme: {
+                image: "",
+                isAds: false,
+                color1: "",
+                color2: ""
+            }
         };
 
         let raw: any = {};

@@ -1,11 +1,12 @@
 import {
     _decorator, Component, Node, Prefab, resources, JsonAsset,
-    instantiate, Sprite, SpriteFrame, UITransform, Size, tween, Vec3
+    instantiate, Sprite, SpriteFrame, UITransform, Size, tween, Vec3, EventTarget
 } from 'cc';
-import { DraggableItem } from './DraggableItem';
-
+export { themeEventTarget };
 const { ccclass, property } = _decorator;
+const themeEventTarget = new EventTarget(); // Export nó
 
+// Trong ThemeCtrl.ts
 interface ThemeItem {
     image: string;
     isAds: boolean;
@@ -13,30 +14,33 @@ interface ThemeItem {
 
 @ccclass('ThemeCtrl')
 export class ThemeCtrl extends Component {
+    public static instance: ThemeCtrl = null;
     @property(Prefab)
     itemPrefab: Prefab = null;
-
     @property(Node)
     ScrollView: Node = null;
     @property(Node)
     nodeCategoryFigure: Node = null;
     private selectedItem: Node | null = null;
     private readonly ANIMATION_DURATION = 0.2;
-    private readonly SLIDE_DISTANCE = 800;
-    private isAnimating = false;
     private originalPosition: Vec3;
     private imageData: ThemeItem[] = [];
     onLoad() {
+        if (ThemeCtrl.instance && ThemeCtrl.instance !== this) {
+            this.destroy(); // Hủy nếu đã có instance khác
+            return;
+        }
+        ThemeCtrl.instance = this;
+        this.originalPosition = this.ScrollView.getPosition(); // lưu vị trí gốc
         this.loadJsonData();
         this.ScrollView.active = false;
-        this.originalPosition = this.ScrollView.getPosition(); // lưu vị trí gốc
     }
 
     private loadResource<T>(path: string): Promise<T> {
         return new Promise((resolve, reject) => {
             resources.load(path, (err, asset) => {
                 if (err || !asset) {
-                    reject(err || new Error('Asset not found'));
+                    reject(err || new Error());
                 } else {
                     resolve(asset as T);
                 }
@@ -48,7 +52,7 @@ export class ThemeCtrl extends Component {
         return new Promise((resolve, reject) => {
             resources.load(path, SpriteFrame, (err, spriteFrame) => {
                 if (err || !spriteFrame) {
-                    reject(err || new Error(`Failed to load sprite frame: ${path}`));
+                    reject(err || new Error());
                     return;
                 }
                 resolve(spriteFrame);
@@ -64,10 +68,8 @@ export class ThemeCtrl extends Component {
                 this.imageData = raw.THEME;
                 await this.createImages();
             } else {
-                console.warn('Invalid theme.json structure');
             }
         } catch (err) {
-            console.error('Failed to load theme data:', err);
         }
     }
 
@@ -77,9 +79,7 @@ export class ThemeCtrl extends Component {
             const itemNode = instantiate(this.itemPrefab);
             const checkNode = itemNode.getChildByName("Check");
             if (checkNode) checkNode.active = false;
-
             this.nodeCategoryFigure.addChild(itemNode);
-
             // Hiển thị node ADS nếu cần
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
@@ -90,11 +90,9 @@ export class ThemeCtrl extends Component {
                 const spriteFrame = await this.loadSpriteFrame(`PlayGame/${data.image}/spriteFrame`);
                 const sprite = itemNode.getComponent(Sprite) || itemNode.addComponent(Sprite);
                 sprite.spriteFrame = spriteFrame;
-
                 const uiTransform = itemNode.getComponent(UITransform) || itemNode.addComponent(UITransform);
                 uiTransform.setContentSize(new Size(100, 100)); // hoặc tuỳ chỉnh theo tỷ lệ ảnh
             } catch (err) {
-                console.error(`Failed to load image: ${data.image}`, err);
             }
             if (!this.selectedItem) {
                 this.selectedItem = itemNode;
@@ -103,25 +101,27 @@ export class ThemeCtrl extends Component {
             }
             itemNode.on(Node.EventType.TOUCH_END, () => {
                 this.onSelectItem(itemNode);
+                themeEventTarget.emit('theme-selected', data); // data là { color1: string, color2: string }
             }, this);
 
         }
     }
     private onSelectItem(itemNode: Node) {
         if (this.selectedItem === itemNode) return;
+        if (this.selectedItem) {
+            const selectedIndex = this.nodeCategoryFigure.children.indexOf(this.selectedItem);
+            const selectedTheme = this.imageData[selectedIndex];
+            themeEventTarget.emit('theme-selected', selectedTheme);
+        }
 
         // Ẩn check ở item cũ
         const oldCheck = this.selectedItem?.getChildByName("Check");
         if (oldCheck) oldCheck.active = false;
-
         // Hiện check ở item mới
         const newCheck = itemNode.getChildByName("Check");
         if (newCheck) newCheck.active = true;
-
         this.selectedItem = itemNode;
-
-        // (Tùy chọn) lưu trạng thái đã chọn vào đâu đó
-        // console.log('Selected theme:', itemNode.name);
+        this.ScrollView.active = false;
     }
 
     onClickHideTheme() {
@@ -133,6 +133,10 @@ export class ThemeCtrl extends Component {
             .start();
     }
     onClickOpenTheme() {
+        if (!this.originalPosition) {
+            console.warn("originalPosition is undefined");
+            return;
+        }
         this.ScrollView.active = true;
         const startY = this.originalPosition.y + 600;
         this.ScrollView.setPosition(new Vec3(this.originalPosition.x, startY, this.originalPosition.z));
@@ -141,5 +145,6 @@ export class ThemeCtrl extends Component {
             .to(this.ANIMATION_DURATION, { position: this.originalPosition }, { easing: 'backOut' })
             .start();
     }
+
 
 }

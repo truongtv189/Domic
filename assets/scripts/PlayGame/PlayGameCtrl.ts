@@ -1,7 +1,7 @@
-import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform } from 'cc';
+import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform, Color } from 'cc';
 import { DraggableItem } from './DraggableItem';
 import { GameDataManager } from '../GameDataManager';
-import { ThemeCtrl } from './ThemeCtrl';
+import { ThemeCtrl, themeEventTarget } from './ThemeCtrl';
 
 const { ccclass, property } = _decorator;
 
@@ -10,10 +10,12 @@ export class PlayGameCtrl extends Component {
     @property([Node]) dropTargets: Node[] = [];  // Mảng chứa các điểm thả
     @property(Prefab) itemPrefab: Prefab = null;
     @property(Node) nodeCategoryFigure: Node = null;
+    // @property(Node) nodeLoading: Node = null;
     private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
     onLoad() {
+        // ThemeCtrl.instance.loadJsonData();
         if (!this.itemPrefab) {
             return;
         }
@@ -40,6 +42,7 @@ export class PlayGameCtrl extends Component {
         this.loadJsonData();
         // Listen for reset event from LoadingPlayAudio
         this.node.on('reset-all-items', this.resetAllItems, this);
+        themeEventTarget.on('theme-selected', this.applyThemeColors, this);
     }
 
     loadAnimClips(callback: () => void) {
@@ -193,8 +196,43 @@ export class PlayGameCtrl extends Component {
             }
         });
     }
+    applyThemeColors(themeData: { color1: string, color2: string }) {
+        console.log('Theme selected:', themeData);
+
+        const color1 = this.hexToColor(themeData.color1);
+        const color2 = this.hexToColor(themeData.color2);
+
+        // Apply to dropTargets
+        for (let i = 0; i < this.dropTargets.length; i++) {
+            const drop = this.dropTargets[i];
+            const sprite = drop.getComponent(Sprite);
+            if (sprite) {
+                sprite.color = i % 2 === 0 ? color1 : color2;
+            }
+        }
+
+        // Apply to children of nodeCategoryFigure (items)
+        const categoryChildren = this.nodeCategoryFigure.children;
+        for (let i = 0; i < categoryChildren.length; i++) {
+            const item = categoryChildren[i];
+            const sprite = item.getComponent(Sprite);
+            if (sprite) {
+                sprite.color = i % 2 === 0 ? color1 : color2;
+            }
+        }
+    }
+
+
+    hexToColor(hex: string): Color {
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        return new Color(r, g, b);
+    }
 
     onDestroy() {
         this.node.off('reset-all-items', this.resetAllItems, this);
+        this.node.off('reset-all-items', this.resetAllItems, this);
+        themeEventTarget.off('theme-selected', this.applyThemeColors, this);
     }
 }
