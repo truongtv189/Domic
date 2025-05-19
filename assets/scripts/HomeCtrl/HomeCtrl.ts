@@ -17,12 +17,9 @@ export class HomeCtrl extends Component {
     @property(Prefab)
     LoadingContainer: Prefab = null;
     @property(Node) Loading: Node
-    onLoad() {
-        const loadingNode = instantiate(this.LoadingContainer);
-        this.Loading.addChild(loadingNode);
-        loadingNode.setPosition(0, 0, 0);
-        this.PopUpLanguage.active = false;
-        this.popUpSetting.active = false;
+    async start() {
+        this.Loading.active = true;
+
         const supportedLanguages = ['english', 'french', 'spanish', 'france', 'portuguese', 'deutsch', 'russian', 'turkey'];
         const langMap: Record<string, string> = {
             en: 'english',
@@ -33,12 +30,13 @@ export class HomeCtrl extends Component {
             ru: 'russian',
             tr: 'turkey'
         };
-       function normalizeLang(inputLang: string): string | null {
+        function normalizeLang(inputLang: string): string | null {
             if (!inputLang) return null;
             const lower = inputLang.toLowerCase();
             const mapped = langMap[lower] || lower;
             return supportedLanguages.includes(mapped) ? mapped : null;
         }
+
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const urlLang = urlParams.get('lang');
@@ -46,8 +44,16 @@ export class HomeCtrl extends Component {
         const normalizedAdsLang = normalizeLang(adsLang);
         let currentLang = normalizedAdsLang || 'english';
         GameDataManager.getInstance().updateField("language", currentLang);
+
+        // Load language
+        await I18n.loadLanguage(currentLang);
+
+        // Cập nhật tất cả Label sau khi load ngôn ngữ
+        this.updateLabelsInPrefab(this.node);
+
         this.Loading.active = false;
     }
+
     onShowPopupSetting() {
         const loadingNode = instantiate(this.popUpSettingPrefabs);
         this.popUpSetting.addChild(loadingNode);

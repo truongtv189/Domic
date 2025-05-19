@@ -12,5 +12,6 @@
   "lbRibrate": "Vibration",
   "lbBackgroundmusic": "Background Music",
   "lbSoundEffects": "Sound Effects",
-  "lbSelectTheme": "Choose theme color"
+  "lbSelectTheme": "Choose theme color",
+  "lbRegime":"Play mode"
 }

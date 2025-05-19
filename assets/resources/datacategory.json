@@ -60,16 +60,7 @@
       "animation": "animation",
       "loadingCategory": ""
     },
-    {
-      "code": "custom",
-      "name": "CUSTOM",
-      "image": "image/custom",
-      "isAds": false,
-      "backgorund": "DuoMix-select-bg",
-      "figure": "CharDefault-1",
-      "animation": "animation",
-      "loadingCategory": ""
-    },
+  
     {
       "code": "original",
       "name": "ORIGINAL",

@@ -25,6 +25,11 @@ export class I18n {
         }
     }
 
+    // Kiểm tra xem key có tồn tại trong translations không
+    static hasKey(key: string): boolean {
+        return key in this.translations;
+    }
+
     // Lấy bản dịch cho key
     static t(key: string): string {
         return this.translations[key] || key; // Trả về key nếu không có bản dịch

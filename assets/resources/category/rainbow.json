@@ -25,28 +25,28 @@
         "id": 4,
         "core": "rainbow4",
         "image": "rainbow/rainbow4",
-        "_deltaTime": 0.346,
+        "_deltaTime": 0.15,
         "isAds": true
       },
       {
         "id": 5,
         "core": "rainbow5",
         "image": "rainbow/rainbow5",
-        "_deltaTime": 0.596,
+        "_deltaTime": 0.585,
         "isAds": true
       },
       {
         "id": 6,
         "core": "rainbow6",
         "image": "rainbow/rainbow6",
-        "_deltaTime": 0.3,
+        "_deltaTime":1.8,
         "isAds": true
       },
       {
         "id": 7,
         "core": "rainbow7",
         "image": "rainbow/rainbow7",
-        "_deltaTime": 0.3,
+        "_deltaTime": 0.42,
         "isAds": true
       },
       {
