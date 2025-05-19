@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "629a2f8c-9b8d-4bfd-8ac8-1a2b87a18c89",
+  "uuid": "5d639f03-8fb7-443d-9e80-60976f054780",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "ImgCategoryPrefabs"
+    "syncNodeName": "ContainerImgCategory"
   }
 }

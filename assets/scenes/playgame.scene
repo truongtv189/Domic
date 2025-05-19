@@ -165,7 +165,7 @@
       "__expectedType__": "cc.Prefab"
     },
     "nodeCategoryFigure": {
-      "__id__": 70
+      "__id__": 71
     },
     "_id": "0fOEJJ1KBJzL5Da5awgfTT"
   },
@@ -373,13 +373,13 @@
         "__id__": 27
       },
       {
-        "__id__": 67
+        "__id__": 68
       },
       {
         "__id__": 6
       },
       {
-        "__id__": 70
+        "__id__": 71
       },
       {
         "__id__": 33
@@ -388,10 +388,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 74
+        "__id__": 75
       },
       {
-        "__id__": 75
+        "__id__": 67
       },
       {
         "__id__": 76
@@ -2014,8 +2014,8 @@
     "_spacingY": 30,
     "_verticalDirection": 1,
     "_horizontalDirection": 0,
-    "_constraint": 1,
-    "_constraintNum": 7,
+    "_constraint": 2,
+    "_constraintNum": 5,
     "_affectedByScale": true,
     "_isAlign": false,
     "_id": "384eXHqpdLyokUBa+xThOf"
@@ -2505,7 +2505,26 @@
     "nodeCategoryFigure": {
       "__id__": 43
     },
+    "canvas": {
+      "__id__": 67
+    },
     "_id": "d01GSc3qNPy5vVE+WfXSud"
+  },
+  {
+    "__type__": "cc.Canvas",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 7
+    },
+    "_enabled": true,
+    "__prefab": null,
+    "_cameraComponent": {
+      "__id__": 9
+    },
+    "_alignCanvasWithScreen": true,
+    "_id": "12O/ljcVlEqLmVm3U2gEOQ"
   },
   {
     "__type__": "cc.Node",
@@ -2519,10 +2538,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 68
+        "__id__": 69
       },
       {
-        "__id__": 69
+        "__id__": 70
       }
     ],
     "_prefab": null,
@@ -2561,7 +2580,7 @@
     "_objFlags": 0,
     "__editorExtras__": {},
     "node": {
-      "__id__": 67
+      "__id__": 68
     },
     "_enabled": true,
     "__prefab": null,
@@ -2583,7 +2602,7 @@
     "_objFlags": 0,
     "__editorExtras__": {},
     "node": {
-      "__id__": 67
+      "__id__": 68
     },
     "_enabled": true,
     "__prefab": null,
@@ -2619,13 +2638,13 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 71
-      },
-      {
         "__id__": 72
       },
       {
         "__id__": 73
+      },
+      {
+        "__id__": 74
       }
     ],
     "_prefab": null,
@@ -2664,7 +2683,7 @@
     "_objFlags": 0,
     "__editorExtras__": {},
     "node": {
-      "__id__": 70
+      "__id__": 71
     },
     "_enabled": true,
     "__prefab": null,
@@ -2686,7 +2705,7 @@
     "_objFlags": 0,
     "__editorExtras__": {},
     "node": {
-      "__id__": 70
+      "__id__": 71
     },
     "_enabled": true,
     "__prefab": null,
@@ -2716,7 +2735,7 @@
     "_objFlags": 0,
     "__editorExtras__": {},
     "node": {
-      "__id__": 70
+      "__id__": 71
     },
     "_enabled": true,
     "__prefab": null,
@@ -2763,22 +2782,6 @@
       "y": 0.5
     },
     "_id": "d6rUX5yfhMlKoWX2bSbawx"
-  },
-  {
-    "__type__": "cc.Canvas",
-    "_name": "",
-    "_objFlags": 0,
-    "__editorExtras__": {},
-    "node": {
-      "__id__": 7
-    },
-    "_enabled": true,
-    "__prefab": null,
-    "_cameraComponent": {
-      "__id__": 9
-    },
-    "_alignCanvasWithScreen": true,
-    "_id": "12O/ljcVlEqLmVm3U2gEOQ"
   },
   {
     "__type__": "cc.Widget",

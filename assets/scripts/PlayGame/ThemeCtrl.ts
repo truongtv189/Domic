@@ -1,6 +1,7 @@
 import {
     _decorator, Component, Node, Prefab, resources, JsonAsset,
-    instantiate, Sprite, SpriteFrame, UITransform, Size, tween, Vec3, EventTarget
+    instantiate, Sprite, SpriteFrame, UITransform, Size, tween, Vec3, EventTarget,
+    view, Canvas
 } from 'cc';
 import AdsManager from '../AdsPlatform/AdsManager';
 import { GameDataManager } from '../GameDataManager';
@@ -24,14 +25,50 @@ export class ThemeCtrl extends Component {
     ScrollView: Node = null;
     @property(Node)
     nodeCategoryFigure: Node = null;
+    @property(Canvas)
+    canvas: Canvas = null;
+    
     private selectedItem: Node | null = null;
     private readonly ANIMATION_DURATION = 0.2;
     private originalPosition: Vec3;
     private imageData: ThemeItem[] = [];
+    private readonly BASE_ITEM_SIZE = 200; // Kích thước cơ bản của item
+
     onLoad() {
-        this.originalPosition = this.ScrollView.getPosition(); // lưu vị trí gốc
+        this.originalPosition = this.ScrollView.getPosition();
         this.loadJsonData();
         this.ScrollView.active = false;
+        
+        // Đăng ký lắng nghe sự kiện thay đổi kích thước canvas
+        view.on('canvas-resize', this.onCanvasResize, this);
+        
+        // Khởi tạo kích thước ban đầu
+        this.updateItemsScale();
+    }
+
+    onDestroy() {
+        // Hủy đăng ký sự kiện khi component bị hủy
+        view.off('canvas-resize', this.onCanvasResize, this);
+    }
+
+    private onCanvasResize() {
+        this.updateItemsScale();
+    }
+
+    private updateItemsScale() {
+        if (!this.nodeCategoryFigure) return;
+        
+        const canvasSize = view.getVisibleSize();
+        const scaleFactor = Math.min(canvasSize.width / 1280, canvasSize.height / 720); // Giả sử 1280x720 là kích thước thiết kế cơ bản
+        
+        // Cập nhật kích thước cho tất cả các item
+        this.nodeCategoryFigure.children.forEach(item => {
+            const uiTransform = item.getComponent(UITransform);
+            if (uiTransform) {
+                const newSize = this.BASE_ITEM_SIZE * scaleFactor;
+                uiTransform.setContentSize(new Size(newSize, newSize));
+            }
+        });
     }
 
     private loadResource<T>(path: string): Promise<T> {
@@ -92,7 +129,10 @@ export class ThemeCtrl extends Component {
                 const sprite = itemNode.getComponent(Sprite) || itemNode.addComponent(Sprite);
                 sprite.spriteFrame = spriteFrame;
                 const uiTransform = itemNode.getComponent(UITransform) || itemNode.addComponent(UITransform);
-                uiTransform.setContentSize(new Size(100, 100));
+                const canvasSize = view.getVisibleSize();
+                const scaleFactor = Math.min(canvasSize.width / 1280, canvasSize.height / 720);
+                const newSize = this.BASE_ITEM_SIZE * scaleFactor;
+                uiTransform.setContentSize(new Size(newSize, newSize));
             } catch (err) {
             }
             if (!this.selectedItem) {
