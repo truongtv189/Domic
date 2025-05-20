@@ -279,7 +279,7 @@ export class DraggableItem extends Component {
 
     private loadAssetsAndWaitForLoading(imagePath: string) {
         const spriteFolderPath = `PlayGame/image/${imagePath}`;
-        const audioPath = `audio/${imagePath.split("/")[1]}`;
+        const audioPath = `audio/${imagePath}`;
         // Load sprite frames
         resources.loadDir(spriteFolderPath, SpriteFrame, (err, assets: SpriteFrame[]) => {
             if (err) {
