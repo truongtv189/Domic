@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "c67a12ef-065b-4b2c-805c-60f311cea171",
+  "uuid": "b5be867e-d4ce-4a71-a8e7-2f4f6354de51",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "c67a12ef-065b-4b2c-805c-60f311cea171@6c48a",
+      "uuid": "b5be867e-d4ce-4a71-a8e7-2f4f6354de51@6c48a",
       "displayName": "Char1dark-3",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "c67a12ef-065b-4b2c-805c-60f311cea171",
+        "imageUuidOrDatabaseUri": "b5be867e-d4ce-4a71-a8e7-2f4f6354de51",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,7 +34,7 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "c67a12ef-065b-4b2c-805c-60f311cea171@f9941",
+      "uuid": "b5be867e-d4ce-4a71-a8e7-2f4f6354de51@f9941",
       "displayName": "Char1dark-3",
       "id": "f9941",
       "name": "spriteFrame",
@@ -113,7 +113,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "c67a12ef-065b-4b2c-805c-60f311cea171@6c48a",
+        "imageUuidOrDatabaseUri": "b5be867e-d4ce-4a71-a8e7-2f4f6354de51@6c48a",
         "atlasUuid": "",
         "trimType": "auto"
       },
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "c67a12ef-065b-4b2c-805c-60f311cea171@6c48a"
+    "redirect": "b5be867e-d4ce-4a71-a8e7-2f4f6354de51@6c48a"
   }
 }

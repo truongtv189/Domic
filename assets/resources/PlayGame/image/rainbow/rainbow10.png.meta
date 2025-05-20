@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "a9ceb663-c6f6-4df1-aec1-54045ce102af",
+  "uuid": "932115a9-05b4-48f2-a9f0-d1d7dfac4203",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "a9ceb663-c6f6-4df1-aec1-54045ce102af@6c48a",
+      "uuid": "932115a9-05b4-48f2-a9f0-d1d7dfac4203@6c48a",
       "displayName": "rainbow10",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "a9ceb663-c6f6-4df1-aec1-54045ce102af",
+        "imageUuidOrDatabaseUri": "932115a9-05b4-48f2-a9f0-d1d7dfac4203",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,7 +34,7 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "a9ceb663-c6f6-4df1-aec1-54045ce102af@f9941",
+      "uuid": "932115a9-05b4-48f2-a9f0-d1d7dfac4203@f9941",
       "displayName": "rainbow10",
       "id": "f9941",
       "name": "spriteFrame",
@@ -113,7 +113,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "a9ceb663-c6f6-4df1-aec1-54045ce102af@6c48a",
+        "imageUuidOrDatabaseUri": "932115a9-05b4-48f2-a9f0-d1d7dfac4203@6c48a",
         "atlasUuid": "",
         "trimType": "auto"
       },
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "a9ceb663-c6f6-4df1-aec1-54045ce102af@6c48a"
+    "redirect": "932115a9-05b4-48f2-a9f0-d1d7dfac4203@6c48a"
   }
 }
