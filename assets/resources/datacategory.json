@@ -16,9 +16,9 @@
       "image": "image/kino",
       "isAds": true,
       "backgorund": "DuoMix-select-bg",
-      "figure": "CharDefault-1",
-      "animation": "animation",
-      "loadingCategory": ""
+      "figure": "figure/kino",
+      "animation": "",
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
     },
     {
       "code": "mustard",

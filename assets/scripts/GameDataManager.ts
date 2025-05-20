@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
 
 export interface ItemSelect {
-    core: string;
+    code: string;
     image: string;
     isAds: boolean;
     name: string;
@@ -12,8 +12,8 @@ export interface ItemSelect {
 interface ThemeItem {
     image: string;
     isAds: boolean;
-    color1: string; 
-    color2: string; 
+    color1: string;
+    color2: string;
 }
 
 export interface GameDataType {
@@ -24,8 +24,8 @@ export interface GameDataType {
     ItemSelect: ItemSelect;
     ItemSlectTheme: ThemeItem;
     watchedAdsItems: {
-    [key: string]: boolean;
-}
+        [key: string]: boolean;
+    }
 }
 
 const KEY = 'GameData';
@@ -66,7 +66,7 @@ export class GameDataManager {
             bgmVolume: 1,
             sfxVolume: 1,
             ItemSelect: {
-                core: "", image: "", isAds: false, name: "", figure: "",
+                code: "", image: "", isAds: false, name: "", figure: "",
                 animation: "", loadingCategory: ""
             },
             ItemSlectTheme: {
@@ -75,7 +75,7 @@ export class GameDataManager {
                 color1: "",
                 color2: ""
             },
-            watchedAdsItems:{}
+            watchedAdsItems: {}
         };
 
         let raw: any = {};

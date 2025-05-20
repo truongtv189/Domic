@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "8f198e8a-0f06-4661-9615-cb28c96fab12",
+  "uuid": "ca497903-bc68-4106-b5ca-275173c5c3b9",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "8f198e8a-0f06-4661-9615-cb28c96fab12@6c48a",
+      "uuid": "ca497903-bc68-4106-b5ca-275173c5c3b9@6c48a",
       "displayName": "5",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "8f198e8a-0f06-4661-9615-cb28c96fab12",
+        "imageUuidOrDatabaseUri": "ca497903-bc68-4106-b5ca-275173c5c3b9",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,12 +34,11 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "8f198e8a-0f06-4661-9615-cb28c96fab12@f9941",
+      "uuid": "ca497903-bc68-4106-b5ca-275173c5c3b9@f9941",
       "displayName": "5",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
-        "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
         "offsetX": -2.5,
@@ -114,8 +113,9 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "8f198e8a-0f06-4661-9615-cb28c96fab12@6c48a",
-        "atlasUuid": ""
+        "imageUuidOrDatabaseUri": "ca497903-bc68-4106-b5ca-275173c5c3b9@6c48a",
+        "atlasUuid": "",
+        "trimType": "auto"
       },
       "ver": "1.0.12",
       "imported": true,
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "8f198e8a-0f06-4661-9615-cb28c96fab12@6c48a"
+    "redirect": "ca497903-bc68-4106-b5ca-275173c5c3b9@6c48a"
   }
 }

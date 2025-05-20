@@ -15,41 +15,62 @@ export class PlayGameCtrl extends Component {
     private imageData: any[] = [];
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
     onLoad() {
-        // ThemeCtrl.instance.loadJsonData();
+        console.log('[PlayGameCtrl] onLoad started');
         if (!this.itemPrefab) {
+            console.error('[PlayGameCtrl] itemPrefab is not set');
             return;
         }
         if (!this.nodeCategoryFigure) {
+            console.error('[PlayGameCtrl] nodeCategoryFigure is not set');
             return;
         }
+        console.log('[PlayGameCtrl] Loading animation clips...');
         this.loadAnimClips(() => {
+            console.log('[PlayGameCtrl] Animation clips loaded, loading game data...');
             const gameData = GameDataManager.getInstance()?.data;
             if (!gameData || !gameData.ItemSelect || !gameData.ItemSelect.figure) {
+                console.error('[PlayGameCtrl] Game data or figure data is missing:', gameData);
                 return;
             }
             let imagePath = gameData.ItemSelect.figure;
-            imagePath = imagePath.replace(/\.png$/, ''); // Remove extension if exists
+            imagePath = imagePath.replace(/\.png$/, '');
             const cleanPath = `PlayGame/${imagePath}/spriteFrame`;
+            console.log('[PlayGameCtrl] Loading sprite frame from path:', cleanPath);
             this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
                 if (spriteFrame) {
+                    console.log('[PlayGameCtrl] Sprite frame loaded successfully');
                     this.setSprites(this.dropTargets, spriteFrame);
                 } else {
+                    console.error('[PlayGameCtrl] Failed to load sprite frame');
                 }
             });
         });
 
         this.cacheDropTargetRects();
         this.loadJsonData();
-        // Listen for reset event from LoadingPlayAudio
         this.node.on('reset-all-items', this.resetAllItems, this);
         themeEventTarget.on('theme-selected', this.applyThemeColors, this);
+        console.log('[PlayGameCtrl] onLoad completed');
     }
-    //Thay đường dẫn phát animation động
+
     loadAnimClips(callback: () => void) {
-        resources.loadDir('Animator/animationRainBow', AnimationClip, (err, clips) => {
+        console.log('[PlayGameCtrl] Loading animation clips from Animator/animationRainBow');
+        let path = GameDataManager.getInstance().data.ItemSelect.animation;
+        if (!path) {
+            console.warn('[PlayGameCtrl] Animation path is null or empty. Skipping load.');
+            callback();
+            return;
+        }
+        resources.loadDir(path, AnimationClip, (err, clips) => {
             if (err) {
+                console.error('[PlayGameCtrl] Error loading animation clips:', err);
                 callback();
                 return;
+            }
+            if (!clips || clips.length === 0) {
+                console.warn('[PlayGameCtrl] No animation clips found');
+            } else {
+                console.log(`[PlayGameCtrl] Loaded ${clips.length} animation clips`);
             }
             this.animClips = clips || [];
             callback();
@@ -57,32 +78,49 @@ export class PlayGameCtrl extends Component {
     }
 
     loadSpriteFrameFromResources(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
+        console.log('[PlayGameCtrl] Loading sprite frame from:', path);
         resources.load(path, SpriteFrame, (err, spriteFrame) => {
             if (err || !spriteFrame) {
+                console.error('[PlayGameCtrl] Failed to load sprite frame:', err);
                 callback(null);
                 return;
             }
+            console.log('[PlayGameCtrl] Sprite frame loaded successfully');
             callback(spriteFrame);
         });
     }
 
     setSprites(nodes: Node[], spriteFrame: SpriteFrame) {
-        if (!nodes || !spriteFrame || !this.animClips) {
+        console.log('[PlayGameCtrl] Setting sprites for', nodes?.length, 'nodes');
+        if (!nodes) {
+            console.error('[PlayGameCtrl] setSprites: nodes array is null or undefined');
+            return;
+        }
+        if (!spriteFrame) {
+            console.error('[PlayGameCtrl] setSprites: spriteFrame is null or undefined');
             return;
         }
 
         for (let i = 0; i < nodes.length; i++) {
             const spriteNode = nodes[i];
-            if (!spriteNode) continue;
+            if (!spriteNode) {
+                console.warn(`[PlayGameCtrl] setSprites: node at index ${i} is null or undefined`);
+                continue;
+            }
 
             let sprite = spriteNode.getComponent(Sprite);
             if (!sprite) {
+                console.log(`[PlayGameCtrl] Adding Sprite component to node at index ${i}`);
                 sprite = spriteNode.addComponent(Sprite);
             }
             sprite.spriteFrame = spriteFrame;
             if (this.animClips && this.animClips.length > 0) {
                 const randomClip = this.animClips[Math.floor(Math.random() * this.animClips.length)];
-                if (!randomClip) continue;
+                if (!randomClip) {
+                    console.warn(`[PlayGameCtrl] setSprites: randomClip is null for node at index ${i}`);
+                    continue;
+                }
+                console.log(`[PlayGameCtrl] Adding animation clip ${randomClip.name} to node at index ${i}`);
                 const anim = spriteNode.getComponent(Animation) || spriteNode.addComponent(Animation);
                 anim.addClip(randomClip);
                 anim.defaultClip = randomClip;
@@ -92,20 +130,28 @@ export class PlayGameCtrl extends Component {
                     const randomTime = Math.random() * randomClip.duration;
                     state.time = randomTime;
                     state.sample();
+                } else {
+                    console.warn(`[PlayGameCtrl] setSprites: animation state not found for clip ${randomClip.name}`);
                 }
             }
         }
     }
 
     async loadJsonData() {
+        console.log('[PlayGameCtrl] Loading JSON data...');
         try {
-            const jsonAsset = await this.loadResource<JsonAsset>('category/rainbow');
-            if (jsonAsset && jsonAsset.json && jsonAsset.json.RAINBOW) {
-                this.imageData = jsonAsset.json.RAINBOW;
+            let path = GameDataManager.getInstance().data.ItemSelect.code;
+            console.log('[PlayGameCtrl] Loading JSON from path:', path);
+            const jsonAsset = await this.loadResource<JsonAsset>(`category/${path}`);
+            if (jsonAsset && jsonAsset.json && jsonAsset.json.DATA) {
+                console.log('[PlayGameCtrl] JSON data loaded successfully');
+                this.imageData = jsonAsset.json.DATA;
                 this.createImages();
             } else {
+                console.error('[PlayGameCtrl] Invalid JSON data structure');
             }
         } catch (err) {
+            console.error('[PlayGameCtrl] Error loading JSON data:', err);
         }
     }
 
@@ -122,27 +168,34 @@ export class PlayGameCtrl extends Component {
     }
 
     createImages() {
+        console.log('[PlayGameCtrl] Creating images...');
         if (!this.nodeCategoryFigure || !this.imageData || !this.itemPrefab) {
+            console.error('[PlayGameCtrl] Required components missing for createImages');
             return;
         }
-        // Lấy danh sách các item đã xem ads
         const watched = GameDataManager.getInstance().data.watchedAdsItems || {};
+        console.log('[PlayGameCtrl] Watched ads items:', watched);
 
         this.nodeCategoryFigure.removeAllChildren();
+        console.log('[PlayGameCtrl] Creating', this.imageData.length, 'images');
         for (let i = 0; i < this.imageData.length; i++) {
             const data = this.imageData[i];
-            if (!data || !data.image) continue;
+            if (!data || !data.image) {
+                console.warn(`[PlayGameCtrl] Invalid data at index ${i}`);
+                continue;
+            }
 
             const imagePath = data.image.replace(/\.png$/, '');
             const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
+            console.log(`[PlayGameCtrl] Creating item ${i} with path:`, cleanPath);
             const itemNode = instantiate(this.itemPrefab);
             this.nodeCategoryFigure.addChild(itemNode);
 
-            // Kiểm tra và ẩn/hiện node ADS dựa vào trạng thái đã xem
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
-                // Chỉ hiển thị node ADS nếu item yêu cầu ads và chưa xem
-                adsNode.active = data.isAds === true && !watched[data.core];
+                const shouldShowAds = data.isAds === true && !watched[data.core];
+                console.log(`[PlayGameCtrl] Item ${i} ADS node visibility:`, shouldShowAds);
+                adsNode.active = shouldShowAds;
             }
 
             const dragComponent = itemNode.getComponent(DraggableItem) || itemNode.addComponent(DraggableItem);
@@ -155,7 +208,12 @@ export class PlayGameCtrl extends Component {
 
             this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
                 const sprite = itemNode.getComponent(Sprite);
-                if (sprite && spriteFrame) sprite.spriteFrame = spriteFrame;
+                if (sprite && spriteFrame) {
+                    sprite.spriteFrame = spriteFrame;
+                    console.log(`[PlayGameCtrl] Set sprite frame for item ${i}`);
+                } else {
+                    console.warn(`[PlayGameCtrl] Failed to set sprite frame for item ${i}`);
+                }
             });
         }
     }
@@ -190,10 +248,18 @@ export class PlayGameCtrl extends Component {
     }
 
     resetAllItems() {
-        if (!this.nodeCategoryFigure) return;
+        console.log('[PlayGameCtrl] Resetting all items...');
+        if (!this.nodeCategoryFigure) {
+            console.error('[PlayGameCtrl] nodeCategoryFigure is not set');
+            return;
+        }
         const items = this.nodeCategoryFigure.children;
-        items.forEach(itemNode => {
-            if (!itemNode) return;
+        console.log('[PlayGameCtrl] Resetting', items.length, 'items');
+        items.forEach((itemNode, index) => {
+            if (!itemNode) {
+                console.warn(`[PlayGameCtrl] Item at index ${index} is null`);
+                return;
+            }
             const dragComponent = itemNode.getComponent(DraggableItem);
             if (dragComponent && dragComponent.originalPosition && dragComponent.originalParent) {
                 itemNode.setPosition(dragComponent.originalPosition);
@@ -201,16 +267,18 @@ export class PlayGameCtrl extends Component {
                     dragComponent.originalParent.addChild(itemNode);
                 }
                 dragComponent.resetState();
+                console.log(`[PlayGameCtrl] Reset item at index ${index}`);
+            } else {
+                console.warn(`[PlayGameCtrl] Invalid drag component for item at index ${index}`);
             }
         });
     }
     applyThemeColors(themeData: { color1: string, color2: string }) {
-        console.log('Theme selected:', themeData);
-
+        console.log('[PlayGameCtrl] Applying theme colors:', themeData);
         const color1 = this.hexToColor(themeData.color1);
         const color2 = this.hexToColor(themeData.color2);
 
-        // Apply to dropTargets
+        console.log('[PlayGameCtrl] Applying colors to', this.dropTargets.length, 'drop targets');
         for (let i = 0; i < this.dropTargets.length; i++) {
             const drop = this.dropTargets[i];
             const sprite = drop.getComponent(Sprite);
@@ -219,8 +287,8 @@ export class PlayGameCtrl extends Component {
             }
         }
 
-        // Apply to children of nodeCategoryFigure (items)
         const categoryChildren = this.nodeCategoryFigure.children;
+        console.log('[PlayGameCtrl] Applying colors to', categoryChildren.length, 'category items');
         for (let i = 0; i < categoryChildren.length; i++) {
             const item = categoryChildren[i];
             const sprite = item.getComponent(Sprite);

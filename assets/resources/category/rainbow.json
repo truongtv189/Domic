@@ -1,5 +1,5 @@
 {
-    "RAINBOW": [
+    "DATA": [
       {
         "id": 1,
         "core": "rainbow1",
@@ -25,7 +25,7 @@
         "id": 4,
         "core": "rainbow4",
         "image": "rainbow/rainbow4",
-        "_deltaTime": 0.15,
+        "_deltaTime": 2.4,
         "isAds": true
       },
       {
@@ -39,98 +39,99 @@
         "id": 6,
         "core": "rainbow6",
         "image": "rainbow/rainbow6",
-        "_deltaTime":1.8,
+        "_deltaTime":4.8,
         "isAds": true
       },
       {
         "id": 7,
         "core": "rainbow7",
         "image": "rainbow/rainbow7",
-        "_deltaTime": 0.42,
+        "_deltaTime": 4,
         "isAds": true
       },
       {
         "id": 8,
         "core": "rainbow8",
         "image": "rainbow/rainbow8",
-        "_deltaTime": 0.3,
+        "_deltaTime": 2.8
+        ,
         "isAds": true
       },
       {
         "id": 9,
         "core": "rainbow9",
         "image": "rainbow/rainbow9",
-        "_deltaTime": 0.3,
+        "_deltaTime": 0.7,
         "isAds": true
       },
       {
         "id": 10,
         "core": "rainbow10",
         "image": "rainbow/rainbow10",
-        "_deltaTime": 0.3,
+        "_deltaTime": 3,
         "isAds": true
       },
       {
         "id": 11,
         "core": "rainbow11",
         "image": "rainbow/rainbow11",
-        "_deltaTime": 0.3,
+        "_deltaTime": 0.6,
         "isAds": true
       },
       {
         "id": 12,
         "core": "rainbow12",
         "image": "rainbow/rainbow12",
-        "_deltaTime": 0.3,
+        "_deltaTime": 1.8,
         "isAds": true
       },
       {
         "id": 13,
         "core": "rainbow13",
         "image": "rainbow/rainbow13",
-        "_deltaTime": 0.3,
+        "_deltaTime":4.7,
         "isAds": true
       },
       {
         "id": 14,
         "core": "rainbow14",
         "image": "rainbow/rainbow14",
-        "_deltaTime": 0.3,
+        "_deltaTime": 4.85,
         "isAds": true
       },
       {
         "id": 15,
         "core": "rainbow15",
         "image": "rainbow/rainbow15",
-        "_deltaTime": 0.3,
+        "_deltaTime": 5.024,
         "isAds": true
       },
       {
         "id": 16,
         "core": "rainbow16",
         "image": "rainbow/rainbow16",
-        "_deltaTime": 0.3,
+        "_deltaTime": 4.884,
         "isAds": true
       },
       {
         "id": 17,
         "core": "rainbow17",
         "image": "rainbow/rainbow17",
-        "_deltaTime": 0.3,
+        "_deltaTime":1.5,
         "isAds": true
       },
       {
         "id": 18,
         "core": "rainbow18",
         "image": "rainbow/rainbow18",
-        "_deltaTime": 0.3,
+        "_deltaTime": 1.7,
         "isAds": true
       },
       {
         "id": 19,
         "core": "rainbow19",
         "image": "rainbow/rainbow19",
-        "_deltaTime": 0.3,
+        "_deltaTime": 1.9,
         "isAds": true
       }
     ]

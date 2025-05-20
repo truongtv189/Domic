@@ -127,16 +127,17 @@ export class CategoryPageCtrl extends Component {
         
         // Tạo items cho page 1
         page1Items.forEach((itemData) => {
-            const itemNode = instantiate(this.itemPrefab);
+            const itemNode = instantiate(this.itemPrefab); // itemNode là ContainerImgCategory
             const imageNode = itemNode.getChildByName('Image');
+            const adsNode = imageNode?.getChildByName('ADS');
+            const labelNode = itemNode.getChildByName('Label');
             const icon = imageNode?.getComponent(Sprite);
-            const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
+            const nameLabel = labelNode?.getComponent(Label);
             if (nameLabel) nameLabel.string = itemData.name;
             
             const itemKey = itemData.code;
             const isUnlocked = watched[itemKey] === true;
             
-            const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
                 adsNode.active = itemData.isAds === true && !isUnlocked;
             }
@@ -156,16 +157,17 @@ export class CategoryPageCtrl extends Component {
         
         // Tạo items cho page 2
         page2Items.forEach((itemData) => {
-            const itemNode = instantiate(this.itemPrefab);
+            const itemNode = instantiate(this.itemPrefab); // itemNode là ContainerImgCategory
             const imageNode = itemNode.getChildByName('Image');
+            const adsNode = imageNode?.getChildByName('ADS');
+            const labelNode = itemNode.getChildByName('Label');
             const icon = imageNode?.getComponent(Sprite);
-            const nameLabel = itemNode.getChildByName("Label")?.getComponent(Label);
+            const nameLabel = labelNode?.getComponent(Label);
             if (nameLabel) nameLabel.string = itemData.name;
             
             const itemKey = itemData.code;
             const isUnlocked = watched[itemKey] === true;
             
-            const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
                 adsNode.active = itemData.isAds === true && !isUnlocked;
             }
@@ -188,36 +190,44 @@ export class CategoryPageCtrl extends Component {
         layout2.updateLayout();
     }
 
+private onItemClicked(itemNode: Node) {
+    const data = itemNode['itemData'];
 
-    private onItemClicked(itemNode: Node) {
-        const data = itemNode['itemData'];
-        if (data) {
-            const logoData = {
-                core: data.core,
-                image: data.image,
-                isAds: data.isAds,
-                name: data.name,
-                figure: data.figure,
-                animation: data.animation,
-                loadingCategory: data.loadingCategory
-            };
-            if (logoData.isAds === true) {
-                AdsManager.showRewarded((status) => {
-                    if (status) {
-                        // Đánh dấu item đã xem quảng cáo
-                        const watched = GameDataManager.getInstance().data.watchedAdsItems;
-                        watched[data.code] = true;
-                        GameDataManager.getInstance().updateField('watchedAdsItems', watched);
-                        GameDataManager.getInstance().updateField('ItemSelect', logoData);
-                        this.Loading.active = true;
-                        setTimeout(() => {
-                            director.loadScene('playgame');
-                        }, 100);
+    if (data) {
+        const logoData = {
+            code: data.code,
+            image: data.image,
+            isAds: data.isAds,
+            name: data.name,
+            figure: data.figure,
+            animation: data.animation,
+            loadingCategory: data.loadingCategory
+        };
+        if (logoData.isAds === true) {
+            AdsManager.showRewarded((status) => {
+                if (status) {
+                    const watched = GameDataManager.getInstance().data.watchedAdsItems;
+                    watched[data.code] = true;
+
+                    GameDataManager.getInstance().updateField('watchedAdsItems', watched);
+                    GameDataManager.getInstance().updateField('ItemSelect', logoData);
+
+                    // Ẩn node ADS ngay sau khi xem quảng cáo thành công
+                    const imageNode = itemNode.getChildByName('Image');
+                    const adsNode = imageNode?.getChildByName('ADS');
+                    if (adsNode) {
+                        adsNode.active = false;
                     }
-                });
-            }
+
+                    this.Loading.active = true;
+                    setTimeout(() => {
+                        director.loadScene('playgame');
+                    }, 100);
+                }
+            });
         }
     }
+}
 
     // Hàm load ảnh từ resources
     loadImageFromResource(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
