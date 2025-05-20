@@ -285,17 +285,7 @@ export class DraggableItem extends Component {
             if (err) {
                 return;
             }
-            const filteredAssets = assets.slice(1).filter((asset) => {
-                const fileName = asset['_name'];
-                const fileNumber = parseInt(fileName.replace(/\D/g, ''));
-                return fileNumber >= 1;
-            });
-
-            this._spriteFrames = filteredAssets.sort((a, b) => {
-                const numA = parseInt(a['_name'].replace(/\D/g, ''));
-                const numB = parseInt(b['_name'].replace(/\D/g, ''));
-                return numA - numB;
-            });
+            this._spriteFrames = assets;
             // Load audio clip
             resources.load<AudioClip>(audioPath, AudioClip, (err, audioClip) => {
                 if (err || !audioClip) {
