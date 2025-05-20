@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "eb7c0605-0c82-4263-af44-51f451c4ccb3",
+  "uuid": "e13bc0d8-aa89-4b4e-91b4-fc2c8623597e",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "eb7c0605-0c82-4263-af44-51f451c4ccb3@6c48a",
+      "uuid": "e13bc0d8-aa89-4b4e-91b4-fc2c8623597e@6c48a",
       "displayName": "spooky12",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "eb7c0605-0c82-4263-af44-51f451c4ccb3",
+        "imageUuidOrDatabaseUri": "e13bc0d8-aa89-4b4e-91b4-fc2c8623597e",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,7 +34,7 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "eb7c0605-0c82-4263-af44-51f451c4ccb3@f9941",
+      "uuid": "e13bc0d8-aa89-4b4e-91b4-fc2c8623597e@f9941",
       "displayName": "spooky12",
       "id": "f9941",
       "name": "spriteFrame",
@@ -113,7 +113,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "eb7c0605-0c82-4263-af44-51f451c4ccb3@6c48a",
+        "imageUuidOrDatabaseUri": "e13bc0d8-aa89-4b4e-91b4-fc2c8623597e@6c48a",
         "atlasUuid": "",
         "trimType": "auto"
       },
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "eb7c0605-0c82-4263-af44-51f451c4ccb3@6c48a"
+    "redirect": "e13bc0d8-aa89-4b4e-91b4-fc2c8623597e@6c48a"
   }
 }
