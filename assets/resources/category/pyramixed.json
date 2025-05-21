@@ -1,0 +1,139 @@
+{
+    "DATA": [
+      {
+        "id": 1,
+        "core": "pyramixed1",
+        "image": "pyramixed/pyramixed1",
+        "_deltaTime": 0.911,
+        "isAds": true
+      },
+      {
+        "id": 2,
+        "core": "pyramixed2",
+        "image": "pyramixed/pyramixed2",
+        "_deltaTime": 1.204,
+        "isAds": true
+      },
+      {
+        "id": 3,
+        "core": "pyramixed3",
+        "image": "pyramixed/pyramixed3",
+        "_deltaTime": 0.613,
+        "isAds": true
+      },
+      {
+        "id": 4,
+        "core": "pyramixed4",
+        "image": "pyramixed/pyramixed4",
+        "_deltaTime": 2.4,
+        "isAds": true
+      },
+      {
+        "id": 5,
+        "core": "pyramixed5",
+        "image": "pyramixed/pyramixed5",
+        "_deltaTime": 0.585,
+        "isAds": true
+      },
+      {
+        "id": 6,
+        "core": "pyramixed6",
+        "image": "pyramixed/pyramixed6",
+        "_deltaTime":4.8,
+        "isAds": true
+      },
+      {
+        "id": 7,
+        "core": "pyramixed7",
+        "image": "pyramixed/pyramixed7",
+        "_deltaTime": 4,
+        "isAds": true
+      },
+      {
+        "id": 8,
+        "core": "pyramixed8",
+        "image": "pyramixed/pyramixed8",
+        "_deltaTime": 2.8
+        ,
+        "isAds": true
+      },
+      {
+        "id": 9,
+        "core": "pyramixed9",
+        "image": "pyramixed/pyramixed9",
+        "_deltaTime": 0.7,
+        "isAds": true
+      },
+      {
+        "id": 10,
+        "core": "pyramixed10",
+        "image": "pyramixed/pyramixed10",
+        "_deltaTime": 3,
+        "isAds": true
+      },
+      {
+        "id": 11,
+        "core": "pyramixed11",
+        "image": "pyramixed/pyramixed11",
+        "_deltaTime": 0.6,
+        "isAds": true
+      },
+      {
+        "id": 12,
+        "core": "pyramixed12",
+        "image": "pyramixed/pyramixed12",
+        "_deltaTime": 1.8,
+        "isAds": true
+      },
+      {
+        "id": 13,
+        "core": "pyramixed13",
+        "image": "pyramixed/pyramixed13",
+        "_deltaTime":4.7,
+        "isAds": true
+      },
+      {
+        "id": 14,
+        "core": "pyramixed14",
+        "image": "pyramixed/pyramixed14",
+        "_deltaTime": 4.85,
+        "isAds": true
+      },
+      {
+        "id": 15,
+        "core": "pyramixed15",
+        "image": "pyramixed/pyramixed15",
+        "_deltaTime": 5.024,
+        "isAds": true
+      },
+      {
+        "id": 16,
+        "core": "pyramixed16",
+        "image": "pyramixed/pyramixed16",
+        "_deltaTime": 4.884,
+        "isAds": true
+      },
+      {
+        "id": 17,
+        "core": "pyramixed17",
+        "image": "pyramixed/pyramixed17",
+        "_deltaTime":1.5,
+        "isAds": true
+      },
+      {
+        "id": 18,
+        "core": "pyramixed18",
+        "image": "pyramixed/pyramixed18",
+        "_deltaTime": 1.7,
+        "isAds": true
+      },
+      {
+        "id": 19,
+        "core": "pyramixed19",
+        "image": "pyramixed/pyramixed19",
+        "_deltaTime": 1.9,
+        "isAds": true
+      }
+    ]
+  }
+  
