@@ -1,0 +1,139 @@
+{
+    "DATA": [
+      {
+        "id": 1,
+        "core": "spooky1",
+        "image": "spooky/spooky1",
+        "_deltaTime": 0.911,
+        "isAds": true
+      },
+      {
+        "id": 2,
+        "core": "spooky2",
+        "image": "spooky/spooky2",
+        "_deltaTime": 1.204,
+        "isAds": true
+      },
+      {
+        "id": 3,
+        "core": "spooky3",
+        "image": "spooky/spooky3",
+        "_deltaTime": 0.613,
+        "isAds": true
+      },
+      {
+        "id": 4,
+        "core": "spooky4",
+        "image": "spooky/spooky4",
+        "_deltaTime": 2.4,
+        "isAds": true
+      },
+      {
+        "id": 5,
+        "core": "spooky5",
+        "image": "spooky/spooky5",
+        "_deltaTime": 0.585,
+        "isAds": true
+      },
+      {
+        "id": 6,
+        "core": "spooky6",
+        "image": "spooky/spooky6",
+        "_deltaTime":4.8,
+        "isAds": true
+      },
+      {
+        "id": 7,
+        "core": "spooky7",
+        "image": "spooky/spooky7",
+        "_deltaTime": 4,
+        "isAds": true
+      },
+      {
+        "id": 8,
+        "core": "spooky8",
+        "image": "spooky/spooky8",
+        "_deltaTime": 2.8
+        ,
+        "isAds": true
+      },
+      {
+        "id": 9,
+        "core": "spooky9",
+        "image": "spooky/spooky9",
+        "_deltaTime": 0.7,
+        "isAds": true
+      },
+      {
+        "id": 10,
+        "core": "spooky10",
+        "image": "spooky/spooky10",
+        "_deltaTime": 3,
+        "isAds": true
+      },
+      {
+        "id": 11,
+        "core": "spooky11",
+        "image": "spooky/spooky11",
+        "_deltaTime": 0.6,
+        "isAds": true
+      },
+      {
+        "id": 12,
+        "core": "spooky12",
+        "image": "spooky/spooky12",
+        "_deltaTime": 1.8,
+        "isAds": true
+      },
+      {
+        "id": 13,
+        "core": "spooky13",
+        "image": "spooky/spooky13",
+        "_deltaTime":4.7,
+        "isAds": true
+      },
+      {
+        "id": 14,
+        "core": "spooky14",
+        "image": "spooky/spooky14",
+        "_deltaTime": 4.85,
+        "isAds": true
+      },
+      {
+        "id": 15,
+        "core": "spooky15",
+        "image": "spooky/spooky15",
+        "_deltaTime": 5.024,
+        "isAds": true
+      },
+      {
+        "id": 16,
+        "core": "spooky16",
+        "image": "spooky/spooky16",
+        "_deltaTime": 4.884,
+        "isAds": true
+      },
+      {
+        "id": 17,
+        "core": "spooky17",
+        "image": "spooky/spooky17",
+        "_deltaTime":1.5,
+        "isAds": true
+      },
+      {
+        "id": 18,
+        "core": "spooky18",
+        "image": "spooky/spooky18",
+        "_deltaTime": 1.7,
+        "isAds": true
+      },
+      {
+        "id": 19,
+        "core": "spooky19",
+        "image": "spooky/spooky19",
+        "_deltaTime": 1.9,
+        "isAds": true
+      }
+    ]
+  }
+  
