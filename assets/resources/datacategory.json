@@ -146,9 +146,9 @@
       "image": "image/spooky",
       "isAds": false,
       "backgorund": "DuoMix-select-bg",
-      "figure": "CharDefault-1",
-      "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "figure": "figure/spooky",
+      "animation": "",
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
     },
     {
       "code": "phase3",
@@ -216,9 +216,9 @@
       "image": "image/frozen",
       "isAds": false,
       "backgorund": "DuoMix-select-bg",
-      "figure": "CharDefault-1",
-      "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "figure": "figure/rainbow",
+      "animation": "Animator/animationRainBow",
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
     },
     {
       "code": "chonky",
@@ -226,9 +226,9 @@
       "image": "image/chonky",
       "isAds": false,
       "backgorund": "DuoMix-select-bg",
-      "figure": "CharDefault-1",
-      "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "figure": "figure/chonky",
+      "animation": "",
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
     }
   ]
 }
