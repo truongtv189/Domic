@@ -26,9 +26,9 @@
       "image": "image/mustard",
       "isAds": true,
       "backgorund": "DuoMix-select-bg",
-      "figure": "CharDefault-1",
-      "animation": "animation",
-      "loadingCategory": ""
+      "figure": "figure/mustard",
+      "animation": "Animator/Animationmustan",
+      "loadingCategory": "Images/Icon/LoadingIcon/fame2"
     },
     {
       "code": "para",
@@ -38,7 +38,7 @@
       "backgorund": "DuoMix-select-bg",
       "figure": "CharDefault-1",
       "animation": "animation",
-      "loadingCategory": ""
+      "loadingCategory": "Images/Icon/LoadingIcon/fame2"
     },
     {
       "code": "retake",
@@ -46,9 +46,9 @@
       "image": "image/retake",
       "isAds": false,
       "backgorund": "DuoMix-select-bg",
-      "figure": "CharDefault-1",
-      "animation": "animation",
-      "loadingCategory": ""
+      "figure": "figure/retake",
+      "animation": "Animator/AnimationRetake",
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
     },
     {
       "code": "pyramixed",
@@ -60,7 +60,6 @@
       "animation": "animation",
       "loadingCategory": ""
     },
-  
     {
       "code": "original",
       "name": "ORIGINAL",

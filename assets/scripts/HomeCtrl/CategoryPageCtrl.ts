@@ -89,7 +89,7 @@ export class CategoryPageCtrl extends Component {
         const watched = GameDataManager.getInstance().data.watchedAdsItems || {};
         const totalItems = this.imageData.length;
         const itemsPerPage = Math.ceil(totalItems / 2);
-        
+
         // Lấy content node từ PageView
         const content = this.pageView.content;
         if (!content) return;
@@ -124,7 +124,7 @@ export class CategoryPageCtrl extends Component {
         // Phân phối items vào 2 page
         const page1Items = this.imageData.slice(0, itemsPerPage);
         const page2Items = this.imageData.slice(itemsPerPage);
-        
+
         // Tạo items cho page 1
         page1Items.forEach((itemData) => {
             const itemNode = instantiate(this.itemPrefab); // itemNode là ContainerImgCategory
@@ -134,27 +134,27 @@ export class CategoryPageCtrl extends Component {
             const icon = imageNode?.getComponent(Sprite);
             const nameLabel = labelNode?.getComponent(Label);
             if (nameLabel) nameLabel.string = itemData.name;
-            
+
             const itemKey = itemData.code;
             const isUnlocked = watched[itemKey] === true;
-            
+
             if (adsNode) {
                 adsNode.active = itemData.isAds === true && !isUnlocked;
             }
-            
+
             itemNode['itemData'] = itemData;
             itemNode.on(Node.EventType.TOUCH_END, () => {
                 this.onItemClicked(itemNode);
             });
-            
+
             page1.addChild(itemNode);
-            
+
             const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
             this.loadImageFromResource(imagePath, (spriteFrame) => {
                 if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
             });
         });
-        
+
         // Tạo items cho page 2
         page2Items.forEach((itemData) => {
             const itemNode = instantiate(this.itemPrefab); // itemNode là ContainerImgCategory
@@ -164,21 +164,21 @@ export class CategoryPageCtrl extends Component {
             const icon = imageNode?.getComponent(Sprite);
             const nameLabel = labelNode?.getComponent(Label);
             if (nameLabel) nameLabel.string = itemData.name;
-            
+
             const itemKey = itemData.code;
             const isUnlocked = watched[itemKey] === true;
-            
+
             if (adsNode) {
                 adsNode.active = itemData.isAds === true && !isUnlocked;
             }
-            
+
             itemNode['itemData'] = itemData;
             itemNode.on(Node.EventType.TOUCH_END, () => {
                 this.onItemClicked(itemNode);
             });
-            
+
             page2.addChild(itemNode);
-            
+
             const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
             this.loadImageFromResource(imagePath, (spriteFrame) => {
                 if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
@@ -190,44 +190,51 @@ export class CategoryPageCtrl extends Component {
         layout2.updateLayout();
     }
 
-private onItemClicked(itemNode: Node) {
-    const data = itemNode['itemData'];
+    private onItemClicked(itemNode: Node) {
+        const data = itemNode['itemData'];
+        if (data) {
+            const logoData = {
+                code: data.code,
+                image: data.image,
+                isAds: data.isAds,
+                name: data.name,
+                figure: data.figure,
+                animation: data.animation,
+                loadingCategory: data.loadingCategory
+            };
 
-    if (data) {
-        const logoData = {
-            code: data.code,
-            image: data.image,
-            isAds: data.isAds,
-            name: data.name,
-            figure: data.figure,
-            animation: data.animation,
-            loadingCategory: data.loadingCategory
-        };
-        if (logoData.isAds === true) {
-            AdsManager.showRewarded((status) => {
-                if (status) {
-                    const watched = GameDataManager.getInstance().data.watchedAdsItems;
-                    watched[data.code] = true;
+            // Ẩn node ADS cho cả hai trường hợp
+            const imageNode = itemNode.getChildByName('Image');
+            const adsNode = imageNode?.getChildByName('ADS');
+            if (adsNode) {
+                adsNode.active = false;
+            }
 
-                    GameDataManager.getInstance().updateField('watchedAdsItems', watched);
-                    GameDataManager.getInstance().updateField('ItemSelect', logoData);
+            if (logoData.isAds === true) {
+                AdsManager.showRewarded((status) => {
+                    if (status) {
+                        const watched = GameDataManager.getInstance().data.watchedAdsItems;
+                        watched[data.code] = true;
 
-                    // Ẩn node ADS ngay sau khi xem quảng cáo thành công
-                    const imageNode = itemNode.getChildByName('Image');
-                    const adsNode = imageNode?.getChildByName('ADS');
-                    if (adsNode) {
-                        adsNode.active = false;
+                        GameDataManager.getInstance().updateField('watchedAdsItems', watched);
+                        GameDataManager.getInstance().updateField('ItemSelect', logoData);
+
+                        this.Loading.active = true;
+                        setTimeout(() => {
+                            director.loadScene('playgame');
+                        }, 100);
                     }
-
-                    this.Loading.active = true;
-                    setTimeout(() => {
-                        director.loadScene('playgame');
-                    }, 100);
-                }
-            });
+                });
+            } else {
+                // Handle non-ads items
+                GameDataManager.getInstance().updateField('ItemSelect', logoData);
+                this.Loading.active = true;
+                setTimeout(() => {
+                    director.loadScene('playgame');
+                }, 100);
+            }
         }
     }
-}
 
     // Hàm load ảnh từ resources
     loadImageFromResource(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {

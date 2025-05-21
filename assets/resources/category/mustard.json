@@ -1,0 +1,139 @@
+{
+    "DATA": [
+      {
+        "id": 1,
+        "core": "mustard1",
+        "image": "mustard/mustard1",
+        "_deltaTime": 0.911,
+        "isAds": true
+      },
+      {
+        "id": 2,
+        "core": "mustard2",
+        "image": "mustard/mustard2",
+        "_deltaTime": 1.204,
+        "isAds": true
+      },
+      {
+        "id": 3,
+        "core": "mustard3",
+        "image": "mustard/mustard3",
+        "_deltaTime": 0.613,
+        "isAds": true
+      },
+      {
+        "id": 4,
+        "core": "mustard4",
+        "image": "mustard/mustard4",
+        "_deltaTime": 2.4,
+        "isAds": true
+      },
+      {
+        "id": 5,
+        "core": "mustard5",
+        "image": "mustard/mustard5",
+        "_deltaTime": 0.585,
+        "isAds": true
+      },
+      {
+        "id": 6,
+        "core": "mustard6",
+        "image": "mustard/mustard6",
+        "_deltaTime":4.8,
+        "isAds": true
+      },
+      {
+        "id": 7,
+        "core": "mustard7",
+        "image": "mustard/mustard7",
+        "_deltaTime": 4,
+        "isAds": true
+      },
+      {
+        "id": 8,
+        "core": "mustard8",
+        "image": "mustard/mustard8",
+        "_deltaTime": 2.8
+        ,
+        "isAds": true
+      },
+      {
+        "id": 9,
+        "core": "mustard9",
+        "image": "mustard/mustard9",
+        "_deltaTime": 0.7,
+        "isAds": true
+      },
+      {
+        "id": 10,
+        "core": "mustard10",
+        "image": "mustard/mustard10",
+        "_deltaTime": 3,
+        "isAds": true
+      },
+      {
+        "id": 11,
+        "core": "mustard11",
+        "image": "mustard/mustard11",
+        "_deltaTime": 0.6,
+        "isAds": true
+      },
+      {
+        "id": 12,
+        "core": "mustard12",
+        "image": "mustard/mustard12",
+        "_deltaTime": 1.8,
+        "isAds": true
+      },
+      {
+        "id": 13,
+        "core": "mustard13",
+        "image": "mustard/mustard13",
+        "_deltaTime":4.7,
+        "isAds": true
+      },
+      {
+        "id": 14,
+        "core": "mustard14",
+        "image": "mustard/mustard14",
+        "_deltaTime": 4.85,
+        "isAds": true
+      },
+      {
+        "id": 15,
+        "core": "mustard15",
+        "image": "mustard/mustard15",
+        "_deltaTime": 5.024,
+        "isAds": true
+      },
+      {
+        "id": 16,
+        "core": "mustard16",
+        "image": "mustard/mustard16",
+        "_deltaTime": 4.884,
+        "isAds": true
+      },
+      {
+        "id": 17,
+        "core": "mustard17",
+        "image": "mustard/mustard17",
+        "_deltaTime":1.5,
+        "isAds": true
+      },
+      {
+        "id": 18,
+        "core": "mustard18",
+        "image": "mustard/mustard18",
+        "_deltaTime": 1.7,
+        "isAds": true
+      },
+      {
+        "id": 19,
+        "core": "mustard19",
+        "image": "mustard/mustard19",
+        "_deltaTime": 1.9,
+        "isAds": true
+      }
+    ]
+  }
+  

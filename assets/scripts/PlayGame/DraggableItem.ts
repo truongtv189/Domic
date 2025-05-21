@@ -285,7 +285,8 @@ export class DraggableItem extends Component {
             if (err) {
                 return;
             }
-            this._spriteFrames = assets;
+            // Bỏ qua phần tử đầu tiên của mảng
+            this._spriteFrames = assets.slice(1);
             // Load audio clip
             resources.load<AudioClip>(audioPath, AudioClip, (err, audioClip) => {
                 if (err || !audioClip) {

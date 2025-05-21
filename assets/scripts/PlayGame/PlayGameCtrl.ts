@@ -191,7 +191,6 @@ export class PlayGameCtrl extends Component {
             console.log(`[PlayGameCtrl] Creating item ${i} with path:`, cleanPath);
             const itemNode = instantiate(this.itemPrefab);
             this.nodeCategoryFigure.addChild(itemNode);
-            debugger
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
                 const shouldShowAds = data.isAds === true && !watched[data.core];

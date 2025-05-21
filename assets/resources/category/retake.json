@@ -1,0 +1,139 @@
+{
+    "DATA": [
+      {
+        "id": 1,
+        "core": "retake1",
+        "image": "retake/retake1",
+        "_deltaTime": 0.911,
+        "isAds": true
+      },
+      {
+        "id": 2,
+        "core": "retake2",
+        "image": "retake/retake2",
+        "_deltaTime": 1.204,
+        "isAds": true
+      },
+      {
+        "id": 3,
+        "core": "retake3",
+        "image": "retake/retake3",
+        "_deltaTime": 0.613,
+        "isAds": true
+      },
+      {
+        "id": 4,
+        "core": "retake4",
+        "image": "retake/retake4",
+        "_deltaTime": 2.4,
+        "isAds": true
+      },
+      {
+        "id": 5,
+        "core": "retake5",
+        "image": "retake/retake5",
+        "_deltaTime": 0.585,
+        "isAds": true
+      },
+      {
+        "id": 6,
+        "core": "retake6",
+        "image": "retake/retake6",
+        "_deltaTime":4.8,
+        "isAds": true
+      },
+      {
+        "id": 7,
+        "core": "retake7",
+        "image": "retake/retake7",
+        "_deltaTime": 4,
+        "isAds": true
+      },
+      {
+        "id": 8,
+        "core": "retake8",
+        "image": "retake/retake8",
+        "_deltaTime": 2.8
+        ,
+        "isAds": true
+      },
+      {
+        "id": 9,
+        "core": "retake9",
+        "image": "retake/retake9",
+        "_deltaTime": 0.7,
+        "isAds": true
+      },
+      {
+        "id": 10,
+        "core": "retake10",
+        "image": "retake/retake10",
+        "_deltaTime": 3,
+        "isAds": true
+      },
+      {
+        "id": 11,
+        "core": "retake11",
+        "image": "retake/retake11",
+        "_deltaTime": 0.6,
+        "isAds": true
+      },
+      {
+        "id": 12,
+        "core": "retake12",
+        "image": "retake/retake12",
+        "_deltaTime": 1.8,
+        "isAds": true
+      },
+      {
+        "id": 13,
+        "core": "retake13",
+        "image": "retake/retake13",
+        "_deltaTime":4.7,
+        "isAds": true
+      },
+      {
+        "id": 14,
+        "core": "retake14",
+        "image": "retake/retake14",
+        "_deltaTime": 4.85,
+        "isAds": true
+      },
+      {
+        "id": 15,
+        "core": "retake15",
+        "image": "retake/retake15",
+        "_deltaTime": 5.024,
+        "isAds": true
+      },
+      {
+        "id": 16,
+        "core": "retake16",
+        "image": "retake/retake16",
+        "_deltaTime": 4.884,
+        "isAds": true
+      },
+      {
+        "id": 17,
+        "core": "retake17",
+        "image": "retake/retake17",
+        "_deltaTime":1.5,
+        "isAds": true
+      },
+      {
+        "id": 18,
+        "core": "retake18",
+        "image": "retake/retake18",
+        "_deltaTime": 1.7,
+        "isAds": true
+      },
+      {
+        "id": 19,
+        "core": "retake19",
+        "image": "retake/retake19",
+        "_deltaTime": 1.9,
+        "isAds": true
+      }
+    ]
+  }
+  
