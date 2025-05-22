@@ -25,6 +25,8 @@ export class PlayGameCtrl extends Component {
         }
         this.loadAnimClips(() => {
             const gameData = GameDataManager.getInstance()?.data;
+            const backgorund = GameDataManager.getInstance()?.data.ItemSelect.backgorund;
+            // const backgorund1 = GameDataManager.getInstance()?.data.ItemSelect.backgorund1;
             if (!gameData || !gameData.ItemSelect || !gameData.ItemSelect.figure) {
                 console.error('[PlayGameCtrl] Game data or figure data is missing:', gameData);
                 return;
@@ -40,12 +42,80 @@ export class PlayGameCtrl extends Component {
                     console.error('[PlayGameCtrl] Failed to load sprite frame');
                 }
             });
+            // Load backgorund
+            if (backgorund) {
+                const bgPath = `${backgorund.replace(/\.png$/, '')}/spriteFrame`;
+                this.loadSpriteFrameFromResources(bgPath, (spriteFrame) => {
+                    if (spriteFrame && this.Farm1) {
+                        this.setBackgroundSprite(this.Farm1, spriteFrame);
+                    }
+                });
+            }
+
+            // Load backgorund
+            if (backgorund) {
+                const bgPath = `${backgorund.replace(/\.png$/, '')}/spriteFrame`;
+                this.loadSpriteFrameFromResources(bgPath, (spriteFrame) => {
+                    if (spriteFrame && this.Farm2) {
+                        this.setBackgroundSprite(this.Farm2, spriteFrame);
+                    }
+                });
+            }
+
+            // Load backgorund1 for Farm1 and Farm2 child nodes
+            const backgorund1 = GameDataManager.getInstance()?.data.ItemSelect.backgorund1;
+            if (backgorund1 && backgorund1.trim() !== "") {
+                const bgPath1 = `${backgorund1.replace(/\.png$/, '')}/spriteFrame`;
+                this.loadSpriteFrameFromResources(bgPath1, (spriteFrame) => {
+                    if (spriteFrame) {
+                        // Set sprite for Farm1's child nodes
+                        if (this.Farm1 && this.Farm1.children.length >= 2) {
+                            const farm1Child1 = this.Farm1.children[0];
+                            const farm1Child2 = this.Farm1.children[1];
+                            this.setBackgroundSprite(farm1Child1, spriteFrame);
+                            this.setBackgroundSprite(farm1Child2, spriteFrame);
+                            
+                            // Set initial positions for seamless movement while preserving widget settings
+                            const nodeWidth = farm1Child1.getComponent(UITransform)?.contentSize.width || 0;
+                            const originalPos1 = farm1Child1.getPosition();
+                            const originalPos2 = farm1Child2.getPosition();
+                            
+                            farm1Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
+                            farm1Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
+                            
+                            this.setupContinuousMovement(farm1Child1);
+                            this.setupContinuousMovement(farm1Child2);
+                        }
+                        
+                        // Set sprite for Farm2's child nodes
+                        if (this.Farm2 && this.Farm2.children.length >= 2) {
+                            const farm2Child1 = this.Farm2.children[0];
+                            const farm2Child2 = this.Farm2.children[1];
+                            this.setBackgroundSprite(farm2Child1, spriteFrame);
+                            this.setBackgroundSprite(farm2Child2, spriteFrame);
+                            
+                            // Set initial positions for seamless movement while preserving widget settings
+                            const nodeWidth = farm2Child1.getComponent(UITransform)?.contentSize.width || 0;
+                            const originalPos1 = farm2Child1.getPosition();
+                            const originalPos2 = farm2Child2.getPosition();
+                            
+                            farm2Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
+                            farm2Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
+                            
+                            this.setupContinuousMovement(farm2Child1);
+                            this.setupContinuousMovement(farm2Child2);
+                        }
+                    }
+                });
+            }
+
         });
 
         this.cacheDropTargetRects();
         this.loadJsonData();
         this.node.on('reset-all-items', this.resetAllItems, this);
         themeEventTarget.on('theme-selected', this.applyThemeColors, this);
+
     }
 
     loadAnimClips(callback: () => void) {
@@ -142,7 +212,7 @@ export class PlayGameCtrl extends Component {
             } else {
                 console.error('[PlayGameCtrl] Invalid JSON data structure');
             }
-         
+
         } catch (err) {
             console.error('[PlayGameCtrl] Error loading JSON data:', err);
         }
@@ -160,6 +230,35 @@ export class PlayGameCtrl extends Component {
 
         sprite.spriteFrame = spriteFrame;
     }
+
+    // Add continuous movement animation
+    private setupContinuousMovement(node: Node) {
+        if (!node) return;
+
+        // Get the parent's width to determine movement range
+        const parent = node.parent;
+        if (!parent) return;
+
+        const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 0;
+        const originalPos = node.getPosition();
+
+        // Create movement action
+        const moveRight = () => {
+            const currentPos = node.getPosition();
+            const newX = currentPos.x + 1; // Move 1 unit per frame
+
+            // If node moves beyond right edge, reset to left
+            if (newX > nodeWidth) {
+                node.setPosition(new Vec3(-nodeWidth, originalPos.y, originalPos.z));
+            } else {
+                node.setPosition(new Vec3(newX, originalPos.y, originalPos.z));
+            }
+        };
+
+        // Schedule the movement
+        this.schedule(moveRight, 0);
+    }
+
     private loadResource<T>(path: string): Promise<T> {
         return new Promise((resolve, reject) => {
             resources.load(path, (err, asset) => {
@@ -217,6 +316,7 @@ export class PlayGameCtrl extends Component {
                     console.warn(`[PlayGameCtrl] Failed to set sprite frame for item ${i}`);
                 }
             });
+
         }
     }
 

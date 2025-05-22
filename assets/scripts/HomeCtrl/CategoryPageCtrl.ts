@@ -200,7 +200,9 @@ export class CategoryPageCtrl extends Component {
                 name: data.name,
                 figure: data.figure,
                 animation: data.animation,
-                loadingCategory: data.loadingCategory
+                loadingCategory: data.loadingCategory,
+                backgorund:data.backgorund,
+                backgorund1:data.backgorund1
             };
 
             // Ẩn node ADS cho cả hai trường hợp

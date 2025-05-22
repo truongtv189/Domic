@@ -8,6 +8,8 @@ export interface ItemSelect {
     figure: string;
     animation: string;
     loadingCategory: string;
+    backgorund: string;
+    backgorund1: string;
 }
 interface ThemeItem {
     image: string;
@@ -67,7 +69,7 @@ export class GameDataManager {
             sfxVolume: 1,
             ItemSelect: {
                 code: "", image: "", isAds: false, name: "", figure: "",
-                animation: "", loadingCategory: ""
+                animation: "", loadingCategory: "", backgorund: "", backgorund1: ""
             },
             ItemSlectTheme: {
                 image: "",
