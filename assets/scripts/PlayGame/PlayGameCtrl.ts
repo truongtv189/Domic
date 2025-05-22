@@ -12,11 +12,17 @@ export class PlayGameCtrl extends Component {
     @property(Node) nodeCategoryFigure: Node = null;
     @property(Node) Farm1: Node = null;
     @property(Node) Farm2: Node = null;
+    @property(Prefab) LoadingPrefab: Prefab = null;
+    @property(Node) Loading: Node = null;
     // @property(Node) nodeLoading: Node = null;
     private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
     onLoad() {
+         const loadingNode = instantiate(this.LoadingPrefab);
+        this.Loading.addChild(loadingNode);
+        loadingNode.setPosition(0, 0, 0);
+        this.Loading.active = true;
         if (!this.itemPrefab) {
             return;
         }
@@ -51,14 +57,14 @@ export class PlayGameCtrl extends Component {
                     console.error('[PlayGameCtrl] Error loading sprite frames:', err);
                     return;
                 }
-                
+
                 if (!spriteFrames || spriteFrames.length === 0) {
                     console.error('[PlayGameCtrl] No sprite frames found in path:', imagePath);
                     return;
                 }
 
                 console.log('[PlayGameCtrl] Loaded', spriteFrames.length, 'sprite frames');
-                
+
                 // Assign sprite frames to drop targets
                 this.dropTargets.forEach((target, index) => {
                     const sprite = target.getComponent(Sprite);
@@ -145,7 +151,7 @@ export class PlayGameCtrl extends Component {
         this.loadJsonData();
         this.node.on('reset-all-items', this.resetAllItems, this);
         themeEventTarget.on('theme-selected', this.applyThemeColors, this);
-
+        this.Loading.active = false;
     }
 
     loadAnimClips(callback: () => void) {
