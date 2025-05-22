@@ -24,6 +24,8 @@ export class DraggableItem extends Component {
     private _isPlaying = false;
     private _spriteFrames: SpriteFrame[] = [];
     private static dropZoneMap: Map<Node, DraggableItem> = new Map();
+    private currentTargetNode: Node | null = null;
+    private static originalSpriteFrames: Map<Node, SpriteFrame> = new Map();
 
     onLoad() {
         this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
@@ -33,6 +35,14 @@ export class DraggableItem extends Component {
         this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
         this.originalPosition = this.node.getPosition().clone();
         this.originalParent = this.node.parent;
+
+        // Store original spriteFrames for all drop targets
+        this.dropTargets.forEach(target => {
+            const sprite = target.getComponent(Sprite);
+            if (sprite && sprite.spriteFrame) {
+                DraggableItem.originalSpriteFrames.set(target, sprite.spriteFrame);
+            }
+        });
 
         // Thêm listener cho sự kiện reset
         director.on(RESET_AUDIO_FRAME_EVENT, this.handleReset, this);
@@ -105,8 +115,42 @@ export class DraggableItem extends Component {
         const touchPos = event.getUILocation();
         const newPos = new Vec3(touchPos.x + this.offset.x, touchPos.y + this.offset.y, 0);
         this.node.setPosition(newPos);
+
+        const worldPos = this.node.getWorldPosition();
+        let newTargetNode: Node | null = null;
+
+        for (const dropZone of this.dropTargets) {
+            const dropBox = dropZone.getComponent(UITransform);
+            if (!dropBox) continue;
+            const localPos = dropBox.convertToNodeSpaceAR(worldPos);
+            const size = dropBox.contentSize;
+            if (Math.abs(localPos.x) <= size.width / 2 && Math.abs(localPos.y) <= size.height / 2) {
+                newTargetNode = dropZone;
+                break;
+            }
+        }
+
+        if (newTargetNode !== this.currentTargetNode) {
+            if (this.currentTargetNode) {
+                this.resetTargetColor(this.currentTargetNode);
+            }
+
+            if (newTargetNode) {
+                const newSprite = newTargetNode.getComponent(Sprite);
+                if (newSprite) {
+                    newSprite.color = new Color(180, 180, 180);
+                }
+            }
+
+            this.currentTargetNode = newTargetNode;
+        }
     }
     onTouchEnd(event: EventTouch) {
+        if (this.currentTargetNode) {
+            this.resetTargetColor(this.currentTargetNode);
+            this.currentTargetNode = null;
+        }
+
         if (this.isDropped) return;
         const worldPos = this.node.getWorldPosition();
         let matchedDropZone: Node | null = null;
@@ -187,9 +231,6 @@ export class DraggableItem extends Component {
             if (dropZoneSprite) {
                 dropZoneSprite.enabled = false;
             }
-            // Đặt màu cho sprite gốc
-            const sprite = this.node.getComponent(Sprite);
-            if (sprite) sprite.color = new Color(180, 180, 180);
             // Thiết lập các thuộc tính
             this.isDropped = true;
             this.sprite = newSprite;
@@ -383,6 +424,18 @@ export class DraggableItem extends Component {
                     this._audioSource.stop();
                     this._audioSource.play();
                 }
+            }
+        }
+    }
+
+    private resetTargetColor(target: Node) {
+        const sprite = target.getComponent(Sprite);
+        if (sprite) {
+            const originalFrame = DraggableItem.originalSpriteFrames.get(target);
+            if (originalFrame) {
+                sprite.spriteFrame = originalFrame;
+            } else {
+                sprite.color = new Color(0, 0, 0);
             }
         }
     }
