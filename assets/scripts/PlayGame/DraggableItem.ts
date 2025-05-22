@@ -141,7 +141,10 @@ export class DraggableItem extends Component {
             if (this.currentTargetNode) {
                 const prevSprite = this.currentTargetNode.getComponent(Sprite);
                 if (prevSprite) {
-                    prevSprite.color = new Color(0, 0, 0); // Set to black when leaving
+                    // Chỉ đổi màu khi isDis === true, nếu false thì giữ nguyên
+                    if (GameDataManager.getInstance().data.ItemSelect.isDis === true) {
+                        prevSprite.color = new Color(0, 0, 0); // Set to black when leaving
+                    }
                 }
             }
 
@@ -149,7 +152,10 @@ export class DraggableItem extends Component {
             if (newTargetNode) {
                 const newSprite = newTargetNode.getComponent(Sprite);
                 if (newSprite) {
-                    newSprite.color = new Color(180, 180, 180); // Set to gray when hovering
+                    // Chỉ đổi màu khi isDis === true, nếu false thì giữ nguyên
+                    if (GameDataManager.getInstance().data.ItemSelect.isDis==false) {
+                        // newSprite.color = new Color(180, 180, 180); // Set to gray when hovering
+                    }
                 }
             }
 
@@ -161,7 +167,10 @@ export class DraggableItem extends Component {
         if (this.currentTargetNode) {
             const sprite = this.currentTargetNode.getComponent(Sprite);
             if (sprite) {
-                sprite.color = new Color(0, 0, 0); // Set to black when not dropped
+                // Chỉ đổi màu khi isDis === true, nếu false thì giữ nguyên
+                if (GameDataManager.getInstance().data.ItemSelect.isDis === true) {
+                    sprite.color = new Color(0, 0, 0); // Set to black when not dropped
+                }
             }
             this.currentTargetNode = null;
         }

@@ -11,6 +11,7 @@ export interface ItemSelect {
     backgorund: string;
     backgorund1: string;
     isDis: boolean;
+    isRotateMove: boolean;
 }
 interface ThemeItem {
     image: string;
@@ -70,7 +71,7 @@ export class GameDataManager {
             sfxVolume: 1,
             ItemSelect: {
                 code: "", image: "", isAds: false, name: "", figure: "",
-                animation: "", loadingCategory: "", backgorund: "", backgorund1: "",isDis:false
+                animation: "", loadingCategory: "", backgorund: "", backgorund1: "",isDis:false,isRotateMove:false
             },
             ItemSlectTheme: {
                 image: "",

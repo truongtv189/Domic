@@ -10,7 +10,8 @@
       "figure": "figure/rainbow",
       "animation": "Animator/animationRainBow",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": true
     },
     {
       "code": "kino",
@@ -22,7 +23,8 @@
       "figure": "figure/kino",
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": true,
+      "isRotateMove": true
     },
     {
       "code": "mustard",
@@ -106,7 +108,8 @@
       "figure": "figure/phase5",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": true
+      "isDis": true,
+      "isRotateMove": true
     },
     {
       "code": "phase11",
@@ -154,7 +157,8 @@
       "figure": "figure/phase6",
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame3",
-      "isDis": true
+      "isDis": true,
+      "isRotateMove": true
     },
     {
       "code": "phase99",

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform, Color } from 'cc';
+import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform, Color, tween, v3 } from 'cc';
 import { DraggableItem } from './DraggableItem';
 import { GameDataManager } from '../GameDataManager';
 import { ThemeCtrl, themeEventTarget } from './ThemeCtrl';
@@ -48,6 +48,15 @@ export class PlayGameCtrl extends Component {
                         sprite.color = blackColor;
                     }
                 });
+            } else {
+                // Reset về màu trắng khi không phải isDis
+                // const whiteColor = new Color(255, 255, 255);
+                this.dropTargets.forEach(target => {
+                    const sprite = target.getComponent(Sprite);
+                    if (sprite) {
+                        // sprite.color = whiteColor;
+                    }
+                });
             }
 
             let imagePath = `PlayGame/${gameData.ItemSelect.figure}`;
@@ -74,26 +83,76 @@ export class PlayGameCtrl extends Component {
                         sprite.spriteFrame = spriteFrames[frameIndex];
                         // Store original sprite frame for later use
                         DraggableItem.storeOriginalSpriteFrame(target, spriteFrames[frameIndex]);
+                        // Xoay tròn và di chuyển từ trái qua phải
+                        // this.applyRotateAndMove(target, 200, 2 + index);
                     }
+                });
+
+                // Lấy category từ datacategory.json (GameDataManager)
+                let allCategories = (GameDataManager.getInstance()?.data?.ItemSelect.isRotateMove || []);
+                if (!Array.isArray(allCategories) || allCategories.length === 0) {
+                    // Nếu không có CATEGORY trong data, thử lấy từ GameDataManager.getInstance().CATEGORY nếu có
+                    allCategories = [];
+                }
+                let currentCode = gameData?.ItemSelect?.code;
+                let category = allCategories.find(cat => cat.code === currentCode) || {};
+                const isRotateMove = category.isRotateMove;
+                // Lấy Sprite node trong Farm1 và Farm2
+                [this.Farm1, this.Farm2].forEach(farm => {
+                    if (!farm) return;
+                    const spriteNode = farm.getChildByName('Sprite');
+                    if (!spriteNode) return;
+                    // Lấy Node1, Node2, Node3
+                    ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
+                        const node = spriteNode.getChildByName(nodeName);
+                        if (!node) return;
+                        // Lấy spriteFrame từ source (spriteFrames)
+                        if (isRotateMove && spriteFrames && spriteFrames.length > idx) {
+                            let sprite = node.getComponent(Sprite);
+                            if (!sprite) sprite = node.addComponent(Sprite);
+                            sprite.spriteFrame = spriteFrames[idx];
+                            // Chỉ Node1, Node2, Node3 di chuyển ra ngoài và lặp lại, các node khác giữ nguyên
+                            if (['Node1', 'Node2', 'Node3'].includes(nodeName)) {
+                                this.applyRotateAndMoveOffScreenSync(node, 2);
+                            }
+                        }
+                    });
                 });
             });
 
             // Load backgorund
             if (backgorund) {
-                const bgPath = `${backgorund.replace(/\.png$/, '')}/spriteFrame`;
-                this.loadSpriteFrameFromResources(bgPath, (spriteFrame) => {
-                    if (spriteFrame && this.Farm1) {
-                        this.setBackgroundSprite(this.Farm1, spriteFrame);
+                // Lấy thư mục chứa background (bỏ /spriteFrame)
+                const bgDir = backgorund.replace(/\.png$/, '').replace(/\/spriteFrame$/, '');
+                // Load tất cả spriteFrame trong thư mục background
+                resources.loadDir(bgDir, SpriteFrame, (err, spriteFrames: SpriteFrame[]) => {
+                    if (err || !spriteFrames || spriteFrames.length === 0) {
+                        console.error('[PlayGameCtrl] Không load được spriteFrame background:', err);
+                        return;
                     }
-                });
-            }
-
-            // Load backgorund
-            if (backgorund) {
-                const bgPath = `${backgorund.replace(/\.png$/, '')}/spriteFrame`;
-                this.loadSpriteFrameFromResources(bgPath, (spriteFrame) => {
-                    if (spriteFrame && this.Farm2) {
-                        this.setBackgroundSprite(this.Farm2, spriteFrame);
+                    // Kiểm tra trực tiếp isRotateMove từ item đang chọn
+                    const isRotateMove = GameDataManager.getInstance()?.data?.ItemSelect?.isRotateMove;
+                    if (isRotateMove) {
+                        [this.Farm1, this.Farm2].forEach(farm => {
+                            if (!farm) return;
+                            const spriteNode = farm.getChildByName('Sprite');
+                            if (!spriteNode) return;
+                            ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
+                                const node = spriteNode.getChildByName(nodeName);
+                                if (!node) return;
+                                if (spriteFrames.length > idx) {
+                                    let sprite = node.getComponent(Sprite);
+                                    if (!sprite) sprite = node.addComponent(Sprite);
+                                    sprite.spriteFrame = spriteFrames[idx];
+                                    // Xoay tròn và di chuyển từ trái qua phải
+                                    this.applyRotateAndMove(node, 200, 2 + idx);
+                                }
+                            });
+                        });
+                    } else {
+                        // Nếu không có hiệu ứng, gán spriteFrame đầu tiên cho Farm1/Farm2
+                        if (this.Farm1 && spriteFrames[0]) this.setBackgroundSprite(this.Farm1, spriteFrames[0]);
+                        if (this.Farm2 && spriteFrames[0]) this.setBackgroundSprite(this.Farm2, spriteFrames[0]);
                     }
                 });
             }
@@ -144,6 +203,32 @@ export class PlayGameCtrl extends Component {
                     }
                 });
             }
+
+            // --- ĐOẠN CODE MỚI: Hiển thị tất cả ảnh trong PlayGame/BackGround/phase11 lên Node1, Node2, Node3 ---
+            const bgDir = 'PlayGame/BackGround/phase11';
+            resources.loadDir(bgDir, SpriteFrame, (err, spriteFrames: SpriteFrame[]) => {
+                if (err || !spriteFrames || spriteFrames.length === 0) {
+                    console.error('[PlayGameCtrl] Không load được spriteFrame background:', err);
+                    return;
+                }
+                [this.Farm1, this.Farm2].forEach(farm => {
+                    if (!farm) return;
+                    const spriteNode = farm.getChildByName('Sprite');
+                    if (!spriteNode) return;
+                    ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
+                        const node = spriteNode.getChildByName(nodeName);
+                        if (!node) return;
+                        if (spriteFrames.length > idx) {
+                            let sprite = node.getComponent(Sprite);
+                            if (!sprite) sprite = node.addComponent(Sprite);
+                            sprite.spriteFrame = spriteFrames[idx];
+                            // Xoay tròn và di chuyển từ trái qua phải
+                            this.applyRotateAndMove(node, 200, 2 + idx);
+                        }
+                    });
+                });
+            });
+            // --- HẾT ĐOẠN CODE MỚI ---
 
         });
 
@@ -439,5 +524,50 @@ export class PlayGameCtrl extends Component {
         this.node.off('reset-all-items', this.resetAllItems, this);
         this.node.off('reset-all-items', this.resetAllItems, this);
         themeEventTarget.off('theme-selected', this.applyThemeColors, this);
+    }
+    // Thêm hàm hiệu ứng
+    applyRotateAndMove(node: Node, moveRange: number, duration: number) {
+        // Xoay liên tục
+        tween(node)
+            .by(duration, { angle: 360 })
+            .repeatForever()
+            .start();
+
+        // Di chuyển từ trái sang phải rồi quay lại
+        const startX = node.getPosition().x;
+        tween(node)
+            .to(duration, { position: v3(startX + moveRange, node.getPosition().y, 0) })
+            .to(duration, { position: v3(startX, node.getPosition().y, 0) })
+            .repeatForever()
+            .start();
+    }
+
+    // Hàm mới: Node di chuyển từ ngoài trái sang phải màn hình và lặp lại, bắt đầu cùng lúc
+    applyRotateAndMoveOffScreenSync(node: Node, duration: number) {
+        // Xoay liên tục
+        tween(node)
+            .by(duration, { angle: 360 })
+            .repeatForever()
+            .start();
+
+        // Di chuyển từ ngoài trái sang phải màn hình rồi lặp lại
+        const parent = node.parent;
+        if (!parent) return;
+        const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
+        const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
+        const y = node.getPosition().y;
+        const z = node.getPosition().z;
+        const startX = -parentWidth / 2 - nodeWidth;
+        const endX = parentWidth / 2 + nodeWidth;
+        node.setPosition(startX, y, z);
+        // Đảm bảo các node bắt đầu cùng lúc, không bị lệch
+        tween(node)
+            .to(duration, { position: v3(endX, y, z) })
+            .call(() => {
+                node.setPosition(startX, y, z);
+            })
+            .union()
+            .repeatForever()
+            .start();
     }
 }
