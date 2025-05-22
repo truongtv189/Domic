@@ -133,6 +133,13 @@
         "image": "mustard/mustard19",
         "_deltaTime": 1.9,
         "isAds": true
+      },
+      {
+        "id": 20,
+        "core": "mustard20",
+        "image": "mustard/mustard20",
+        "_deltaTime": 1.9,
+        "isAds": true
       }
     ]
   }
