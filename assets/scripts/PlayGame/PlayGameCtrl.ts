@@ -45,9 +45,6 @@ export class PlayGameCtrl extends Component {
             }
 
             let imagePath = `PlayGame/${gameData.ItemSelect.figure}`;
-            imagePath = imagePath.replace(/\.png$/, '');
-            const cleanPath = `PlayGame/${imagePath}/spriteFrame`;
-            
             // Load all sprite frames from the folder
             resources.loadDir(imagePath, SpriteFrame, (err, spriteFrames) => {
                 if (err) {

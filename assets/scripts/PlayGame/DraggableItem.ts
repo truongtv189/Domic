@@ -135,15 +135,21 @@ export class DraggableItem extends Component {
             }
         }
 
+        // If target node changed, update colors
         if (newTargetNode !== this.currentTargetNode) {
+            // Reset previous target if exists
             if (this.currentTargetNode) {
-                this.resetTargetColor(this.currentTargetNode);
+                const prevSprite = this.currentTargetNode.getComponent(Sprite);
+                if (prevSprite) {
+                    prevSprite.color = new Color(0, 0, 0); // Set to black when leaving
+                }
             }
 
+            // Set new target
             if (newTargetNode) {
                 const newSprite = newTargetNode.getComponent(Sprite);
                 if (newSprite) {
-                    newSprite.color = new Color(180, 180, 180);
+                    newSprite.color = new Color(180, 180, 180); // Set to gray when hovering
                 }
             }
 
@@ -151,8 +157,12 @@ export class DraggableItem extends Component {
         }
     }
     onTouchEnd(event: EventTouch) {
+        // Reset current target if exists
         if (this.currentTargetNode) {
-            this.resetTargetColor(this.currentTargetNode);
+            const sprite = this.currentTargetNode.getComponent(Sprite);
+            if (sprite) {
+                sprite.color = new Color(0, 0, 0); // Set to black when not dropped
+            }
             this.currentTargetNode = null;
         }
 
