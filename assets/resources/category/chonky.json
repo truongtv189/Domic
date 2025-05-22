@@ -2,135 +2,135 @@
     "DATA": [
       {
         "id": 1,
-        "core": "frosty1",
-        "image": "frosty/frosty1",
+        "core": "prosty1",
+        "image": "prosty/prosty1",
         "_deltaTime": 0.911,
         "isAds": true
       },
       {
         "id": 2,
-        "core": "frosty2",
-        "image": "frosty/frosty2",
+        "core": "prosty2",
+        "image": "prosty/prosty2",
         "_deltaTime": 1.204,
         "isAds": true
       },
       {
         "id": 3,
-        "core": "frosty3",
-        "image": "frosty/frosty3",
+        "core": "prosty3",
+        "image": "prosty/prosty3",
         "_deltaTime": 0.613,
         "isAds": true
       },
       {
         "id": 4,
-        "core": "frosty4",
-        "image": "frosty/frosty4",
+        "core": "prosty4",
+        "image": "prosty/prosty4",
         "_deltaTime": 2.4,
         "isAds": true
       },
       {
         "id": 5,
-        "core": "frosty5",
-        "image": "frosty/frosty5",
+        "core": "prosty5",
+        "image": "prosty/prosty5",
         "_deltaTime": 0.585,
         "isAds": true
       },
       {
         "id": 6,
-        "core": "frosty6",
-        "image": "frosty/frosty6",
+        "core": "prosty6",
+        "image": "prosty/prosty6",
         "_deltaTime":4.8,
         "isAds": true
       },
       {
         "id": 7,
-        "core": "frosty7",
-        "image": "frosty/frosty7",
+        "core": "prosty7",
+        "image": "prosty/prosty7",
         "_deltaTime": 4,
         "isAds": true
       },
       {
         "id": 8,
-        "core": "frosty8",
-        "image": "frosty/frosty8",
+        "core": "prosty8",
+        "image": "prosty/prosty8",
         "_deltaTime": 2.8
         ,
         "isAds": true
       },
       {
         "id": 9,
-        "core": "frosty9",
-        "image": "frosty/frosty9",
+        "core": "prosty9",
+        "image": "prosty/prosty9",
         "_deltaTime": 0.7,
         "isAds": true
       },
       {
         "id": 10,
-        "core": "frosty10",
-        "image": "frosty/frosty10",
+        "core": "prosty10",
+        "image": "prosty/prosty10",
         "_deltaTime": 3,
         "isAds": true
       },
       {
         "id": 11,
-        "core": "frosty11",
-        "image": "frosty/frosty11",
+        "core": "prosty11",
+        "image": "prosty/prosty11",
         "_deltaTime": 0.6,
         "isAds": true
       },
       {
         "id": 12,
-        "core": "frosty12",
-        "image": "frosty/frosty12",
+        "core": "prosty12",
+        "image": "prosty/prosty12",
         "_deltaTime": 1.8,
         "isAds": true
       },
       {
         "id": 13,
-        "core": "frosty13",
-        "image": "frosty/frosty13",
+        "core": "prosty13",
+        "image": "prosty/prosty13",
         "_deltaTime":4.7,
         "isAds": true
       },
       {
         "id": 14,
-        "core": "frosty14",
-        "image": "frosty/frosty14",
+        "core": "prosty14",
+        "image": "prosty/prosty14",
         "_deltaTime": 4.85,
         "isAds": true
       },
       {
         "id": 15,
-        "core": "frosty15",
-        "image": "frosty/frosty15",
+        "core": "prosty15",
+        "image": "prosty/prosty15",
         "_deltaTime": 5.024,
         "isAds": true
       },
       {
         "id": 16,
-        "core": "frosty16",
-        "image": "frosty/frosty16",
+        "core": "prosty16",
+        "image": "prosty/prosty16",
         "_deltaTime": 4.884,
         "isAds": true
       },
       {
         "id": 17,
-        "core": "frosty17",
-        "image": "frosty/frosty17",
+        "core": "prosty17",
+        "image": "prosty/prosty17",
         "_deltaTime":1.5,
         "isAds": true
       },
       {
         "id": 18,
-        "core": "frosty18",
-        "image": "frosty/frosty18",
+        "core": "prosty18",
+        "image": "prosty/prosty18",
         "_deltaTime": 1.7,
         "isAds": true
       },
       {
         "id": 19,
-        "core": "frosty19",
-        "image": "frosty/frosty19",
+        "core": "prosty19",
+        "image": "prosty/prosty19",
         "_deltaTime": 1.9,
         "isAds": true
       }

@@ -253,7 +253,7 @@
       "isDis": true
     },
     {
-      "code": "frozen",
+      "code": "prozen",
       "name": "PROZEN",
       "image": "image/frozen",
       "isAds": false,
@@ -262,7 +262,8 @@
       "figure": "figure/rainbow",
       "animation": "Animator/animationRainBow",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "color":"3D9AF0"
     },
     {
       "code": "chonky",
