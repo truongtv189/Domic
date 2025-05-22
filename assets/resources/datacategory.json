@@ -9,7 +9,8 @@
       "backgorund1": "",
       "figure": "figure/rainbow",
       "animation": "Animator/animationRainBow",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     },
     {
       "code": "kino",
@@ -20,7 +21,8 @@
       "backgorund1": "",
       "figure": "figure/kino",
       "animation": "",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     },
     {
       "code": "mustard",
@@ -31,7 +33,8 @@
       "backgorund1": "PlayGame/BackGround/background-Chillmustand",
       "figure": "figure/mustard",
       "animation": "Animator/Animationmustan",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame2"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame2",
+      "isDis": false
     },
     {
       "code": "para",
@@ -42,7 +45,8 @@
       "backgorund1": "",
       "figure": "figure/retake",
       "animation": "Animator/AnimationRetake",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     },
     {
       "code": "retake",
@@ -53,7 +57,8 @@
       "backgorund1": "",
       "figure": "figure/retake",
       "animation": "Animator/AnimationRetake",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     },
     {
       "code": "pyramixed",
@@ -64,7 +69,8 @@
       "backgorund1": "",
       "figure": "figure/pyramixed",
       "animation": "Animator/AnimationRetake",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     },
     {
       "code": "original",
@@ -75,7 +81,8 @@
       "backgorund1": "",
       "figure": "figure/retake",
       "animation": "Animator/AnimationRetake",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     },
     {
       "code": "phase9",
@@ -86,7 +93,8 @@
       "backgorund1": "",
       "figure": "CharDefault-1",
       "animation": "",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": false
     },
     {
       "code": "phase5",
@@ -97,29 +105,32 @@
       "backgorund1": "",
       "figure": "CharDefault-1",
       "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": false
     },
     {
       "code": "phase11",
       "name": "PHASE11",
-      "image": "image/phase11",
+      "image": "image/phase6",
       "isAds": false,
       "backgorund": "PlayGame/BackGround/DuoMix-select-bg",
       "backgorund1": "",
       "figure": "figure/phase6",
       "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": true
     },
     {
-      "code": "frosty",
+      "code": "prosty",
       "name": "PROSTY",
-      "image": "image/frosty",
+      "image": "image/prosty",
       "isAds": false,
       "backgorund": "PlayGame/BackGround/DuoMix-select-bg",
       "backgorund1": "",
-      "figure": "figure/frosty",
-      "animation": "Animator/animationFrosty",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "figure": "figure/prosty",
+      "animation": "Animator/animationProsty",
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     },
     {
       "code": "phase10",
@@ -130,18 +141,20 @@
       "backgorund1": "",
       "figure": "CharDefault-1",
       "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": false
     },
     {
       "code": "phase6",
       "name": "PHASE6",
       "image": "image/phase6",
       "isAds": false,
-      "backgorund": "PlayGame/BackGround/DuoMix-select-bg",
+      "backgorund": "PlayGame/BackGround/game-bg-phase6",
       "backgorund1": "",
-      "figure": "CharDefault-1",
-      "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "figure": "figure/phase6",
+      "animation": "",
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": true
     },
     {
       "code": "phase99",
@@ -152,7 +165,8 @@
       "backgorund1": "",
       "figure": "CharDefault-1",
       "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": false
     },
     {
       "code": "spooky",
@@ -163,7 +177,8 @@
       "backgorund1": "",
       "figure": "figure/spooky",
       "animation": "",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     },
     {
       "code": "phase3",
@@ -174,7 +189,8 @@
       "backgorund1": "",
       "figure": "CharDefault-1",
       "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": false
     },
     {
       "code": "phase7",
@@ -185,18 +201,20 @@
       "backgorund1": "",
       "figure": "CharDefault-1",
       "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": false
     },
     {
       "code": "phase100",
       "name": "PHASE100",
-      "image": "image/phase100",
+      "image": "image/phase6",
       "isAds": false,
       "backgorund": "PlayGame/BackGround/DuoMix-select-bg",
       "backgorund1": "",
-      "figure": "CharDefault-1",
-      "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "figure": "figure/phase6",
+      "animation": "",
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": true
     },
     {
       "code": "phase2",
@@ -207,7 +225,8 @@
       "backgorund1": "",
       "figure": "CharDefault-1",
       "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": false
     },
     {
       "code": "phase4",
@@ -218,7 +237,8 @@
       "backgorund1": "",
       "figure": "CharDefault-1",
       "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": false
     },
     {
       "code": "phase8",
@@ -229,7 +249,8 @@
       "backgorund1": "",
       "figure": "CharDefault-1",
       "animation": "animation",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame5"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+      "isDis": false
     },
     {
       "code": "frozen",
@@ -240,7 +261,8 @@
       "backgorund1": "",
       "figure": "figure/rainbow",
       "animation": "Animator/animationRainBow",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     },
     {
       "code": "chonky",
@@ -251,7 +273,8 @@
       "backgorund1": "",
       "figure": "figure/chonky",
       "animation": "",
-      "loadingCategory": "Images/Icon/LoadingIcon/fame1"
+      "loadingCategory": "Images/Icon/LoadingIcon/fame1",
+      "isDis": false
     }
   ]
 }

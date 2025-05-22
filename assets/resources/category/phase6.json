@@ -2,135 +2,135 @@
     "DATA": [
       {
         "id": 1,
-        "core": "frosty1",
-        "image": "frosty/frosty1",
+        "core": "phase6",
+        "image": "phase6/1",
         "_deltaTime": 0.911,
         "isAds": true
       },
       {
         "id": 2,
-        "core": "frosty2",
-        "image": "frosty/frosty2",
+        "core": "phase6",
+        "image": "phase6/2",
         "_deltaTime": 1.204,
         "isAds": true
       },
       {
         "id": 3,
-        "core": "frosty3",
-        "image": "frosty/frosty3",
+        "core": "phase6",
+        "image": "phase6/3",
         "_deltaTime": 0.613,
         "isAds": true
       },
       {
         "id": 4,
-        "core": "frosty4",
-        "image": "frosty/frosty4",
+        "core": "phase6",
+        "image": "phase6/4",
         "_deltaTime": 2.4,
         "isAds": true
       },
       {
         "id": 5,
-        "core": "frosty5",
-        "image": "frosty/frosty5",
+        "core": "phase6",
+        "image": "phase6/5",
         "_deltaTime": 0.585,
         "isAds": true
       },
       {
         "id": 6,
-        "core": "frosty6",
-        "image": "frosty/frosty6",
+        "core": "phase6",
+        "image": "phase6/6",
         "_deltaTime":4.8,
         "isAds": true
       },
       {
         "id": 7,
-        "core": "frosty7",
-        "image": "frosty/frosty7",
+        "core": "phase6",
+        "image": "phase6/7",
         "_deltaTime": 4,
         "isAds": true
       },
       {
         "id": 8,
-        "core": "frosty8",
-        "image": "frosty/frosty8",
+        "core": "phase6",
+        "image": "phase6/8",
         "_deltaTime": 2.8
         ,
         "isAds": true
       },
       {
         "id": 9,
-        "core": "frosty9",
-        "image": "frosty/frosty9",
+        "core": "9",
+        "image": "phase6/9",
         "_deltaTime": 0.7,
         "isAds": true
       },
       {
         "id": 10,
-        "core": "frosty10",
-        "image": "frosty/frosty10",
+        "core": "10",
+        "image": "phase6/10",
         "_deltaTime": 3,
         "isAds": true
       },
       {
         "id": 11,
-        "core": "frosty11",
-        "image": "frosty/frosty11",
+        "core": "11",
+        "image": "phase6/11",
         "_deltaTime": 0.6,
         "isAds": true
       },
       {
         "id": 12,
-        "core": "frosty12",
-        "image": "frosty/frosty12",
+        "core": "12",
+        "image": "phase6/12",
         "_deltaTime": 1.8,
         "isAds": true
       },
       {
         "id": 13,
-        "core": "frosty13",
-        "image": "frosty/frosty13",
+        "core": "13",
+        "image": "phase6/13",
         "_deltaTime":4.7,
         "isAds": true
       },
       {
         "id": 14,
-        "core": "frosty14",
-        "image": "frosty/frosty14",
+        "core": "14",
+        "image": "phase6/14",
         "_deltaTime": 4.85,
         "isAds": true
       },
       {
         "id": 15,
-        "core": "frosty15",
-        "image": "frosty/frosty15",
+        "core": "15",
+        "image": "phase6/15",
         "_deltaTime": 5.024,
         "isAds": true
       },
       {
         "id": 16,
-        "core": "frosty16",
-        "image": "frosty/frosty16",
+        "core": "16",
+        "image": "phase6/16",
         "_deltaTime": 4.884,
         "isAds": true
       },
       {
         "id": 17,
-        "core": "frosty17",
-        "image": "frosty/frosty17",
+        "core": "17",
+        "image": "phase6/17",
         "_deltaTime":1.5,
         "isAds": true
       },
       {
         "id": 18,
-        "core": "frosty18",
-        "image": "frosty/frosty18",
+        "core": "18",
+        "image": "phase6/18",
         "_deltaTime": 1.7,
         "isAds": true
       },
       {
         "id": 19,
-        "core": "frosty19",
-        "image": "frosty/frosty19",
+        "core": "19",
+        "image": "phase6/19",
         "_deltaTime": 1.9,
         "isAds": true
       }

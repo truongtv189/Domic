@@ -31,6 +31,19 @@ export class PlayGameCtrl extends Component {
                 console.error('[PlayGameCtrl] Game data or figure data is missing:', gameData);
                 return;
             }
+
+            // Check if core is phase6 and set dropTargets color to black
+            const code = gameData.ItemSelect.isDis;
+            if (code === true) {
+                const blackColor = new Color(0, 0, 0);
+                this.dropTargets.forEach(target => {
+                    const sprite = target.getComponent(Sprite);
+                    if (sprite) {
+                        sprite.color = blackColor;
+                    }
+                });
+            }
+
             let imagePath = gameData.ItemSelect.figure;
             imagePath = imagePath.replace(/\.png$/, '');
             const cleanPath = `PlayGame/${imagePath}/spriteFrame`;
@@ -74,34 +87,34 @@ export class PlayGameCtrl extends Component {
                             const farm1Child2 = this.Farm1.children[1];
                             this.setBackgroundSprite(farm1Child1, spriteFrame);
                             this.setBackgroundSprite(farm1Child2, spriteFrame);
-                            
+
                             // Set initial positions for seamless movement while preserving widget settings
                             const nodeWidth = farm1Child1.getComponent(UITransform)?.contentSize.width || 0;
                             const originalPos1 = farm1Child1.getPosition();
                             const originalPos2 = farm1Child2.getPosition();
-                            
+
                             farm1Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
                             farm1Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
-                            
+
                             this.setupContinuousMovement(farm1Child1);
                             this.setupContinuousMovement(farm1Child2);
                         }
-                        
+
                         // Set sprite for Farm2's child nodes
                         if (this.Farm2 && this.Farm2.children.length >= 2) {
                             const farm2Child1 = this.Farm2.children[0];
                             const farm2Child2 = this.Farm2.children[1];
                             this.setBackgroundSprite(farm2Child1, spriteFrame);
                             this.setBackgroundSprite(farm2Child2, spriteFrame);
-                            
+
                             // Set initial positions for seamless movement while preserving widget settings
                             const nodeWidth = farm2Child1.getComponent(UITransform)?.contentSize.width || 0;
                             const originalPos1 = farm2Child1.getPosition();
                             const originalPos2 = farm2Child2.getPosition();
-                            
+
                             farm2Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
                             farm2Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
-                            
+
                             this.setupContinuousMovement(farm2Child1);
                             this.setupContinuousMovement(farm2Child2);
                         }

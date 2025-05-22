@@ -10,6 +10,7 @@ export interface ItemSelect {
     loadingCategory: string;
     backgorund: string;
     backgorund1: string;
+    isDis: boolean;
 }
 interface ThemeItem {
     image: string;
@@ -69,7 +70,7 @@ export class GameDataManager {
             sfxVolume: 1,
             ItemSelect: {
                 code: "", image: "", isAds: false, name: "", figure: "",
-                animation: "", loadingCategory: "", backgorund: "", backgorund1: ""
+                animation: "", loadingCategory: "", backgorund: "", backgorund1: "",isDis:false
             },
             ItemSlectTheme: {
                 image: "",
