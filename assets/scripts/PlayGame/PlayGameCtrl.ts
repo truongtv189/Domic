@@ -542,7 +542,7 @@ export class PlayGameCtrl extends Component {
             .start();
     }
 
-    // Hàm mới: Node di chuyển từ ngoài trái sang phải màn hình và lặp lại, bắt đầu cùng lúc
+    // Hàm mới: Node di chuyển qua lại liên tục từ trái sang phải và ngược lại, đồng thời xoay tròn
     applyRotateAndMoveOffScreenSync(node: Node, duration: number) {
         // Xoay liên tục
         tween(node)
@@ -550,23 +550,19 @@ export class PlayGameCtrl extends Component {
             .repeatForever()
             .start();
 
-        // Di chuyển từ ngoài trái sang phải màn hình rồi lặp lại
+        // Di chuyển qua lại liên tục
         const parent = node.parent;
         if (!parent) return;
         const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
         const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
         const y = node.getPosition().y;
         const z = node.getPosition().z;
-        const startX = -parentWidth / 2 - nodeWidth;
-        const endX = parentWidth / 2 + nodeWidth;
+        const startX = -parentWidth / 2 + nodeWidth / 2;
+        const endX = parentWidth / 2 - nodeWidth / 2;
         node.setPosition(startX, y, z);
-        // Đảm bảo các node bắt đầu cùng lúc, không bị lệch
         tween(node)
             .to(duration, { position: v3(endX, y, z) })
-            .call(() => {
-                node.setPosition(startX, y, z);
-            })
-            .union()
+            .to(duration, { position: v3(startX, y, z) })
             .repeatForever()
             .start();
     }
