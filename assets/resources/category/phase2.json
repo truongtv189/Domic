@@ -2,135 +2,135 @@
     "DATA": [
       {
         "id": 1,
-        "core": "phase11",
-        "image": "phase11/1",
+        "core": "phase2",
+        "image": "phase2/1",
         "_deltaTime": 4,
         "isAds": true
       },
       {
         "id": 2,
-        "core": "phase112",
-        "image": "phase11/2",
+        "core": "phase22",
+        "image": "phase2/2",
         "_deltaTime": 1.06,
         "isAds": true
       },
       {
         "id": 3,
-        "core": "phase113",
-        "image": "phase11/3",
+        "core": "phase23",
+        "image": "phase2/3",
         "_deltaTime": 0.9,
         "isAds": true
       },
       {
         "id": 4,
-        "core": "phase114",
-        "image": "phase11/4",
+        "core": "phase24",
+        "image": "phase2/4",
         "_deltaTime": 0.56,
         "isAds": true
       },
       {
         "id": 5,
-        "core": "phase115",
-        "image": "phase11/5",
+        "core": "phase25",
+        "image": "phase2/5",
         "_deltaTime": 0.9,
         "isAds": true
       },
       {
         "id": 6,
-        "core": "phase116",
-        "image": "phase11/6",
+        "core": "phase26",
+        "image": "phase2/6",
         "_deltaTime":0.9,
         "isAds": true
       },
       {
         "id": 7,
-        "core": "phase117",
-        "image": "phase11/7",
+        "core": "phase27",
+        "image": "phase2/7",
         "_deltaTime": 3,
         "isAds": true
       },
       {
         "id": 8,
-        "core": "phase118",
-        "image": "phase11/8",
+        "core": "phase28",
+        "image": "phase2/8",
         "_deltaTime": 5
         ,
         "isAds": true
       },
       {
         "id": 9,
-        "core": "phase119",
-        "image": "phase11/9",
+        "core": "phase29",
+        "image": "phase2/9",
         "_deltaTime":3,
         "isAds": true
       },
       {
         "id": 10,
-        "core": "phase110",
-        "image": "phase11/10",
+        "core": "phase20",
+        "image": "phase2/10",
         "_deltaTime": 3,
         "isAds": true
       },
       {
         "id": 11,
-        "core": "phase111",
-        "image": "phase11/11",
+        "core": "phase21",
+        "image": "phase2/11",
         "_deltaTime": 1.3,
         "isAds": true
       },
       {
         "id": 12,
-        "core": "phase112",
-        "image": "phase11/12",
+        "core": "phase22",
+        "image": "phase2/12",
         "_deltaTime": 0.9,
         "isAds": true
       },
       {
         "id": 13,
-        "core": "phase113",
-        "image": "phase11/13",
+        "core": "phase23",
+        "image": "phase2/13",
         "_deltaTime":0.6,
         "isAds": true
       },
       {
         "id": 14,
-        "core": "phase114",
-        "image": "phase11/14",
+        "core": "phase24",
+        "image": "phase2/14",
         "_deltaTime": 1.5,
         "isAds": true
       },
       {
         "id": 15,
-        "core": "phase115",
-        "image": "phase11/15",
+        "core": "phase25",
+        "image": "phase2/15",
         "_deltaTime": 3,
         "isAds": true
       },
       {
         "id": 16,
-        "core": "phase116",
-        "image": "phase11/16",
+        "core": "phase26",
+        "image": "phase2/16",
         "_deltaTime": 4.884,
         "isAds": true
       },
       {
         "id": 17,
-        "core": "phase117",
-        "image": "phase11/17",
+        "core": "phase27",
+        "image": "phase2/17",
         "_deltaTime":0.9,
         "isAds": true
       },
       {
         "id": 18,
-        "core": "phase118",
-        "image": "phase11/18",
+        "core": "phase28",
+        "image": "phase2/18",
         "_deltaTime": 3.6,
         "isAds": true
       },
       {
         "id": 19,
-        "core": "phase119",
-        "image": "phase11/19",
+        "core": "phase29",
+        "image": "phase2/19",
         "_deltaTime": 1.2,
         "isAds": true
       }
