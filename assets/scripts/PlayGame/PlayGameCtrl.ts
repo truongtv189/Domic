@@ -2,9 +2,7 @@ import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiat
 import { DraggableItem } from './DraggableItem';
 import { GameDataManager } from '../GameDataManager';
 import { ThemeCtrl, themeEventTarget } from './ThemeCtrl';
-
 const { ccclass, property } = _decorator;
-
 @ccclass('PlayGameCtrl')
 export class PlayGameCtrl extends Component {
     @property([Node]) dropTargets: Node[] = [];  // Mảng chứa các điểm thả
@@ -18,6 +16,9 @@ export class PlayGameCtrl extends Component {
     private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
+    private carouselNodeGroups: Node[][] = [];
+    private carouselSpeed: number = 100; // px/giây, có thể chỉnh lại
+
     onLoad() {
          const loadingNode = instantiate(this.LoadingPrefab);
         this.Loading.addChild(loadingNode);
@@ -37,8 +38,6 @@ export class PlayGameCtrl extends Component {
                 console.error('[PlayGameCtrl] Game data or figure data is missing:', gameData);
                 return;
             }
-
-            // Check if core is phase6 and set dropTargets color to black
             const code = gameData.ItemSelect.isDis;
             if (code === true) {
                 const blackColor = new Color(0, 0, 0);
@@ -49,8 +48,6 @@ export class PlayGameCtrl extends Component {
                     }
                 });
             } else {
-                // Reset về màu trắng khi không phải isDis
-                // const whiteColor = new Color(255, 255, 255);
                 this.dropTargets.forEach(target => {
                     const sprite = target.getComponent(Sprite);
                     if (sprite) {
@@ -72,26 +69,18 @@ export class PlayGameCtrl extends Component {
                     return;
                 }
 
-                console.log('[PlayGameCtrl] Loaded', spriteFrames.length, 'sprite frames');
-
                 // Assign sprite frames to drop targets
                 this.dropTargets.forEach((target, index) => {
                     const sprite = target.getComponent(Sprite);
                     if (sprite) {
-                        // Use modulo to cycle through available sprite frames
                         const frameIndex = index % spriteFrames.length;
                         sprite.spriteFrame = spriteFrames[frameIndex];
-                        // Store original sprite frame for later use
                         DraggableItem.storeOriginalSpriteFrame(target, spriteFrames[frameIndex]);
-                        // Xoay tròn và di chuyển từ trái qua phải
-                        // this.applyRotateAndMove(target, 200, 2 + index);
                     }
                 });
 
-                // Lấy category từ datacategory.json (GameDataManager)
                 let allCategories = (GameDataManager.getInstance()?.data?.ItemSelect.isRotateMove || []);
                 if (!Array.isArray(allCategories) || allCategories.length === 0) {
-                    // Nếu không có CATEGORY trong data, thử lấy từ GameDataManager.getInstance().CATEGORY nếu có
                     allCategories = [];
                 }
                 let currentCode = gameData?.ItemSelect?.code;
@@ -111,12 +100,42 @@ export class PlayGameCtrl extends Component {
                             let sprite = node.getComponent(Sprite);
                             if (!sprite) sprite = node.addComponent(Sprite);
                             sprite.spriteFrame = spriteFrames[idx];
-                            // Chỉ Node1, Node2, Node3 di chuyển ra ngoài và lặp lại, các node khác giữ nguyên
+                            // Chỉ Node1, Node2, Node3 di chuyển carousel: ra ngoài thì về lại vị trí Node3
                             if (['Node1', 'Node2', 'Node3'].includes(nodeName)) {
-                                this.applyRotateAndMoveOffScreenSync(node, 2);
+                                const node3 = spriteNode.getChildByName('Node3');
+                                if (node3) {
+                                    // Xoay liên tục
+                                    tween(node)
+                                        .by(2, { angle: 360 })
+                                        .repeatForever()
+                                        .start();
+                                    
+                                    // Di chuyển liên tục từ trái sang phải
+                                    const parent = node.parent;
+                                    if (!parent) return;
+                                    const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
+                                    const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
+                                    const y = node.getPosition().y;
+                                    const z = node.getPosition().z;
+                                    const endX = parentWidth / 2 + nodeWidth;
+                                    
+                                    const moveNext = () => {
+                                        tween(node)
+                                            .to(2, { position: v3(endX, y, z) })
+                                            .call(() => {
+                                                const node3Pos = node3.getPosition();
+                                                node.setPosition(node3Pos);
+                                                moveNext();
+                                            })
+                                            .start();
+                                    };
+                                    moveNext();
+                                }
                             }
                         }
                     });
+                    // Khởi động carousel cho Sprite Node
+                    this.startCarouselForSpriteNodes(spriteNode);
                 });
             });
 
@@ -174,10 +193,8 @@ export class PlayGameCtrl extends Component {
                             const nodeWidth = farm1Child1.getComponent(UITransform)?.contentSize.width || 0;
                             const originalPos1 = farm1Child1.getPosition();
                             const originalPos2 = farm1Child2.getPosition();
-
                             farm1Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
                             farm1Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
-
                             this.setupContinuousMovement(farm1Child1);
                             this.setupContinuousMovement(farm1Child2);
                         }
@@ -188,15 +205,12 @@ export class PlayGameCtrl extends Component {
                             const farm2Child2 = this.Farm2.children[1];
                             this.setBackgroundSprite(farm2Child1, spriteFrame);
                             this.setBackgroundSprite(farm2Child2, spriteFrame);
-
                             // Set initial positions for seamless movement while preserving widget settings
                             const nodeWidth = farm2Child1.getComponent(UITransform)?.contentSize.width || 0;
                             const originalPos1 = farm2Child1.getPosition();
                             const originalPos2 = farm2Child2.getPosition();
-
                             farm2Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
                             farm2Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
-
                             this.setupContinuousMovement(farm2Child1);
                             this.setupContinuousMovement(farm2Child2);
                         }
@@ -204,7 +218,6 @@ export class PlayGameCtrl extends Component {
                 });
             }
 
-            // --- ĐOẠN CODE MỚI: Hiển thị tất cả ảnh trong PlayGame/BackGround/phase11 lên Node1, Node2, Node3 ---
             const bgDir = 'PlayGame/BackGround/phase11';
             resources.loadDir(bgDir, SpriteFrame, (err, spriteFrames: SpriteFrame[]) => {
                 if (err || !spriteFrames || spriteFrames.length === 0) {
@@ -228,8 +241,6 @@ export class PlayGameCtrl extends Component {
                     });
                 });
             });
-            // --- HẾT ĐOẠN CODE MỚI ---
-
         });
 
         this.cacheDropTargetRects();
@@ -343,31 +354,24 @@ export class PlayGameCtrl extends Component {
             console.warn('[PlayGameCtrl] setBackgroundSprite: Target or spriteFrame is null');
             return;
         }
-
         let sprite = targetNode.getComponent(Sprite);
         if (!sprite) {
             sprite = targetNode.addComponent(Sprite);
         }
-
         sprite.spriteFrame = spriteFrame;
     }
-
     // Add continuous movement animation
     private setupContinuousMovement(node: Node) {
         if (!node) return;
-
         // Get the parent's width to determine movement range
         const parent = node.parent;
         if (!parent) return;
-
         const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 0;
         const originalPos = node.getPosition();
-
         // Create movement action
         const moveRight = () => {
             const currentPos = node.getPosition();
             const newX = currentPos.x + 1; // Move 1 unit per frame
-
             // If node moves beyond right edge, reset to left
             if (newX > nodeWidth) {
                 node.setPosition(new Vec3(-nodeWidth, originalPos.y, originalPos.z));
@@ -375,11 +379,9 @@ export class PlayGameCtrl extends Component {
                 node.setPosition(new Vec3(newX, originalPos.y, originalPos.z));
             }
         };
-
         // Schedule the movement
         this.schedule(moveRight, 0);
     }
-
     private loadResource<T>(path: string): Promise<T> {
         return new Promise((resolve, reject) => {
             resources.load(path, (err, asset) => {
@@ -407,7 +409,6 @@ export class PlayGameCtrl extends Component {
                 console.warn(`[PlayGameCtrl] Invalid data at index ${i}`);
                 continue;
             }
-
             const imagePath = data.image.replace(/\.png$/, '');
             const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
             console.log(`[PlayGameCtrl] Creating item ${i} with path:`, cleanPath);
@@ -419,7 +420,6 @@ export class PlayGameCtrl extends Component {
                 console.log(`[PlayGameCtrl] Item ${i} ADS node visibility:`, shouldShowAds);
                 adsNode.active = shouldShowAds;
             }
-
             const dragComponent = itemNode.getComponent(DraggableItem) || itemNode.addComponent(DraggableItem);
             this.scheduleOnce(() => {
                 dragComponent.originalParent = this.nodeCategoryFigure;
@@ -427,7 +427,6 @@ export class PlayGameCtrl extends Component {
                 dragComponent.dropTargets = this.dropTargets;
                 dragComponent.dragData = data;
             }, 0);
-
             this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
                 const sprite = itemNode.getComponent(Sprite);
                 if (sprite && spriteFrame) {
@@ -449,7 +448,6 @@ export class PlayGameCtrl extends Component {
             if (!node) return null;
             const uiTransform = node.getComponent(UITransform);
             if (!uiTransform) return null;
-
             const worldPos = node.getWorldPosition();
             const size = uiTransform.contentSize;
             const anchor = uiTransform.anchorPoint;
@@ -465,11 +463,9 @@ export class PlayGameCtrl extends Component {
     getDropTargetRects(): { node: Node, rect: Rect }[] {
         return this.dropTargetRects || [];
     }
-
     onGoHome() {
         director.loadScene('Home');
     }
-
     resetAllItems() {
         if (!this.nodeCategoryFigure) {
             console.error('[PlayGameCtrl] nodeCategoryFigure is not set');
@@ -533,37 +529,88 @@ export class PlayGameCtrl extends Component {
             .repeatForever()
             .start();
 
-        // Di chuyển từ trái sang phải rồi quay lại
-        const startX = node.getPosition().x;
-        tween(node)
-            .to(duration, { position: v3(startX + moveRange, node.getPosition().y, 0) })
-            .to(duration, { position: v3(startX, node.getPosition().y, 0) })
-            .repeatForever()
-            .start();
-    }
-
-    // Hàm mới: Node di chuyển qua lại liên tục từ trái sang phải và ngược lại, đồng thời xoay tròn
-    applyRotateAndMoveOffScreenSync(node: Node, duration: number) {
-        // Xoay liên tục
-        tween(node)
-            .by(duration, { angle: 360 })
-            .repeatForever()
-            .start();
-
-        // Di chuyển qua lại liên tục
+        // Di chuyển liên tục từ trái sang phải
         const parent = node.parent;
         if (!parent) return;
         const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
         const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
         const y = node.getPosition().y;
         const z = node.getPosition().z;
-        const startX = -parentWidth / 2 + nodeWidth / 2;
-        const endX = parentWidth / 2 - nodeWidth / 2;
-        node.setPosition(startX, y, z);
+        const endX = parentWidth / 2 + nodeWidth;
+        // Tính toán khoảng cách và độ trễ giữa các node
+        const spacing = nodeWidth * 1.2; // Khoảng cách giữa các node
+        const startX = -nodeWidth - spacing; // Vị trí bắt đầu
+        const moveNext = () => {
+            tween(node)
+                .to(duration, { position: v3(endX, y, z) })
+                .call(() => {
+                    // Khi ra ngoài, reset về vị trí ban đầu với khoảng cách đều nhau
+                    node.setPosition(v3(startX, y, z));
+                    moveNext();
+                })
+                .start();
+        };
+        moveNext();
+    }
+
+    applyCarouselMove(node: Node, node3: Node, duration: number) {
+        // Xoay liên tục
         tween(node)
-            .to(duration, { position: v3(endX, y, z) })
-            .to(duration, { position: v3(startX, y, z) })
+            .by(duration, { angle: 360 })
             .repeatForever()
             .start();
+        const parent = node.parent;
+        if (!parent || !node3) return;
+        const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
+        const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
+        const y = node.getPosition().y;
+        const z = node.getPosition().z;
+        const endX = parentWidth / 2 + nodeWidth; // ra ngoài phải
+        const moveNext = () => {
+            tween(node)
+                .to(duration, { position: v3(endX, y, z) })
+                .call(() => {
+                    // Khi ra ngoài, set về vị trí Node3
+                    const node3Pos = node3.getPosition();
+                    node.setPosition(node3Pos);
+                    moveNext(); // lặp lại
+                })
+                .start();
+        };
+        moveNext();
+    }
+
+    startCarouselForSpriteNodes(spriteNode: Node) {
+        const nodes = [
+            spriteNode.getChildByName('Node1'),
+            spriteNode.getChildByName('Node2'),
+            spriteNode.getChildByName('Node3')
+        ];
+        if (nodes.some(n => !n)) return;
+        this.carouselNodeGroups.push(nodes);
+    }
+
+    update(dt: number) {
+        for (const nodes of this.carouselNodeGroups) {
+            if (nodes.length !== 3) continue;
+            const parent = nodes[0].parent;
+            if (!parent) continue;
+            const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
+            const nodeWidth = nodes[0].getComponent(UITransform)?.contentSize.width || 100;
+            // Di chuyển tất cả node sang phải
+            for (let node of nodes) {
+                let pos = node.getPosition();
+                node.setPosition(pos.x + this.carouselSpeed * dt, pos.y, pos.z);
+            }
+            // Kiểm tra node nào ra ngoài thì đưa về sau node cuối cùng
+            for (let node of nodes) {
+                let pos = node.getPosition();
+                if (pos.x > parentWidth / 2 + nodeWidth / 2) {
+                    // Tìm node có x nhỏ nhất (node cuối cùng bên trái)
+                    let minX = Math.min(...nodes.map(n => n.getPosition().x));
+                    node.setPosition(minX - nodeWidth, pos.y, pos.z);
+                }
+            }
+        }
     }
 }
