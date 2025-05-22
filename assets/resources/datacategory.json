@@ -91,7 +91,7 @@
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase9",
       "backgorund1": "",
-      "figure": "CharDefault-1",
+      "figure": "figure/phase9",
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": true
@@ -103,7 +103,7 @@
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase5",
       "backgorund1": "",
-      "figure": "CharDefault-1",
+      "figure": "figure/phase5",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": true
@@ -163,7 +163,7 @@
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase99",
       "backgorund1": "",
-      "figure": "CharDefault-1",
+      "figure": "figure/phase99",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": true
@@ -187,7 +187,7 @@
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase3",
       "backgorund1": "",
-      "figure": "CharDefault-1",
+      "figure": "figure/phase3",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": false
@@ -199,7 +199,7 @@
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase7",
       "backgorund1": "",
-      "figure": "CharDefault-1",
+      "figure": "figure/phase7",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": false
@@ -235,7 +235,7 @@
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase5",
       "backgorund1": "",
-      "figure": "CharDefault-1",
+      "figure": "figure/phase4",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": true
@@ -247,7 +247,7 @@
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase8",
       "backgorund1": "",
-      "figure": "CharDefault-1",
+      "figure": "figure/phase8",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": true

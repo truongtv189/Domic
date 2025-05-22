@@ -44,17 +44,37 @@ export class PlayGameCtrl extends Component {
                 });
             }
 
-            let imagePath = gameData.ItemSelect.figure;
+            let imagePath = `PlayGame/${gameData.ItemSelect.figure}`;
             imagePath = imagePath.replace(/\.png$/, '');
             const cleanPath = `PlayGame/${imagePath}/spriteFrame`;
-            this.loadSpriteFrameFromResources(cleanPath, (spriteFrame) => {
-                if (spriteFrame) {
-                    console.log('[PlayGameCtrl] Sprite frame loaded successfully');
-                    this.setSprites(this.dropTargets, spriteFrame);
-                } else {
-                    console.error('[PlayGameCtrl] Failed to load sprite frame');
+            
+            // Load all sprite frames from the folder
+            resources.loadDir(imagePath, SpriteFrame, (err, spriteFrames) => {
+                if (err) {
+                    console.error('[PlayGameCtrl] Error loading sprite frames:', err);
+                    return;
                 }
+                
+                if (!spriteFrames || spriteFrames.length === 0) {
+                    console.error('[PlayGameCtrl] No sprite frames found in path:', imagePath);
+                    return;
+                }
+
+                console.log('[PlayGameCtrl] Loaded', spriteFrames.length, 'sprite frames');
+                
+                // Assign sprite frames to drop targets
+                this.dropTargets.forEach((target, index) => {
+                    const sprite = target.getComponent(Sprite);
+                    if (sprite) {
+                        // Use modulo to cycle through available sprite frames
+                        const frameIndex = index % spriteFrames.length;
+                        sprite.spriteFrame = spriteFrames[frameIndex];
+                        // Store original sprite frame for later use
+                        DraggableItem.storeOriginalSpriteFrame(target, spriteFrames[frameIndex]);
+                    }
+                });
             });
+
             // Load backgorund
             if (backgorund) {
                 const bgPath = `${backgorund.replace(/\.png$/, '')}/spriteFrame`;

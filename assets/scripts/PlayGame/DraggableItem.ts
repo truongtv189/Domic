@@ -27,6 +27,11 @@ export class DraggableItem extends Component {
     private currentTargetNode: Node | null = null;
     private static originalSpriteFrames: Map<Node, SpriteFrame> = new Map();
 
+    // Add public method to store original sprite frame
+    public static storeOriginalSpriteFrame(target: Node, spriteFrame: SpriteFrame) {
+        DraggableItem.originalSpriteFrames.set(target, spriteFrame);
+    }
+
     onLoad() {
         this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.node.on(Node.EventType.TOUCH_START, this.onClickOriginalItem, this);
