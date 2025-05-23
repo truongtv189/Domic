@@ -1,4 +1,4 @@
-import { _decorator, Asset, Component, director, ImageAsset, instantiate, JsonAsset, Label, Layout, Node, PageView, Prefab, resources, Sprite, SpriteFrame, Texture2D, Size, Widget } from 'cc';
+import { _decorator, Asset, Component, director, ImageAsset, instantiate, JsonAsset, Label, Layout, Node, PageView, Prefab, resources, Sprite, SpriteFrame, Texture2D, Size, Widget, UITransform, Canvas } from 'cc';
 import { GameDataManager } from '../GameDataManager';
 import { LoadingCtrl } from '../LoadingCtrl';
 import { LoadingManager } from '../LoadingManager';
@@ -17,10 +17,6 @@ export class CategoryPageCtrl extends Component {
     LoadingContainer: Prefab = null;
     @property(Node)
     Loading: Node;
-    @property(Layout)
-    page1Layout: Layout = null;
-    @property(Layout)
-    page2Layout: Layout = null;
     private spriteCache: Map<string, SpriteFrame> = new Map();
 
     protected onLoad(): void {
@@ -28,41 +24,8 @@ export class CategoryPageCtrl extends Component {
         this.Loading.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
         this.Loading.active = true;
-        this.setupLayouts();
         this.loadJsonData();
         this.Loading.active = false;
-    }
-
-    private setupLayouts() {
-        // Cấu hình Widget cho page1Layout
-        if (this.page1Layout) {
-            const widget1 = this.page1Layout.node.getComponent(Widget) || this.page1Layout.node.addComponent(Widget);
-            widget1.alignMode = Widget.AlignMode.ON_WINDOW_RESIZE;
-            widget1.isAlignLeft = true;
-            widget1.isAlignRight = true;
-            widget1.left = 0;
-            widget1.right = 0;
-            widget1.isAlignTop = true;
-            widget1.isAlignBottom = true;
-            widget1.top = 0;
-            widget1.bottom = 0;
-            widget1.updateAlignment();
-        }
-
-        // Cấu hình Widget cho page2Layout
-        if (this.page2Layout) {
-            const widget2 = this.page2Layout.node.getComponent(Widget) || this.page2Layout.node.addComponent(Widget);
-            widget2.alignMode = Widget.AlignMode.ON_WINDOW_RESIZE;
-            widget2.isAlignLeft = true;
-            widget2.isAlignRight = true;
-            widget2.left = 0;
-            widget2.right = 0;
-            widget2.isAlignTop = true;
-            widget2.isAlignBottom = true;
-            widget2.top = 0;
-            widget2.bottom = 0;
-            widget2.updateAlignment();
-        }
     }
 
     // Load JSON data
@@ -89,7 +52,28 @@ export class CategoryPageCtrl extends Component {
     private createImages() {
         const watched = GameDataManager.getInstance().data.watchedAdsItems || {};
         const totalItems = this.imageData.length;
+        const baseWidth = 720;
+        const baseHeight = 720;
+        const columns = 4;
+        const padding = 20;
+        const spacingX = 50;
+        const spacingY = 50;
+
+        const canvas = director.getScene().getComponentInChildren(Canvas);
+        const canvasWidth = canvas?.getComponent(UITransform)?.contentSize.width || baseWidth;
+        const scale = canvasWidth < baseWidth ? canvasWidth / baseWidth : 1;
+
+        // Scale PageView
+        this.pageView.node.setScale(scale, scale, 1);
+
+        // Tính toán layout dựa trên baseWidth/baseHeight
+        const pageWidth = baseWidth;
+        const pageHeight = baseHeight;
         const itemsPerPage = Math.ceil(totalItems / 2);
+        const rows = Math.ceil(itemsPerPage / columns);
+
+        const itemWidth = (pageWidth - 2 * padding - (columns - 1) * spacingX) / columns;
+        const itemHeight = (pageHeight - 2 * padding - (rows - 1) * spacingY) / rows;
 
         // Lấy content node từ PageView
         const content = this.pageView.content;
@@ -104,30 +88,37 @@ export class CategoryPageCtrl extends Component {
         page1.removeAllChildren();
         page2.removeAllChildren();
 
-        // Cấu hình Layout cho page1
-        const layout1 = page1.getComponent(Layout) || page1.addComponent(Layout);
-        layout1.type = Layout.Type.GRID;
-        layout1.cellSize = new Size(200, 200); // Điều chỉnh kích thước cell theo nhu cầu
-        layout1.spacingX = 20;
-        layout1.spacingY = 20;
-        layout1.startAxis = Layout.AxisDirection.HORIZONTAL;
-        layout1.resizeMode = Layout.ResizeMode.CONTAINER;
+        // Hàm set vị trí và scale cho item
+        function setItemPositionAndSize(itemNode: Node, index: number) {
+            const col = index % columns;
+            const row = Math.floor(index / columns);
 
-        // Cấu hình Layout cho page2
-        const layout2 = page2.getComponent(Layout) || page2.addComponent(Layout);
-        layout2.type = Layout.Type.GRID;
-        layout2.cellSize = new Size(200, 200);
-        layout2.spacingX = 20;
-        layout2.spacingY = 20;
-        layout2.startAxis = Layout.AxisDirection.HORIZONTAL;
-        layout2.resizeMode = Layout.ResizeMode.CONTAINER;
+            // Tính tổng chiều rộng/chiều cao của lưới item
+            const totalGridWidth = columns * itemWidth + (columns - 1) * spacingX;
+            const totalGridHeight = rows * itemHeight + (rows - 1) * spacingY;
+
+            // Tính vị trí bắt đầu để căn giữa lưới trong page, đồng thời cộng padding
+            const startX = -pageWidth / 2 + padding + (pageWidth - 2 * padding - totalGridWidth) / 2 + itemWidth / 2;
+            const startY = pageHeight / 2 - padding - (pageHeight - 2 * padding - totalGridHeight) / 2 - itemHeight / 2;
+
+            const x = startX + col * (itemWidth + spacingX);
+            const y = startY - row * (itemHeight + spacingY);
+
+            itemNode.setPosition(x, y, 0);
+
+            // Set lại kích thước cho itemNode
+            const uiTrans = itemNode.getComponent(UITransform);
+            if (uiTrans) {
+                uiTrans.setContentSize(itemWidth, itemHeight);
+            }
+        }
 
         // Phân phối items vào 2 page
         const page1Items = this.imageData.slice(0, itemsPerPage);
         const page2Items = this.imageData.slice(itemsPerPage);
 
         // Tạo items cho page 1
-        page1Items.forEach((itemData) => {
+        page1Items.forEach((itemData, idx) => {
             const itemNode = instantiate(this.itemPrefab); // itemNode là ContainerImgCategory
             const imageNode = itemNode.getChildByName('Image');
             const adsNode = imageNode?.getChildByName('ADS');
@@ -148,6 +139,7 @@ export class CategoryPageCtrl extends Component {
                 this.onItemClicked(itemNode);
             });
 
+            setItemPositionAndSize(itemNode, idx);
             page1.addChild(itemNode);
 
             const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
@@ -157,7 +149,7 @@ export class CategoryPageCtrl extends Component {
         });
 
         // Tạo items cho page 2
-        page2Items.forEach((itemData) => {
+        page2Items.forEach((itemData, idx) => {
             const itemNode = instantiate(this.itemPrefab); // itemNode là ContainerImgCategory
             const imageNode = itemNode.getChildByName('Image');
             const adsNode = imageNode?.getChildByName('ADS');
@@ -178,6 +170,7 @@ export class CategoryPageCtrl extends Component {
                 this.onItemClicked(itemNode);
             });
 
+            setItemPositionAndSize(itemNode, idx);
             page2.addChild(itemNode);
 
             const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
@@ -185,10 +178,6 @@ export class CategoryPageCtrl extends Component {
                 if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
             });
         });
-
-        // Cập nhật layout
-        layout1.updateLayout();
-        layout2.updateLayout();
     }
 
     private onItemClicked(itemNode: Node) {
