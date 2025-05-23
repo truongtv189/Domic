@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform, Color, tween, v3 } from 'cc';
+import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform, Color, tween, v3, AudioClip } from 'cc';
 import { DraggableItem } from './DraggableItem';
 import { GameDataManager } from '../GameDataManager';
 import { ThemeCtrl, themeEventTarget } from './ThemeCtrl';
@@ -23,7 +23,7 @@ export class PlayGameCtrl extends Component {
     private readonly NODE_SPACING: number = 0.2; // Khoảng cách giữa các node (20% chiều rộng node)
 
     onLoad() {
-         const loadingNode = instantiate(this.LoadingPrefab);
+        const loadingNode = instantiate(this.LoadingPrefab);
         this.Loading.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
         this.Loading.active = true;
@@ -105,7 +105,7 @@ export class PlayGameCtrl extends Component {
                     //                     .by(2, { angle: 360 })
                     //                     .repeatForever()
                     //                     .start();
-                                    
+
                     //                 // Di chuyển liên tục từ trái sang phải
                     //                 const parent = node.parent;
                     //                 if (!parent) return;
@@ -114,7 +114,7 @@ export class PlayGameCtrl extends Component {
                     //                 const y = node.getPosition().y;
                     //                 const z = node.getPosition().z;
                     //                 const endX = parentWidth / 2 + nodeWidth;
-                                    
+
                     //                 const moveNext = () => {
                     //                     tween(node)
                     //                         .to(2, { position: v3(endX, y, z) })
@@ -334,7 +334,13 @@ export class PlayGameCtrl extends Component {
             if (jsonAsset && jsonAsset.json && jsonAsset.json.DATA) {
                 console.log('[PlayGameCtrl] JSON data loaded successfully');
                 this.imageData = jsonAsset.json.DATA;
-
+                
+                // Preload all images first
+                console.log('[PlayGameCtrl] Starting to preload all images...');
+                await this.preloadAllImages(this.imageData);
+                console.log('[PlayGameCtrl] All images preloaded successfully');
+                
+                // Then create images after preloading is complete
                 this.createImages();
             } else {
                 console.error('[PlayGameCtrl] Invalid JSON data structure');
@@ -344,6 +350,44 @@ export class PlayGameCtrl extends Component {
             console.error('[PlayGameCtrl] Error loading JSON data:', err);
         }
     }
+
+    async preloadAllImages(imageList: any[]) {
+        const preloadPromises = imageList.map((data) => {
+            return new Promise<void>((resolve) => {
+                // Load sprite frames
+                const spriteFolderPath = `PlayGame/image/${data.image}`;
+                resources.loadDir(spriteFolderPath, SpriteFrame, (err, spriteFrames) => {
+                    if (err) {
+                        console.warn(`[Image preload] Failed to load folder ${data.image}`, err);
+                        resolve();
+                        return;
+                    }
+
+                    // Store sprite frames from index 1 onwards
+                    if (spriteFrames && spriteFrames.length > 1) {
+                        data._spriteFrames = spriteFrames.slice(1);
+                    } else {
+                        console.warn(`[Image preload] Not enough sprites found in folder ${data.image}`);
+                    }
+
+                    // Load audio clip
+                    const audioPath = `audio/${data.image}`;
+                    resources.load(audioPath, AudioClip, (err, audioClip) => {
+                        if (err) {
+                            console.warn(`[Audio preload] Failed to load audio ${data.image}`, err);
+                        } else {
+                            data._audioClip = audioClip;
+                        }
+                        resolve();
+                    });
+                });
+            });
+        });
+
+        await Promise.all(preloadPromises);
+        console.log('[PlayGameCtrl] All images and audio preloaded');
+    }
+
     setBackgroundSprite(targetNode: Node, spriteFrame: SpriteFrame) {
         if (!targetNode || !spriteFrame) {
             console.warn('[PlayGameCtrl] setBackgroundSprite: Target or spriteFrame is null');
@@ -519,7 +563,7 @@ export class PlayGameCtrl extends Component {
     // Thêm hàm hiệu ứng
     applyRotateAndMove(node: Node, moveRange: number, duration: number) {
         if (!node) return;
-        
+
         // Chỉ xoay tại chỗ
         tween(node)
             .by(duration, { angle: 360 })
@@ -529,7 +573,7 @@ export class PlayGameCtrl extends Component {
 
     applyCarouselMove(node: Node, node3: Node, duration: number) {
         if (!node || !node3) return;
-        
+
         // Chỉ xoay tại chỗ
         tween(node)
             .by(duration, { angle: 360 })
@@ -551,7 +595,7 @@ export class PlayGameCtrl extends Component {
         if (parent) {
             const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
             const nodeWidth = nodes[0].getComponent(UITransform)?.contentSize.width || 100;
-            
+
             // Tính toán vị trí để căn giữa các node
             const totalSpacing = nodeWidth * this.NODE_SPACING * (this.NODE_COUNT - 1);
             const totalWidth = (nodeWidth * this.NODE_COUNT) + totalSpacing;
@@ -571,5 +615,5 @@ export class PlayGameCtrl extends Component {
         this.carouselNodeGroups.push(nodes);
     }
 
-  
+
 }

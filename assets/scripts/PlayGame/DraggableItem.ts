@@ -7,13 +7,23 @@ const { ccclass, property } = _decorator;
 // Định nghĩa hằng số cho tên sự kiện
 const RESET_AUDIO_FRAME_EVENT = 'reset-audio-frame';
 
+interface DragData {
+    id: number;
+    core: string;
+    image: string;
+    _deltaTime: number;
+    isAds: boolean;
+    _spriteFrames?: SpriteFrame[];
+    _audioClip?: AudioClip;
+}
+
 @ccclass('DraggableItem')
 export class DraggableItem extends Component {
     public targetDropZone: Node | null = null;
     public originalParent: Node | null = null;
     public originalPosition: Vec3 = new Vec3();
     public dropTargets: Node[] = [];
-    public dragData: { id: number, core: string, image: string, _deltaTime: number, isAds: boolean };
+    public dragData: DragData;
     private offset = new Vec3();
     private isDropped = false;
     private sprite: Sprite = null!;
@@ -343,42 +353,31 @@ export class DraggableItem extends Component {
     }
 
     private loadAssetsAndWaitForLoading(imagePath: string) {
-        const spriteFolderPath = `PlayGame/image/${imagePath}`;
-        const audioPath = `audio/${imagePath}`;
-        // Load sprite frames
-        resources.loadDir(spriteFolderPath, SpriteFrame, (err, assets: SpriteFrame[]) => {
-            if (err) {
-                return;
+        // Use preloaded assets from dragData
+        if (this.dragData._spriteFrames && this.dragData._spriteFrames.length > 0) {
+            this._spriteFrames = this.dragData._spriteFrames;
+            
+            // Set initial frame
+            if (this.sprite && this._spriteFrames[0]) {
+                this.sprite.spriteFrame = this._spriteFrames[0];
             }
-            // Bỏ qua phần tử đầu tiên của mảng
-            this._spriteFrames = assets.slice(1);
-            // Load audio clip
-            resources.load<AudioClip>(audioPath, AudioClip, (err, audioClip) => {
-                if (err || !audioClip) {
-                    return;
-                }
 
-                if (this._spriteFrames.length > 0) {
-                    // Đặt frame ban đầu
-                    if (this.sprite && this._spriteFrames[0]) {
-                        this.sprite.spriteFrame = this._spriteFrames[0];
-                    }
-                    // Đặt audio clip
-                    if (this._audioSource) {
-                        this._audioSource.clip = audioClip;
-                    }
-                    // Tìm LoadingPlayAudio component từ scene
-                    let loadingPlayAudio = this.findLoadingPlayAudio();
-                    if (loadingPlayAudio) {
-                        loadingPlayAudio.resetLoadingState(); // Reset trạng thái trước khi set callback mới
-                        loadingPlayAudio.setOnLoadComplete(() => {
-                            this.startPlayback(this._spriteFrames, audioClip, this.dragData._deltaTime);
-                        });
-                    } else {
-                    }
-                }
-            });
-        });
+            // Set audio clip if available
+            if (this._audioSource && this.dragData._audioClip) {
+                this._audioSource.clip = this.dragData._audioClip;
+            }
+
+            // Find LoadingPlayAudio component
+            let loadingPlayAudio = this.findLoadingPlayAudio();
+            if (loadingPlayAudio) {
+                loadingPlayAudio.resetLoadingState();
+                loadingPlayAudio.setOnLoadComplete(() => {
+                    this.startPlayback(this._spriteFrames, this.dragData._audioClip, this.dragData._deltaTime);
+                });
+            }
+        } else {
+            console.warn('[DraggableItem] No preloaded assets found for:', imagePath);
+        }
     }
 
     private findLoadingPlayAudio(): LoadingPlayAudio | null {
