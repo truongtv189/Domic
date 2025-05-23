@@ -17,7 +17,8 @@ export class PlayGameCtrl extends Component {
     private imageData: any[] = [];
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
     private carouselNodeGroups: Node[][] = [];
-    private carouselSpeed: number = 100; // px/giây, có thể chỉnh lại
+    private readonly NODE_COUNT: number = 3; // Số lượng node
+    private readonly NODE_SPACING: number = 0.2; // Khoảng cách giữa các node (20% chiều rộng node)
 
     onLoad() {
          const loadingNode = instantiate(this.LoadingPrefab);
@@ -523,61 +524,23 @@ export class PlayGameCtrl extends Component {
     }
     // Thêm hàm hiệu ứng
     applyRotateAndMove(node: Node, moveRange: number, duration: number) {
-        // Xoay liên tục
+        if (!node) return;
+        
+        // Chỉ xoay tại chỗ
         tween(node)
             .by(duration, { angle: 360 })
             .repeatForever()
             .start();
-
-        // Di chuyển liên tục từ trái sang phải
-        const parent = node.parent;
-        if (!parent) return;
-        const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
-        const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
-        const y = node.getPosition().y;
-        const z = node.getPosition().z;
-        const endX = parentWidth / 2 + nodeWidth;
-        // Tính toán khoảng cách và độ trễ giữa các node
-        const spacing = nodeWidth * 1.2; // Khoảng cách giữa các node
-        const startX = -nodeWidth - spacing; // Vị trí bắt đầu
-        const moveNext = () => {
-            tween(node)
-                .to(duration, { position: v3(endX, y, z) })
-                .call(() => {
-                    // Khi ra ngoài, reset về vị trí ban đầu với khoảng cách đều nhau
-                    node.setPosition(v3(startX, y, z));
-                    moveNext();
-                })
-                .start();
-        };
-        moveNext();
     }
 
     applyCarouselMove(node: Node, node3: Node, duration: number) {
-        // Xoay liên tục
+        if (!node || !node3) return;
+        
+        // Chỉ xoay tại chỗ
         tween(node)
             .by(duration, { angle: 360 })
             .repeatForever()
             .start();
-        const parent = node.parent;
-        if (!parent || !node3) return;
-        const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
-        const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
-        const y = node.getPosition().y;
-        const z = node.getPosition().z;
-        const endX = parentWidth / 2 + nodeWidth; // ra ngoài phải
-        const moveNext = () => {
-            tween(node)
-                .to(duration, { position: v3(endX, y, z) })
-                .call(() => {
-                    // Khi ra ngoài, set về vị trí Node3
-                    const node3Pos = node3.getPosition();
-                    node.setPosition(node3Pos);
-                    moveNext(); // lặp lại
-                })
-                .start();
-        };
-        moveNext();
     }
 
     startCarouselForSpriteNodes(spriteNode: Node) {
@@ -586,30 +549,57 @@ export class PlayGameCtrl extends Component {
             spriteNode.getChildByName('Node2'),
             spriteNode.getChildByName('Node3')
         ];
+
         if (nodes.some(n => !n)) return;
+
+        // Sử dụng kích thước ban đầu của node
+        const parent = spriteNode.parent;
+        if (parent) {
+            const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
+            const nodeWidth = nodes[0].getComponent(UITransform)?.contentSize.width || 100;
+            
+            // Tính toán vị trí để căn giữa các node
+            const totalSpacing = nodeWidth * this.NODE_SPACING * (this.NODE_COUNT - 1);
+            const totalWidth = (nodeWidth * this.NODE_COUNT) + totalSpacing;
+            const startX = -totalWidth / 2 + nodeWidth / 2;
+
+            // Cập nhật vị trí cho từng node
+            nodes.forEach((node, index) => {
+                if (node) {
+                    const x = startX + (index * (nodeWidth + (nodeWidth * this.NODE_SPACING)));
+                    const y = node.getPosition().y;
+                    const z = node.getPosition().z;
+                    node.setPosition(v3(x, y, z));
+                }
+            });
+        }
+
         this.carouselNodeGroups.push(nodes);
     }
 
     update(dt: number) {
         for (const nodes of this.carouselNodeGroups) {
-            if (nodes.length !== 3) continue;
+            if (nodes.length !== this.NODE_COUNT) continue;
             const parent = nodes[0].parent;
-            if (!parent) continue;
-            const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
+            if (!parent) return;
             const nodeWidth = nodes[0].getComponent(UITransform)?.contentSize.width || 100;
-            // Di chuyển tất cả node sang phải
-            for (let node of nodes) {
-                let pos = node.getPosition();
-                node.setPosition(pos.x + this.carouselSpeed * dt, pos.y, pos.z);
-            }
-            // Kiểm tra node nào ra ngoài thì đưa về sau node cuối cùng
-            for (let node of nodes) {
-                let pos = node.getPosition();
-                if (pos.x > parentWidth / 2 + nodeWidth / 2) {
-                    // Tìm node có x nhỏ nhất (node cuối cùng bên trái)
-                    let minX = Math.min(...nodes.map(n => n.getPosition().x));
-                    node.setPosition(minX - nodeWidth, pos.y, pos.z);
-                }
+            // Tính toán tổng chiều rộng của tất cả node và khoảng cách
+            const totalSpacing = nodeWidth * this.NODE_SPACING * (this.NODE_COUNT - 1);
+            const totalWidth = (nodeWidth * this.NODE_COUNT) + totalSpacing;
+            // Tính toán vị trí bắt đầu để căn giữa
+            const startX = -totalWidth / 2 + nodeWidth / 2;
+            // Cập nhật vị trí và scale cho từng node
+            for (let i = 0; i < nodes.length; i++) {
+                const node = nodes[i];
+                if (!node) continue;
+                // Tính toán vị trí x dựa trên index
+                const x = startX + (i * (nodeWidth + (nodeWidth * this.NODE_SPACING)));
+                const y = node.getPosition().y;
+                const z = node.getPosition().z;
+                // Cập nhật vị trí
+                node.setPosition(v3(x, y, z));
+                // Xoay chậm
+                node.angle += 15 * dt;
             }
         }
     }
