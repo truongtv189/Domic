@@ -29,7 +29,7 @@ export class PlayGameCtrl extends Component {
         this.Loading.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
         this.Loading.active = true;
-         AudioManager.getInstance().stopBGM()
+        AudioManager.getInstance().stopBGM()
         this.loadingCtrl = loadingNode.getComponent(LoadingCtrl);
         if (!this.loadingCtrl) {
             console.error('[PlayGameCtrl] LoadingCtrl component not found on loading prefab');
@@ -203,6 +203,7 @@ export class PlayGameCtrl extends Component {
                 });
             });
         });
+        this.Loading.active = false;
 
         this.cacheDropTargetRects();
         this.loadJsonData();
@@ -308,15 +309,12 @@ export class PlayGameCtrl extends Component {
                 this.createImages();
 
                 // Hide loading after everything is done
-                this.Loading.active = false;
             } else {
                 console.error('[PlayGameCtrl] Invalid JSON data structure');
-                this.Loading.active = false;
             }
 
         } catch (err) {
             console.error('[PlayGameCtrl] Error loading JSON data:', err);
-            this.Loading.active = false;
         }
     }
 
@@ -514,7 +512,7 @@ export class PlayGameCtrl extends Component {
         });
     }
     applyThemeColors(themeData: { color1: string, color2: string }) {
-         AudioManager.getInstance().playClickClip()
+        AudioManager.getInstance().playClickClip()
         const color1 = this.hexToColor(themeData.color1);
         const color2 = this.hexToColor(themeData.color2);
         for (let i = 0; i < this.dropTargets.length; i++) {

@@ -32,7 +32,11 @@ export class I18n {
 
     // Lấy bản dịch cho key
     static t(key: string): string {
-        return this.translations[key] || key; // Trả về key nếu không có bản dịch
+        // Nếu key không tồn tại trong translations, trả về key gốc
+        if (!this.hasKey(key)) {
+            return key;
+        }
+        return this.translations[key];
     }
 
     // Cập nhật tất cả label trong scene
@@ -40,7 +44,10 @@ export class I18n {
         scene.children.forEach(child => {
             const label = child.getComponent(Label);
             if (label) {
-                label.string = this.t(child.name); // Cập nhật nội dung label
+                // Chỉ cập nhật label nếu key tồn tại trong translations
+                if (this.hasKey(child.name)) {
+                    label.string = this.t(child.name);
+                }
             }
 
             // Đệ quy cho các node con
