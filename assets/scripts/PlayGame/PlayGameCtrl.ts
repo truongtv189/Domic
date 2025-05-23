@@ -10,6 +10,8 @@ export class PlayGameCtrl extends Component {
     @property(Node) nodeCategoryFigure: Node = null;
     @property(Node) Farm1: Node = null;
     @property(Node) Farm2: Node = null;
+    @property(Node) Container1: Node = null;
+    @property(Node) Container2: Node = null;
     @property(Prefab) LoadingPrefab: Prefab = null;
     @property(Node) Loading: Node = null;
     // @property(Node) nodeLoading: Node = null;
@@ -36,7 +38,6 @@ export class PlayGameCtrl extends Component {
             const backgorund = GameDataManager.getInstance()?.data.ItemSelect.backgorund;
             // const backgorund1 = GameDataManager.getInstance()?.data.ItemSelect.backgorund1;
             if (!gameData || !gameData.ItemSelect || !gameData.ItemSelect.figure) {
-                console.error('[PlayGameCtrl] Game data or figure data is missing:', gameData);
                 return;
             }
             const code = gameData.ItemSelect.isDis;
@@ -64,21 +65,15 @@ export class PlayGameCtrl extends Component {
                     console.error('[PlayGameCtrl] Error loading sprite frames:', err);
                     return;
                 }
-
                 if (!spriteFrames || spriteFrames.length === 0) {
                     console.error('[PlayGameCtrl] No sprite frames found in path:', imagePath);
                     return;
                 }
 
-                // Assign sprite frames to drop targets
-                this.dropTargets.forEach((target, index) => {
-                    const sprite = target.getComponent(Sprite);
-                    if (sprite) {
-                        const frameIndex = index % spriteFrames.length;
-                        sprite.spriteFrame = spriteFrames[frameIndex];
-                        DraggableItem.storeOriginalSpriteFrame(target, spriteFrames[frameIndex]);
-                    }
-                });
+                // Assign sprite frames to drop targets using setSprites
+                if (spriteFrames.length > 0) {
+                    this.setSprites(this.dropTargets, spriteFrames[0]);
+                }
 
                 let allCategories = (GameDataManager.getInstance()?.data?.ItemSelect.isRotateMove || []);
                 if (!Array.isArray(allCategories) || allCategories.length === 0) {
@@ -93,48 +88,48 @@ export class PlayGameCtrl extends Component {
                     const spriteNode = farm.getChildByName('Sprite');
                     if (!spriteNode) return;
                     // Lấy Node1, Node2, Node3
-                    ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
-                        const node = spriteNode.getChildByName(nodeName);
-                        if (!node) return;
-                        // Lấy spriteFrame từ source (spriteFrames)
-                        if (isRotateMove && spriteFrames && spriteFrames.length > idx) {
-                            let sprite = node.getComponent(Sprite);
-                            if (!sprite) sprite = node.addComponent(Sprite);
-                            sprite.spriteFrame = spriteFrames[idx];
-                            // Chỉ Node1, Node2, Node3 di chuyển carousel: ra ngoài thì về lại vị trí Node3
-                            if (['Node1', 'Node2', 'Node3'].includes(nodeName)) {
-                                const node3 = spriteNode.getChildByName('Node3');
-                                if (node3) {
-                                    // Xoay liên tục
-                                    tween(node)
-                                        .by(2, { angle: 360 })
-                                        .repeatForever()
-                                        .start();
+                    // ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
+                    //     const node = spriteNode.getChildByName(nodeName);
+                    //     if (!node) return;
+                    //     // Lấy spriteFrame từ source (spriteFrames)
+                    //     if (isRotateMove && spriteFrames && spriteFrames.length > idx) {
+                    //         let sprite = node.getComponent(Sprite);
+                    //         if (!sprite) sprite = node.addComponent(Sprite);
+                    //         sprite.spriteFrame = spriteFrames[idx];
+                    //         // Chỉ Node1, Node2, Node3 di chuyển carousel: ra ngoài thì về lại vị trí Node3
+                    //         if (['Node1', 'Node2', 'Node3'].includes(nodeName)) {
+                    //             const node3 = spriteNode.getChildByName('Node3');
+                    //             if (node3) {
+                    //                 // Xoay liên tục
+                    //                 tween(node)
+                    //                     .by(2, { angle: 360 })
+                    //                     .repeatForever()
+                    //                     .start();
                                     
-                                    // Di chuyển liên tục từ trái sang phải
-                                    const parent = node.parent;
-                                    if (!parent) return;
-                                    const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
-                                    const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
-                                    const y = node.getPosition().y;
-                                    const z = node.getPosition().z;
-                                    const endX = parentWidth / 2 + nodeWidth;
+                    //                 // Di chuyển liên tục từ trái sang phải
+                    //                 const parent = node.parent;
+                    //                 if (!parent) return;
+                    //                 const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
+                    //                 const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
+                    //                 const y = node.getPosition().y;
+                    //                 const z = node.getPosition().z;
+                    //                 const endX = parentWidth / 2 + nodeWidth;
                                     
-                                    const moveNext = () => {
-                                        tween(node)
-                                            .to(2, { position: v3(endX, y, z) })
-                                            .call(() => {
-                                                const node3Pos = node3.getPosition();
-                                                node.setPosition(node3Pos);
-                                                moveNext();
-                                            })
-                                            .start();
-                                    };
-                                    moveNext();
-                                }
-                            }
-                        }
-                    });
+                    //                 const moveNext = () => {
+                    //                     tween(node)
+                    //                         .to(2, { position: v3(endX, y, z) })
+                    //                         .call(() => {
+                    //                             const node3Pos = node3.getPosition();
+                    //                             node.setPosition(node3Pos);
+                    //                             moveNext();
+                    //                         })
+                    //                         .start();
+                    //                 };
+                    //                 moveNext();
+                    //             }
+                    //         }
+                    //     }
+                    // });
                     // Khởi động carousel cho Sprite Node
                     this.startCarouselForSpriteNodes(spriteNode);
                 });
@@ -153,9 +148,9 @@ export class PlayGameCtrl extends Component {
                     // Kiểm tra trực tiếp isRotateMove từ item đang chọn
                     const isRotateMove = GameDataManager.getInstance()?.data?.ItemSelect?.isRotateMove;
                     if (isRotateMove) {
-                        [this.Farm1, this.Farm2].forEach(farm => {
-                            if (!farm) return;
-                            const spriteNode = farm.getChildByName('Sprite');
+                        [this.Container1, this.Container2].forEach(container => {
+                            if (!container) return;
+                            const spriteNode = container.getChildByName('Sprite');
                             if (!spriteNode) return;
                             ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
                                 const node = spriteNode.getChildByName(nodeName);
@@ -170,9 +165,9 @@ export class PlayGameCtrl extends Component {
                             });
                         });
                     } else {
-                        // Nếu không có hiệu ứng, gán spriteFrame đầu tiên cho Farm1/Farm2
-                        if (this.Farm1 && spriteFrames[0]) this.setBackgroundSprite(this.Farm1, spriteFrames[0]);
-                        if (this.Farm2 && spriteFrames[0]) this.setBackgroundSprite(this.Farm2, spriteFrames[0]);
+                        // Nếu không có hiệu ứng, gán spriteFrame đầu tiên cho Container1/Container2
+                        if (this.Container1 && spriteFrames[0]) this.setBackgroundSprite(this.Container1, spriteFrames[0]);
+                        if (this.Container2 && spriteFrames[0]) this.setBackgroundSprite(this.Container2, spriteFrames[0]);
                     }
                 });
             }
@@ -335,7 +330,6 @@ export class PlayGameCtrl extends Component {
     async loadJsonData() {
         try {
             let path = GameDataManager.getInstance().data.ItemSelect.code;
-            console.log('[PlayGameCtrl] Loading JSON from path:', path);
             const jsonAsset = await this.loadResource<JsonAsset>(`category/${path}`);
             if (jsonAsset && jsonAsset.json && jsonAsset.json.DATA) {
                 console.log('[PlayGameCtrl] JSON data loaded successfully');
@@ -577,30 +571,5 @@ export class PlayGameCtrl extends Component {
         this.carouselNodeGroups.push(nodes);
     }
 
-    update(dt: number) {
-        for (const nodes of this.carouselNodeGroups) {
-            if (nodes.length !== this.NODE_COUNT) continue;
-            const parent = nodes[0].parent;
-            if (!parent) return;
-            const nodeWidth = nodes[0].getComponent(UITransform)?.contentSize.width || 100;
-            // Tính toán tổng chiều rộng của tất cả node và khoảng cách
-            const totalSpacing = nodeWidth * this.NODE_SPACING * (this.NODE_COUNT - 1);
-            const totalWidth = (nodeWidth * this.NODE_COUNT) + totalSpacing;
-            // Tính toán vị trí bắt đầu để căn giữa
-            const startX = -totalWidth / 2 + nodeWidth / 2;
-            // Cập nhật vị trí và scale cho từng node
-            for (let i = 0; i < nodes.length; i++) {
-                const node = nodes[i];
-                if (!node) continue;
-                // Tính toán vị trí x dựa trên index
-                const x = startX + (i * (nodeWidth + (nodeWidth * this.NODE_SPACING)));
-                const y = node.getPosition().y;
-                const z = node.getPosition().z;
-                // Cập nhật vị trí
-                node.setPosition(v3(x, y, z));
-                // Xoay chậm
-                node.angle += 15 * dt;
-            }
-        }
-    }
+  
 }

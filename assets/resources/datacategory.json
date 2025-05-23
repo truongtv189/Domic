@@ -11,7 +11,7 @@
       "animation": "Animator/animationRainBow",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
       "isDis": false,
-      "isRotateMove": true
+      "isRotateMove": false
     },
     {
       "code": "kino",
@@ -24,7 +24,7 @@
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
       "isDis": true,
-      "isRotateMove": true
+      "isRotateMove": false
     },
     {
       "code": "mustard",
@@ -36,7 +36,8 @@
       "figure": "figure/mustard",
       "animation": "Animator/Animationmustan",
       "loadingCategory": "Images/Icon/LoadingIcon/fame2",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "para",
@@ -48,7 +49,8 @@
       "figure": "figure/retake",
       "animation": "Animator/AnimationRetake",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "retake",
@@ -60,7 +62,8 @@
       "figure": "figure/retake",
       "animation": "Animator/AnimationRetake",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "pyramixed",
@@ -72,7 +75,8 @@
       "figure": "figure/pyramixed",
       "animation": "Animator/AnimationRetake",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "original",
@@ -84,7 +88,8 @@
       "figure": "figure/retake",
       "animation": "Animator/AnimationRetake",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "phase9",
@@ -96,7 +101,8 @@
       "figure": "figure/phase9",
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": true
+      "isDis": true,
+      "isRotateMove": false
     },
     {
       "code": "phase5",
@@ -109,7 +115,7 @@
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": true,
-      "isRotateMove": true
+      "isRotateMove": false
     },
     {
       "code": "phase11",
@@ -121,7 +127,8 @@
       "figure": "figure/phase6",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": true
+      "isDis": true,
+      "isRotateMove": false
     },
     {
       "code": "prosty",
@@ -133,7 +140,8 @@
       "figure": "figure/prosty",
       "animation": "Animator/animationProsty",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "phase10",
@@ -145,7 +153,8 @@
       "figure": "figure/",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": true
+      "isDis": true,
+      "isRotateMove": false
     },
     {
       "code": "phase6",
@@ -158,7 +167,7 @@
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame3",
       "isDis": true,
-      "isRotateMove": true
+      "isRotateMove": false
     },
     {
       "code": "phase99",
@@ -170,7 +179,8 @@
       "figure": "figure/phase99",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": true
+      "isDis": true,
+      "isRotateMove": true
     },
     {
       "code": "spooky",
@@ -182,7 +192,8 @@
       "figure": "figure/spooky",
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "phase3",
@@ -194,7 +205,8 @@
       "figure": "figure/phase3",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "phase7",
@@ -206,7 +218,8 @@
       "figure": "figure/phase7",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "phase100",
@@ -218,7 +231,8 @@
       "figure": "figure/phase6",
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": true
+      "isDis": true,
+      "isRotateMove": true
     },
     {
       "code": "phase2",
@@ -230,7 +244,8 @@
       "figure": "figure/phase2",
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     },
     {
       "code": "phase4",
@@ -242,7 +257,8 @@
       "figure": "figure/phase4",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": true
+      "isDis": true,
+      "isRotateMove": false
     },
     {
       "code": "phase8",
@@ -254,7 +270,8 @@
       "figure": "figure/phase8",
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
-      "isDis": true
+      "isDis": true,
+      "isRotateMove": false
     },
     {
       "code": "prozen",
@@ -267,7 +284,8 @@
       "animation": "Animator/animationRainBow",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
       "isDis": false,
-      "color":"3D9AF0"
+      "color": "3D9AF0",
+      "isRotateMove": false
     },
     {
       "code": "chonky",
@@ -279,7 +297,8 @@
       "figure": "figure/chonky",
       "animation": "",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
-      "isDis": false
+      "isDis": false,
+      "isRotateMove": false
     }
   ]
 }

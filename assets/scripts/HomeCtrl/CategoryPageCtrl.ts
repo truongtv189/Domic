@@ -203,7 +203,8 @@ export class CategoryPageCtrl extends Component {
                 loadingCategory: data.loadingCategory,
                 backgorund:data.backgorund,
                 backgorund1:data.backgorund1,
-                isDis:data.isDis
+                isDis:data.isDis,
+                isRotateMove:data.isRotateMove
             };
 
             // Ẩn node ADS cho cả hai trường hợp

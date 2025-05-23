@@ -173,6 +173,12 @@
     "Farm2": {
       "__id__": 79
     },
+    "Container1": {
+      "__id__": 6
+    },
+    "Container2": {
+      "__id__": 78
+    },
     "LoadingPrefab": {
       "__uuid__": "c0fa80bd-10ef-4702-a799-30415429779c",
       "__expectedType__": "cc.Prefab"
@@ -1410,7 +1416,7 @@
         "__id__": 60
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 64
@@ -2750,7 +2756,7 @@
       "__id__": 8
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 74
@@ -3330,7 +3336,7 @@
         "__id__": 95
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 98
@@ -4891,10 +4897,7 @@
       "b": 255,
       "a": 255
     },
-    "_spriteFrame": {
-      "__uuid__": "36bdf2b4-59ad-4472-8225-bd17c42e9313@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
+    "_spriteFrame": null,
     "_type": 0,
     "_fillType": 0,
     "_sizeMode": 0,
@@ -5034,10 +5037,7 @@
       "b": 255,
       "a": 255
     },
-    "_spriteFrame": {
-      "__uuid__": "36bdf2b4-59ad-4472-8225-bd17c42e9313@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
+    "_spriteFrame": null,
     "_type": 0,
     "_fillType": 0,
     "_sizeMode": 0,
@@ -5350,7 +5350,7 @@
         "__id__": 155
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 158
