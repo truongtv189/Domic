@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform, Color, tween, v3, AudioClip } from 'cc';
+import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform, Color, tween, v3, AudioClip, Vec2, Layout } from 'cc';
 import { DraggableItem } from './DraggableItem';
 import { GameDataManager } from '../GameDataManager';
 import { ThemeCtrl, themeEventTarget } from './ThemeCtrl';
@@ -25,6 +25,17 @@ export class PlayGameCtrl extends Component {
     private readonly NODE_SPACING: number = 0.2; // Khoảng cách giữa các node (20% chiều rộng node)
 
     onLoad() {
+
+        // cho mấy cái load resource này ra thành các promise khác nhau
+        // sau đó cho vào promiseAll
+        // 2 cách làm loading
+        // - cách 1: 2 màn hình loading ở home và gameplay
+        //- khi home đến X % và tắt đi sang scene gameplay-> show loading ở gameplay progress tính từ X%
+
+        // cach 2:
+        // - dùng 1 màn hình loading ở precition Node
+        // show loading ở trên, scene home và gameplay chuyển ở dưới, khi gameplay load xong hết thì tắt loading
+
         const loadingNode = instantiate(this.LoadingPrefab);
         this.Loading.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
@@ -422,6 +433,7 @@ export class PlayGameCtrl extends Component {
         console.log('[PlayGameCtrl] Watched ads items:', watched);
         this.nodeCategoryFigure.removeAllChildren();
         console.log('[PlayGameCtrl] Creating', this.imageData.length, 'images');
+        let itemSizeW = 0;
         for (let i = 0; i < this.imageData.length; i++) {
             const data = this.imageData[i];
             if (!data || !data.image) {
@@ -432,7 +444,8 @@ export class PlayGameCtrl extends Component {
             const cleanPath = `PlayGame/image/${imagePath}/spriteFrame`;
             console.log(`[PlayGameCtrl] Creating item ${i} with path:`, cleanPath);
             const itemNode = instantiate(this.itemPrefab);
-            this.nodeCategoryFigure.addChild(itemNode);
+            itemNode.parent = this.nodeCategoryFigure;
+            itemSizeW = itemNode.getComponent(UITransform).width;
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
                 const shouldShowAds = data.isAds === true && !watched[data.core];
@@ -457,6 +470,11 @@ export class PlayGameCtrl extends Component {
             });
 
         }
+
+        console.log("itemSizeW: ", itemSizeW);
+        let col = this.nodeCategoryFigure.getComponent(Layout).constraintNum;
+        this.nodeCategoryFigure.getComponent(UITransform).width = (itemSizeW * col + 20 * (col - 1));
+        debugger
     }
 
     cacheDropTargetRects() {
