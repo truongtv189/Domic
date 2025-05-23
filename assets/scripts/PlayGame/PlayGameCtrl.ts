@@ -2,6 +2,8 @@ import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiat
 import { DraggableItem } from './DraggableItem';
 import { GameDataManager } from '../GameDataManager';
 import { ThemeCtrl, themeEventTarget } from './ThemeCtrl';
+import { LoadingCtrl } from '../LoadingCtrl';
+import { AudioManager } from '../AudioManager';
 const { ccclass, property } = _decorator;
 @ccclass('PlayGameCtrl')
 export class PlayGameCtrl extends Component {
@@ -14,7 +16,7 @@ export class PlayGameCtrl extends Component {
     @property(Node) Container2: Node = null;
     @property(Prefab) LoadingPrefab: Prefab = null;
     @property(Node) Loading: Node = null;
-    // @property(Node) nodeLoading: Node = null;
+    private loadingCtrl: LoadingCtrl = null!;
     private animClips: AnimationClip[] = [];
     private imageData: any[] = [];
     private dropTargetRects: { node: Node, rect: Rect }[] = [];
@@ -27,6 +29,12 @@ export class PlayGameCtrl extends Component {
         this.Loading.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
         this.Loading.active = true;
+         AudioManager.getInstance().stopBGM()
+        this.loadingCtrl = loadingNode.getComponent(LoadingCtrl);
+        if (!this.loadingCtrl) {
+            console.error('[PlayGameCtrl] LoadingCtrl component not found on loading prefab');
+            return;
+        }
         if (!this.itemPrefab) {
             return;
         }
@@ -87,49 +95,6 @@ export class PlayGameCtrl extends Component {
                     if (!farm) return;
                     const spriteNode = farm.getChildByName('Sprite');
                     if (!spriteNode) return;
-                    // Lấy Node1, Node2, Node3
-                    // ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
-                    //     const node = spriteNode.getChildByName(nodeName);
-                    //     if (!node) return;
-                    //     // Lấy spriteFrame từ source (spriteFrames)
-                    //     if (isRotateMove && spriteFrames && spriteFrames.length > idx) {
-                    //         let sprite = node.getComponent(Sprite);
-                    //         if (!sprite) sprite = node.addComponent(Sprite);
-                    //         sprite.spriteFrame = spriteFrames[idx];
-                    //         // Chỉ Node1, Node2, Node3 di chuyển carousel: ra ngoài thì về lại vị trí Node3
-                    //         if (['Node1', 'Node2', 'Node3'].includes(nodeName)) {
-                    //             const node3 = spriteNode.getChildByName('Node3');
-                    //             if (node3) {
-                    //                 // Xoay liên tục
-                    //                 tween(node)
-                    //                     .by(2, { angle: 360 })
-                    //                     .repeatForever()
-                    //                     .start();
-
-                    //                 // Di chuyển liên tục từ trái sang phải
-                    //                 const parent = node.parent;
-                    //                 if (!parent) return;
-                    //                 const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
-                    //                 const nodeWidth = node.getComponent(UITransform)?.contentSize.width || 100;
-                    //                 const y = node.getPosition().y;
-                    //                 const z = node.getPosition().z;
-                    //                 const endX = parentWidth / 2 + nodeWidth;
-
-                    //                 const moveNext = () => {
-                    //                     tween(node)
-                    //                         .to(2, { position: v3(endX, y, z) })
-                    //                         .call(() => {
-                    //                             const node3Pos = node3.getPosition();
-                    //                             node.setPosition(node3Pos);
-                    //                             moveNext();
-                    //                         })
-                    //                         .start();
-                    //                 };
-                    //                 moveNext();
-                    //             }
-                    //         }
-                    //     }
-                    // });
                     // Khởi động carousel cho Sprite Node
                     this.startCarouselForSpriteNodes(spriteNode);
                 });
@@ -243,7 +208,6 @@ export class PlayGameCtrl extends Component {
         this.loadJsonData();
         this.node.on('reset-all-items', this.resetAllItems, this);
         themeEventTarget.on('theme-selected', this.applyThemeColors, this);
-        this.Loading.active = false;
     }
 
     loadAnimClips(callback: () => void) {
@@ -334,24 +298,32 @@ export class PlayGameCtrl extends Component {
             if (jsonAsset && jsonAsset.json && jsonAsset.json.DATA) {
                 console.log('[PlayGameCtrl] JSON data loaded successfully');
                 this.imageData = jsonAsset.json.DATA;
-                
+
                 // Preload all images first
                 console.log('[PlayGameCtrl] Starting to preload all images...');
                 await this.preloadAllImages(this.imageData);
                 console.log('[PlayGameCtrl] All images preloaded successfully');
-                
+
                 // Then create images after preloading is complete
                 this.createImages();
+
+                // Hide loading after everything is done
+                this.Loading.active = false;
             } else {
                 console.error('[PlayGameCtrl] Invalid JSON data structure');
+                this.Loading.active = false;
             }
 
         } catch (err) {
             console.error('[PlayGameCtrl] Error loading JSON data:', err);
+            this.Loading.active = false;
         }
     }
 
     async preloadAllImages(imageList: any[]) {
+        const totalItems = imageList.length;
+        let loadedItems = 0;
+
         const preloadPromises = imageList.map((data) => {
             return new Promise<void>((resolve) => {
                 // Load sprite frames
@@ -359,6 +331,8 @@ export class PlayGameCtrl extends Component {
                 resources.loadDir(spriteFolderPath, SpriteFrame, (err, spriteFrames) => {
                     if (err) {
                         console.warn(`[Image preload] Failed to load folder ${data.image}`, err);
+                        loadedItems++;
+                        this.updateLoadingProgress(loadedItems / totalItems);
                         resolve();
                         return;
                     }
@@ -378,6 +352,8 @@ export class PlayGameCtrl extends Component {
                         } else {
                             data._audioClip = audioClip;
                         }
+                        loadedItems++;
+                        this.updateLoadingProgress(loadedItems / totalItems);
                         resolve();
                     });
                 });
@@ -386,6 +362,12 @@ export class PlayGameCtrl extends Component {
 
         await Promise.all(preloadPromises);
         console.log('[PlayGameCtrl] All images and audio preloaded');
+    }
+
+    private updateLoadingProgress(progress: number) {
+        if (this.loadingCtrl) {
+            this.loadingCtrl.updateProgress(progress);
+        }
     }
 
     setBackgroundSprite(targetNode: Node, spriteFrame: SpriteFrame) {
@@ -503,6 +485,7 @@ export class PlayGameCtrl extends Component {
         return this.dropTargetRects || [];
     }
     onGoHome() {
+        AudioManager.getInstance().playClickClip()
         director.loadScene('Home');
     }
     resetAllItems() {
@@ -531,6 +514,7 @@ export class PlayGameCtrl extends Component {
         });
     }
     applyThemeColors(themeData: { color1: string, color2: string }) {
+         AudioManager.getInstance().playClickClip()
         const color1 = this.hexToColor(themeData.color1);
         const color2 = this.hexToColor(themeData.color2);
         for (let i = 0; i < this.dropTargets.length; i++) {

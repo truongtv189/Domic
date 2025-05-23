@@ -2,6 +2,7 @@ import { _decorator, Component, instantiate, Node, Prefab, Label } from 'cc';
 import { I18n } from '../I18n';
 import AdsManager from '../AdsPlatform/AdsManager';
 import { GameDataManager } from '../GameDataManager';
+import { AudioManager } from '../AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('HomeCtrl')
@@ -55,6 +56,7 @@ export class HomeCtrl extends Component {
     }
 
     onShowPopupSetting() {
+         AudioManager.getInstance().playClickClip()
         const loadingNode = instantiate(this.popUpSettingPrefabs);
         this.popUpSetting.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
@@ -64,6 +66,7 @@ export class HomeCtrl extends Component {
         this.updateLabelsInPrefab(loadingNode);
     }
     onOpenLanguage() {
+         AudioManager.getInstance().playClickClip()
         const loadingNode = instantiate(this.PopUpLanguagePrefab);
         this.PopUpLanguage.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);

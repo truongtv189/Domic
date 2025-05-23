@@ -2035,7 +2035,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 700,
-      "height": 714.106
+      "height": 30
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2059,7 +2059,7 @@
     "_left": 10,
     "_right": 10,
     "_top": 50,
-    "_bottom": -370.98199999999997,
+    "_bottom": 313.124,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
     "_isAbsLeft": true,
@@ -2084,7 +2084,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "_resizeMode": 0,
+    "_resizeMode": 1,
     "_layoutType": 3,
     "_cellSize": {
       "__type__": "cc.Size",

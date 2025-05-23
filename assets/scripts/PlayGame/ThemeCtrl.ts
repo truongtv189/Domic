@@ -5,6 +5,7 @@ import {
 } from 'cc';
 import AdsManager from '../AdsPlatform/AdsManager';
 import { GameDataManager } from '../GameDataManager';
+import { AudioManager } from '../AudioManager';
 export { themeEventTarget };
 const { ccclass, property } = _decorator;
 const themeEventTarget = new EventTarget(); // Export nó
@@ -27,7 +28,7 @@ export class ThemeCtrl extends Component {
     nodeCategoryFigure: Node = null;
     @property(Canvas)
     canvas: Canvas = null;
-    
+
     private selectedItem: Node | null = null;
     private readonly ANIMATION_DURATION = 0.2;
     private originalPosition: Vec3;
@@ -38,10 +39,10 @@ export class ThemeCtrl extends Component {
         this.originalPosition = this.ScrollView.getPosition();
         this.loadJsonData();
         this.ScrollView.active = false;
-        
+
         // Đăng ký lắng nghe sự kiện thay đổi kích thước canvas
         view.on('canvas-resize', this.onCanvasResize, this);
-        
+
         // Khởi tạo kích thước ban đầu
         this.updateItemsScale();
     }
@@ -57,10 +58,10 @@ export class ThemeCtrl extends Component {
 
     private updateItemsScale() {
         if (!this.nodeCategoryFigure) return;
-        
+
         const canvasSize = view.getVisibleSize();
         const scaleFactor = Math.min(canvasSize.width / 1280, canvasSize.height / 720); // Giả sử 1280x720 là kích thước thiết kế cơ bản
-        
+
         // Cập nhật kích thước cho tất cả các item
         this.nodeCategoryFigure.children.forEach(item => {
             const uiTransform = item.getComponent(UITransform);
@@ -111,13 +112,13 @@ export class ThemeCtrl extends Component {
     async createImages() {
         this.nodeCategoryFigure.removeAllChildren();
         const watched = GameDataManager.getInstance().data.watchedAdsItems || {};
-        
+
         for (const data of this.imageData) {
             const itemNode = instantiate(this.itemPrefab);
             const checkNode = itemNode.getChildByName("Check");
             if (checkNode) checkNode.active = false;
             this.nodeCategoryFigure.addChild(itemNode);
-            
+
             // Hiển thị node ADS nếu item chưa được xem ads
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
@@ -140,10 +141,10 @@ export class ThemeCtrl extends Component {
                 const checkNode = itemNode.getChildByName("Check");
                 if (checkNode) checkNode.active = true;
             }
-            
+
             // Lưu data vào node để sử dụng sau này
             itemNode['itemData'] = data;
-            
+
             itemNode.on(Node.EventType.TOUCH_END, () => {
                 this.onSelectItem(itemNode);
             }, this);
@@ -151,6 +152,7 @@ export class ThemeCtrl extends Component {
     }
 
     private onSelectItem(itemNode: Node) {
+        AudioManager.getInstance().playClickClip()
         const data = itemNode['itemData'] as ThemeItem;
         if (!data) return;
         if (data.isAds) {
@@ -195,6 +197,7 @@ export class ThemeCtrl extends Component {
     }
 
     onClickHideTheme() {
+        AudioManager.getInstance().playClickClip()
         tween(this.ScrollView)
             .to(this.ANIMATION_DURATION, { position: new Vec3(0, 500, 0) }, { easing: 'quartIn' })
             .call(() => {
@@ -203,6 +206,7 @@ export class ThemeCtrl extends Component {
             .start();
     }
     onClickOpenTheme() {
+        AudioManager.getInstance().playClickClip()
         if (!this.originalPosition) {
             console.warn("originalPosition is undefined");
             return;

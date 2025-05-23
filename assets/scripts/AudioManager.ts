@@ -4,14 +4,22 @@ import { GameDataManager } from './GameDataManager';
 
 @ccclass('AudioManager')
 export class AudioManager extends Component {
+    private static instance: AudioManager | null = null;
+     private audioSource: AudioSource | null = null;
     @property(AudioSource)
     bgmSource: AudioSource = null!;
+
+    @property(AudioClip)
+    public ClickClip: AudioClip | null = null;
+
     private bgmVolume: number = 1.0;
     private sfxVolume: number = 1.0;
     private masterVolume: number = 1.0;
     private static _instance: AudioManager;
 
     onLoad() {
+        AudioManager.instance = this;
+        this.audioSource = this.getComponent(AudioSource);
         const savedMasterVolume = GameDataManager.getInstance().data.masterVolume
         const savedBGMVolume = GameDataManager.getInstance().data.bgmVolume;
         const savedSFXVolume = GameDataManager.getInstance().data.sfxVolume;
@@ -25,9 +33,11 @@ export class AudioManager extends Component {
         AudioManager._instance = this;
         game.addPersistRootNode(this.node);
     }
-
-    static get instance(): AudioManager {
-        return AudioManager._instance;
+    public static getInstance(): AudioManager {
+        if (!AudioManager.instance) {
+            throw new Error('');
+        }
+        return AudioManager.instance!;
     }
 
     playBGM(clip: AudioClip, loop: boolean = true) {
@@ -41,24 +51,38 @@ export class AudioManager extends Component {
     stopBGM() {
         if (this.bgmSource) {
             this.bgmSource.stop();
-        } else {
+            this.bgmSource.clip = null;
         }
     }
 
+    onDisable() {
+        this.stopBGM();
+    }
+
+    onDestroy() {
+        this.stopBGM();
+    }
+
     toggleMasterVolume() {
-        this.masterVolume = this.masterVolume === 0 ? 1 : 0;  
+        this.masterVolume = this.masterVolume === 0 ? 1 : 0;
         this.updateAudioState();
         GameDataManager.getInstance().updateField("masterVolume", this.masterVolume);
     }
 
     // Toggle BGM volume
     toggleBGM() {
-        this.bgmVolume = this.bgmVolume === 0 ? 1 : 0; 
+        this.bgmVolume = this.bgmVolume === 0 ? 1 : 0;
         this.updateAudioState();
         GameDataManager.getInstance().updateField("bgmVolume", this.bgmVolume);
     }
 
     private updateAudioState() {
         this.bgmSource.volume = this.masterVolume * this.bgmVolume;
+    }
+    playClickClip() {
+        if (this.ClickClip) {
+            this.audioSource.playOneShot(this.ClickClip, this.sfxVolume * this.masterVolume);
+        } else {
+        }
     }
 }

@@ -3,6 +3,7 @@ import { GameDataManager } from '../GameDataManager';
 import { LoadingCtrl } from '../LoadingCtrl';
 import { LoadingManager } from '../LoadingManager';
 import AdsManager from '../AdsPlatform/AdsManager';
+import { AudioManager } from '../AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('CategoryPageCtrl')
@@ -191,6 +192,7 @@ export class CategoryPageCtrl extends Component {
     }
 
     private onItemClicked(itemNode: Node) {
+        AudioManager.getInstance().playClickClip()
         const data = itemNode['itemData'];
         if (data) {
             const logoData = {
@@ -201,10 +203,10 @@ export class CategoryPageCtrl extends Component {
                 figure: data.figure,
                 animation: data.animation,
                 loadingCategory: data.loadingCategory,
-                backgorund:data.backgorund,
-                backgorund1:data.backgorund1,
-                isDis:data.isDis,
-                isRotateMove:data.isRotateMove
+                backgorund: data.backgorund,
+                backgorund1: data.backgorund1,
+                isDis: data.isDis,
+                isRotateMove: data.isRotateMove
             };
 
             // Ẩn node ADS cho cả hai trường hợp
@@ -224,6 +226,7 @@ export class CategoryPageCtrl extends Component {
                         GameDataManager.getInstance().updateField('ItemSelect', logoData);
 
                         this.Loading.active = true;
+                        AudioManager.getInstance().stopBGM();
                         setTimeout(() => {
                             director.loadScene('playgame');
                         }, 100);
@@ -233,6 +236,7 @@ export class CategoryPageCtrl extends Component {
                 // Handle non-ads items
                 GameDataManager.getInstance().updateField('ItemSelect', logoData);
                 this.Loading.active = true;
+                AudioManager.getInstance().stopBGM();
                 setTimeout(() => {
                     director.loadScene('playgame');
                 }, 100);
