@@ -1,154 +1,186 @@
 {
-    "DATA": [
-      {
-        "id": 1,
-        "core": "kino1",
-        "image": "kino/kino1",
-        "_deltaTime": 4,
-        "isAds": true
-      },
-      {
-        "id": 2,
-        "core": "kino2",
-        "image": "kino/kino2",
-        "_deltaTime": 1.06,
-        "isAds": true
-      },
-      {
-        "id": 3,
-        "core": "kino3",
-        "image": "kino/kino3",
-        "_deltaTime": 0.9,
-        "isAds": true
-      },
-      {
-        "id": 4,
-        "core": "kino4",
-        "image": "kino/kino4",
-        "_deltaTime": 0.56,
-        "isAds": true
-      },
-      {
-        "id": 5,
-        "core": "kino5",
-        "image": "kino/kino5",
-        "_deltaTime": 0.9,
-        "isAds": true
-      },
-      {
-        "id": 6,
-        "core": "kino6",
-        "image": "kino/kino6",
-        "_deltaTime":0.9,
-        "isAds": true
-      },
-      {
-        "id": 7,
-        "core": "kino7",
-        "image": "kino/kino7",
-        "_deltaTime": 3,
-        "isAds": true
-      },
-      {
-        "id": 8,
-        "core": "kino8",
-        "image": "kino/kino8",
-        "_deltaTime": 5
-        ,
-        "isAds": true
-      },
-      {
-        "id": 9,
-        "core": "kino9",
-        "image": "kino/kino9",
-        "_deltaTime":3,
-        "isAds": true
-      },
-      {
-        "id": 10,
-        "core": "kino10",
-        "image": "kino/kino10",
-        "_deltaTime": 3,
-        "isAds": true
-      },
-      {
-        "id": 11,
-        "core": "kino11",
-        "image": "kino/kino11",
-        "_deltaTime": 1.3,
-        "isAds": true
-      },
-      {
-        "id": 12,
-        "core": "kino12",
-        "image": "kino/kino12",
-        "_deltaTime": 0.9,
-        "isAds": true
-      },
-      {
-        "id": 13,
-        "core": "kino13",
-        "image": "kino/kino13",
-        "_deltaTime":0.6,
-        "isAds": true
-      },
-      {
-        "id": 14,
-        "core": "kino14",
-        "image": "kino/kino14",
-        "_deltaTime": 1.5,
-        "isAds": true
-      },
-      {
-        "id": 15,
-        "core": "kino15",
-        "image": "kino/kino15",
-        "_deltaTime": 3,
-        "isAds": true
-      },
-      {
-        "id": 16,
-        "core": "kino16",
-        "image": "kino/kino16",
-        "_deltaTime": 4.884,
-        "isAds": true
-      },
-      {
-        "id": 17,
-        "core": "kino17",
-        "image": "kino/kino17",
-        "_deltaTime":0.9,
-        "isAds": true
-      },
-      {
-        "id": 18,
-        "core": "kino18",
-        "image": "kino/kino18",
-        "_deltaTime": 3.6,
-        "isAds": true
-      },
-      {
-        "id": 19,
-        "core": "kino19",
-        "image": "kino/kino19",
-        "_deltaTime": 1.2,
-        "isAds": true
-      },
-      {
-        "id": 20,
-        "core": "kino20",
-        "image": "kino/kino20",
-        "_deltaTime": 1.2,
-        "isAds": true
-      },
-      {
-        "id": 21,
-        "core": "kino21",
-        "image": "kino/kino21",
-        "_deltaTime": 1.2,
-        "isAds": true
-      }
-
-    ]
-  }
-  
+  "DATA": [
+    {
+      "id": 1,
+      "core": "kino1",
+      "image": "kino/kino1",
+      "_deltaTime": 1,
+      "isAds": true
+    },
+    {
+      "id": 2,
+      "core": "kino2",
+      "image": "kino/kino2",
+      "_deltaTime": 3.6,
+      "isAds": true
+    },
+    {
+      "id": 3,
+      "core": "kino3",
+      "image": "kino/kino3",
+      "_deltaTime": 1.8,
+      "isAds": true
+    },
+    {
+      "id": 4,
+      "core": "kino4",
+      "image": "kino/kino4",
+      "_deltaTime": 2.2,
+      "isAds": true
+    },
+    {
+      "id": 5,
+      "core": "kino5",
+      "image": "kino/kino5",
+      "_deltaTime": 0.8,
+      "isAds": true
+    },
+    {
+      "id": 6,
+      "core": "kino6",
+      "image": "kino/kino6",
+      "_deltaTime": 0.8,
+      "isAds": true
+    },
+    {
+      "id": 7,
+      "core": "kino7",
+      "image": "kino/kino7",
+      "_deltaTime": 3,
+      "isAds": true
+    },
+    {
+      "id": 8,
+      "core": "kino8",
+      "image": "kino/kino8",
+      "_deltaTime": 1.36,
+      "isAds": true
+    },
+    {
+      "id": 9,
+      "core": "kino9",
+      "image": "kino/kino9",
+      "_deltaTime": 0.8,
+      "isAds": true
+    },
+    {
+      "id": 10,
+      "core": "kino10",
+      "image": "kino/kino10",
+      "_deltaTime": 2.3,
+      "isAds": true
+    },
+    {
+      "id": 11,
+      "core": "kino11",
+      "image": "kino/kino11",
+      "_deltaTime": 1.2,
+      "isAds": true
+    },
+    {
+      "id": 12,
+      "core": "kino12",
+      "image": "kino/kino12",
+      "_deltaTime": 0.58,
+      "isAds": true
+    },
+    {
+      "id": 13,
+      "core": "kino13",
+      "image": "kino/kino13",
+      "_deltaTime": 0.64,
+      "isAds": true
+    },
+    {
+      "id": 14,
+      "core": "kino14",
+      "image": "kino/kino14",
+      "_deltaTime": 2,
+      "isAds": true
+    },
+    {
+      "id": 15,
+      "core": "kino15",
+      "image": "kino/kino15",
+      "_deltaTime": 1.3,
+      "isAds": true
+    },
+    {
+      "id": 16,
+      "core": "kino16",
+      "image": "kino/kino16",
+      "_deltaTime": 1.4,
+      "isAds": true
+    },
+    {
+      "id": 17,
+      "core": "kino17",
+      "image": "kino/kino17",
+      "_deltaTime": 1.4,
+      "isAds": true
+    },
+    {
+      "id": 18,
+      "core": "kino18",
+      "image": "kino/kino18",
+      "_deltaTime": 0.5,
+      "isAds": true
+    },
+    {
+      "id": 19,
+      "core": "kino19",
+      "image": "kino/kino19",
+      "_deltaTime": 0.85,
+      "isAds": true
+    },
+    {
+      "id": 20,
+      "core": "kino20",
+      "image": "kino/kino20",
+      "_deltaTime": 0.97,
+      "isAds": true
+    },
+    {
+      "id": 21,
+      "core": "kino21",
+      "image": "kino/kino21",
+      "_deltaTime": 0.573,
+      "isAds": true
+    },
+    {
+      "id": 22,
+      "core": "kino22",
+      "image": "kino/kino22",
+      "_deltaTime": 1.323,
+      "isAds": true
+    },
+    {
+      "id": 23,
+      "core": "kino23",
+      "image": "kino/kino23",
+      "_deltaTime": 0.573,
+      "isAds": true
+    },
+    {
+      "id": 24,
+      "core": "kino24",
+      "image": "kino/kino24",
+      "_deltaTime": 0.979,
+      "isAds": true
+    },
+    {
+      "id": 25,
+      "core": "kino25",
+      "image": "kino/kino25",
+      "_deltaTime": 0.9,
+      "isAds": true
+    },
+    {
+      "id": 26,
+      "core": "kino26",
+      "image": "kino/kino26",
+      "_deltaTime": 3,
+      "isAds": true
+    }
+  ]
+}

@@ -4,28 +4,28 @@
         "id": 1,
         "core": "originnal1",
         "image": "originnal/originnal1",
-        "_deltaTime": 0.911,
+        "_deltaTime": 0.97,
         "isAds": true
       },
       {
         "id": 2,
         "core": "originnal2",
         "image": "originnal/originnal2",
-        "_deltaTime": 1.204,
+        "_deltaTime": 0.65,
         "isAds": true
       },
       {
         "id": 3,
         "core": "originnal3",
         "image": "originnal/originnal3",
-        "_deltaTime": 0.613,
+        "_deltaTime": 0.65,
         "isAds": true
       },
       {
         "id": 4,
         "core": "originnal4",
         "image": "originnal/originnal4",
-        "_deltaTime": 2.4,
+        "_deltaTime": 0.95,
         "isAds": true
       },
       {
@@ -39,21 +39,21 @@
         "id": 6,
         "core": "originnal6",
         "image": "originnal/originnal6",
-        "_deltaTime":4.8,
+        "_deltaTime":0.66,
         "isAds": true
       },
       {
         "id": 7,
         "core": "originnal7",
         "image": "originnal/originnal7",
-        "_deltaTime": 4,
+        "_deltaTime": 1.2,
         "isAds": true
       },
       {
         "id": 8,
         "core": "originnal8",
         "image": "originnal/originnal8",
-        "_deltaTime": 2.8
+        "_deltaTime":0.5
         ,
         "isAds": true
       },
@@ -61,63 +61,63 @@
         "id": 9,
         "core": "originnal9",
         "image": "originnal/originnal9",
-        "_deltaTime": 0.7,
+        "_deltaTime": 4.844,
         "isAds": true
       },
       {
         "id": 10,
         "core": "originnal10",
         "image": "originnal/originnal10",
-        "_deltaTime": 3,
+        "_deltaTime": 2.45,
         "isAds": true
       },
       {
         "id": 11,
         "core": "originnal11",
         "image": "originnal/originnal11",
-        "_deltaTime": 0.6,
+        "_deltaTime": 0.443,
         "isAds": true
       },
       {
         "id": 12,
         "core": "originnal12",
         "image": "originnal/originnal12",
-        "_deltaTime": 1.8,
+        "_deltaTime":3.5,
         "isAds": true
       },
       {
         "id": 13,
         "core": "originnal13",
         "image": "originnal/originnal13",
-        "_deltaTime":4.7,
+        "_deltaTime":1.8,
         "isAds": true
       },
       {
         "id": 14,
         "core": "originnal14",
         "image": "originnal/originnal14",
-        "_deltaTime": 4.85,
+        "_deltaTime":0.6,
         "isAds": true
       },
       {
         "id": 15,
         "core": "originnal15",
         "image": "originnal/originnal15",
-        "_deltaTime": 5.024,
+        "_deltaTime": 2.5,
         "isAds": true
       },
       {
         "id": 16,
         "core": "originnal16",
         "image": "originnal/originnal16",
-        "_deltaTime": 4.884,
+        "_deltaTime": 0.69,
         "isAds": true
       },
       {
         "id": 17,
         "core": "originnal17",
         "image": "originnal/originnal17",
-        "_deltaTime":1.5,
+        "_deltaTime":1.85,
         "isAds": true
       },
       {
@@ -131,7 +131,7 @@
         "id": 19,
         "core": "originnal19",
         "image": "originnal/originnal19",
-        "_deltaTime": 1.9,
+        "_deltaTime": 5,
         "isAds": true
       }
     ]
