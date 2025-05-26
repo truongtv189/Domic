@@ -1,4 +1,4 @@
-import { _decorator, Asset, Component, director, ImageAsset, instantiate, JsonAsset, Label, Layout, Node, PageView, Prefab, resources, Sprite, SpriteFrame, Texture2D, Size, Widget, UITransform, Canvas } from 'cc';
+import { _decorator, Asset, Component, director, ImageAsset, instantiate, JsonAsset, Label, Layout, Node, PageView, Prefab, resources, Sprite, SpriteFrame, Texture2D, Size, Widget, UITransform, Canvas, ScrollView, Vec2 } from 'cc';
 import { GameDataManager } from '../GameDataManager';
 import { LoadingCtrl } from '../LoadingCtrl';
 import { LoadingManager } from '../LoadingManager';
@@ -9,8 +9,8 @@ const { ccclass, property } = _decorator;
 @ccclass('CategoryPageCtrl')
 export class CategoryPageCtrl extends Component {
     private imageData: any[] = [];
-    @property(PageView)
-    pageView: PageView = null;
+    @property(ScrollView)
+    pageView: ScrollView = null;
     @property(Prefab)
     itemPrefab: Prefab = null;
     @property(Prefab)
@@ -52,74 +52,39 @@ export class CategoryPageCtrl extends Component {
     private createImages() {
         const watched = GameDataManager.getInstance().data.watchedAdsItems || {};
         const totalItems = this.imageData.length;
-        const baseWidth = 720;
-        const baseHeight = 720;
-        const columns = 4;
-        const padding = 20;
+        const rows = 2; // Số hàng cố định
         const spacingX = 50;
         const spacingY = 50;
 
-        const canvas = director.getScene().getComponentInChildren(Canvas);
-        const canvasWidth = canvas?.getComponent(UITransform)?.contentSize.width || baseWidth;
-        const scale = canvasWidth < baseWidth ? canvasWidth / baseWidth : 1;
-
-        // Scale PageView
-        this.pageView.node.setScale(scale, scale, 1);
-
-        // Tính toán layout dựa trên baseWidth/baseHeight
-        const pageWidth = baseWidth;
-        const pageHeight = baseHeight;
-        const itemsPerPage = Math.ceil(totalItems / 2);
-        const rows = Math.ceil(itemsPerPage / columns);
-
-        const itemWidth = (pageWidth - 2 * padding - (columns - 1) * spacingX) / columns;
-        const itemHeight = (pageHeight - 2 * padding - (rows - 1) * spacingY) / rows;
-
-        // Lấy content node từ PageView
+        // Lấy content node từ ScrollView
         const content = this.pageView.content;
         if (!content) return;
 
-        // Lấy 2 page từ content
-        const page1 = content.children[0];
-        const page2 = content.children[1];
-        if (!page1 || !page2) return;
-
         // Xóa các items cũ
-        page1.removeAllChildren();
-        page2.removeAllChildren();
+        content.removeAllChildren();
 
-        // Hàm set vị trí và scale cho item
-        function setItemPositionAndSize(itemNode: Node, index: number) {
-            const col = index % columns;
-            const row = Math.floor(index / columns);
+        // Lấy kích thước của item prefab
+        const itemNode = instantiate(this.itemPrefab);
+        const itemWidth = itemNode.getComponent(UITransform)?.contentSize.width || 0;
+        const itemHeight = itemNode.getComponent(UITransform)?.contentSize.height || 0;
+        itemNode.destroy();
 
-            // Tính tổng chiều rộng/chiều cao của lưới item
-            const totalGridWidth = columns * itemWidth + (columns - 1) * spacingX;
-            const totalGridHeight = rows * itemHeight + (rows - 1) * spacingY;
+        // Tính toán số cột cần thiết
+        const columns = Math.ceil(totalItems / rows);
 
-            // Tính vị trí bắt đầu để căn giữa lưới trong page, đồng thời cộng padding
-            const startX = -pageWidth / 2 + padding + (pageWidth - 2 * padding - totalGridWidth) / 2 + itemWidth / 2;
-            const startY = pageHeight / 2 - padding - (pageHeight - 2 * padding - totalGridHeight) / 2 - itemHeight / 2;
+        // Tính toán kích thước content
+        const contentWidth = columns * itemWidth + (columns - 1) * spacingX;
+        const contentHeight = rows * itemHeight + (rows - 1) * spacingY;
 
-            const x = startX + col * (itemWidth + spacingX);
-            const y = startY - row * (itemHeight + spacingY);
-
-            itemNode.setPosition(x, y, 0);
-
-            // Set lại kích thước cho itemNode
-            const uiTrans = itemNode.getComponent(UITransform);
-            if (uiTrans) {
-                uiTrans.setContentSize(itemWidth, itemHeight);
-            }
+        // Set content size cho ScrollView
+        const contentUITransform = content.getComponent(UITransform);
+        if (contentUITransform) {
+            contentUITransform.setContentSize(contentWidth, contentHeight);
         }
 
-        // Phân phối items vào 2 page
-        const page1Items = this.imageData.slice(0, itemsPerPage);
-        const page2Items = this.imageData.slice(itemsPerPage);
-
-        // Tạo items cho page 1
-        page1Items.forEach((itemData, idx) => {
-            const itemNode = instantiate(this.itemPrefab); // itemNode là ContainerImgCategory
+        // Tạo items cho ScrollView
+        this.imageData.forEach((itemData, idx) => {
+            const itemNode = instantiate(this.itemPrefab);
             const imageNode = itemNode.getChildByName('Image');
             const adsNode = imageNode?.getChildByName('ADS');
             const labelNode = itemNode.getChildByName('Label');
@@ -139,8 +104,14 @@ export class CategoryPageCtrl extends Component {
                 this.onItemClicked(itemNode);
             });
 
-            setItemPositionAndSize(itemNode, idx);
-            page1.addChild(itemNode);
+            // Tính toán vị trí cho cuộn ngang
+            const col = Math.floor(idx / rows);
+            const row = idx % rows;
+            const x = col * (itemWidth + spacingX);
+            const y = -row * (itemHeight + spacingY);
+            itemNode.setPosition(x, y, 0);
+
+            content.addChild(itemNode);
 
             const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
             this.loadImageFromResource(imagePath, (spriteFrame) => {
@@ -148,36 +119,19 @@ export class CategoryPageCtrl extends Component {
             });
         });
 
-        // Tạo items cho page 2
-        page2Items.forEach((itemData, idx) => {
-            const itemNode = instantiate(this.itemPrefab); // itemNode là ContainerImgCategory
-            const imageNode = itemNode.getChildByName('Image');
-            const adsNode = imageNode?.getChildByName('ADS');
-            const labelNode = itemNode.getChildByName('Label');
-            const icon = imageNode?.getComponent(Sprite);
-            const nameLabel = labelNode?.getComponent(Label);
-            if (nameLabel) nameLabel.string = itemData.name;
+        const scrollView = this.pageView.getComponent(ScrollView);
+        const viewWidth = scrollView.node.getComponent(UITransform)?.contentSize.width || 0;
 
-            const itemKey = itemData.code;
-            const isUnlocked = watched[itemKey] === true;
-
-            if (adsNode) {
-                adsNode.active = itemData.isAds === true && !isUnlocked;
-            }
-
-            itemNode['itemData'] = itemData;
-            itemNode.on(Node.EventType.TOUCH_END, () => {
-                this.onItemClicked(itemNode);
-            });
-
-            setItemPositionAndSize(itemNode, idx);
-            page2.addChild(itemNode);
-
-            const imagePath = `PlayGame/${itemData.image}/spriteFrame`;
-            this.loadImageFromResource(imagePath, (spriteFrame) => {
-                if (spriteFrame && icon) icon.spriteFrame = spriteFrame;
-            });
-        });
+        // Nếu content nhỏ hơn viewport, căn giữa content
+        if (contentWidth < viewWidth) {
+            content.setPosition((viewWidth - contentWidth) / 2, content.position.y, content.position.z);
+        } else {
+            content.setPosition(0, content.position.y, content.position.z);
+            // Nếu muốn scroll đến giữa khi content lớn hơn viewport
+            this.scheduleOnce(() => {
+                scrollView.scrollToPercentHorizontal(0.5, 0, false);
+            }, 0);
+        }
     }
 
     private onItemClicked(itemNode: Node) {
@@ -235,13 +189,19 @@ export class CategoryPageCtrl extends Component {
 
     // Hàm load ảnh từ resources
     loadImageFromResource(path: string, callback: (spriteFrame: SpriteFrame | null) => void) {
+        if (this.spriteCache.has(path)) {
+            callback(this.spriteCache.get(path));
+            return;
+        }
         resources.load(path, SpriteFrame, (err, spriteFrame) => {
             if (err) {
                 console.warn("Load image failed:", path);
                 callback(null);
             } else {
+                this.spriteCache.set(path, spriteFrame); // cache
                 callback(spriteFrame);
             }
         });
     }
+    
 }

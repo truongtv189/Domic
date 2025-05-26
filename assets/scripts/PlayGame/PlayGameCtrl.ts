@@ -25,17 +25,6 @@ export class PlayGameCtrl extends Component {
     private readonly NODE_SPACING: number = 0.2; // Khoảng cách giữa các node (20% chiều rộng node)
 
     onLoad() {
-
-        // cho mấy cái load resource này ra thành các promise khác nhau
-        // sau đó cho vào promiseAll
-        // 2 cách làm loading
-        // - cách 1: 2 màn hình loading ở home và gameplay
-        //- khi home đến X % và tắt đi sang scene gameplay-> show loading ở gameplay progress tính từ X%
-
-        // cach 2:
-        // - dùng 1 màn hình loading ở precition Node
-        // show loading ở trên, scene home và gameplay chuyển ở dưới, khi gameplay load xong hết thì tắt loading
-
         const loadingNode = instantiate(this.LoadingPrefab);
         this.Loading.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
@@ -52,81 +41,120 @@ export class PlayGameCtrl extends Component {
         if (!this.nodeCategoryFigure) {
             return;
         }
-        this.loadAnimClips(() => {
-            const gameData = GameDataManager.getInstance()?.data;
-            const backgorund = GameDataManager.getInstance()?.data.ItemSelect.backgorund;
-            // const backgorund1 = GameDataManager.getInstance()?.data.ItemSelect.backgorund1;
-            if (!gameData || !gameData.ItemSelect || !gameData.ItemSelect.figure) {
-                return;
-            }
-            const code = gameData.ItemSelect.isDis;
-            if (code === true) {
-                const blackColor = new Color(0, 0, 0);
-                this.dropTargets.forEach(target => {
-                    const sprite = target.getComponent(Sprite);
-                    if (sprite) {
-                        sprite.color = blackColor;
-                    }
-                });
-            } else {
-                this.dropTargets.forEach(target => {
-                    const sprite = target.getComponent(Sprite);
-                    if (sprite) {
-                        // sprite.color = whiteColor;
-                    }
-                });
-            }
 
-            let imagePath = `PlayGame/${gameData.ItemSelect.figure}`;
-            // Load all sprite frames from the folder
-            resources.loadDir(imagePath, SpriteFrame, (err, spriteFrames) => {
-                if (err) {
-                    console.error('[PlayGameCtrl] Error loading sprite frames:', err);
-                    return;
-                }
-                if (!spriteFrames || spriteFrames.length === 0) {
-                    console.error('[PlayGameCtrl] No sprite frames found in path:', imagePath);
-                    return;
-                }
+        // Convert loadAnimClips to Promise
+        const loadAnimClipsPromise = new Promise<void>((resolve) => {
+            this.loadAnimClips(() => resolve());
+        });
 
-                // Assign sprite frames to drop targets using setSprites
-                if (spriteFrames.length > 0) {
-                    this.setSprites(this.dropTargets, spriteFrames[0]);
-                }
+        // Get game data
+        const gameData = GameDataManager.getInstance()?.data;
+        const backgorund = gameData?.ItemSelect?.backgorund;
+        const backgorund1 = gameData?.ItemSelect?.backgorund1;
+        const figure = gameData?.ItemSelect?.figure;
 
-                let allCategories = (GameDataManager.getInstance()?.data?.ItemSelect.isRotateMove || []);
-                if (!Array.isArray(allCategories) || allCategories.length === 0) {
-                    allCategories = [];
-                }
-                let currentCode = gameData?.ItemSelect?.code;
-                let category = allCategories.find(cat => cat.code === currentCode) || {};
-                const isRotateMove = category.isRotateMove;
-                // Lấy Sprite node trong Farm1 và Farm2
-                [this.Farm1, this.Farm2].forEach(farm => {
-                    if (!farm) return;
-                    const spriteNode = farm.getChildByName('Sprite');
-                    if (!spriteNode) return;
-                    // Khởi động carousel cho Sprite Node
-                    this.startCarouselForSpriteNodes(spriteNode);
-                });
-            });
+        // Create array of promises for loading all resources
+        const loadPromises: Promise<any>[] = [loadAnimClipsPromise];
 
-            // Load backgorund
-            if (backgorund) {
-                // Lấy thư mục chứa background (bỏ /spriteFrame)
-                const bgDir = backgorund.replace(/\.png$/, '').replace(/\/spriteFrame$/, '');
-                // Load tất cả spriteFrame trong thư mục background
-                resources.loadDir(bgDir, SpriteFrame, (err, spriteFrames: SpriteFrame[]) => {
-                    if (err || !spriteFrames || spriteFrames.length === 0) {
-                        console.error('[PlayGameCtrl] Không load được spriteFrame background:', err);
-                        return;
-                    }
-                    // Kiểm tra trực tiếp isRotateMove từ item đang chọn
-                    const isRotateMove = GameDataManager.getInstance()?.data?.ItemSelect?.isRotateMove;
-                    if (isRotateMove) {
-                        [this.Container1, this.Container2].forEach(container => {
-                            if (!container) return;
-                            const spriteNode = container.getChildByName('Sprite');
+        // Load figure sprite frames
+        if (figure) {
+            const imagePath = `PlayGame/${figure}`;
+            loadPromises.push(
+                this.loadSpriteFramesPromise(imagePath)
+                    .then(spriteFrames => {
+                        if (spriteFrames.length > 0) {
+                            this.setSprites(this.dropTargets, spriteFrames[0]);
+                        }
+                    })
+            );
+        }
+
+        // Load background sprite frames
+        if (backgorund) {
+            const bgDir = backgorund.replace(/\.png$/, '').replace(/\/spriteFrame$/, '');
+            loadPromises.push(
+                this.loadSpriteFramesPromise(bgDir)
+                    .then(spriteFrames => {
+                        if (spriteFrames.length > 0) {
+                            const isRotateMove = GameDataManager.getInstance()?.data?.ItemSelect?.isRotateMove;
+                            if (isRotateMove) {
+                                [this.Container1, this.Container2].forEach(container => {
+                                    if (!container) return;
+                                    const spriteNode = container.getChildByName('Sprite');
+                                    if (!spriteNode) return;
+                                    ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
+                                        const node = spriteNode.getChildByName(nodeName);
+                                        if (!node) return;
+                                        if (spriteFrames.length > idx) {
+                                            let sprite = node.getComponent(Sprite);
+                                            if (!sprite) sprite = node.addComponent(Sprite);
+                                            sprite.spriteFrame = spriteFrames[idx];
+                                            this.applyRotateAndMove(node, 200, 2 + idx);
+                                        }
+                                    });
+                                });
+                            } else {
+                                if (this.Container1 && spriteFrames[0]) this.setBackgroundSprite(this.Container1, spriteFrames[0]);
+                                if (this.Container2 && spriteFrames[0]) this.setBackgroundSprite(this.Container2, spriteFrames[0]);
+                            }
+                        }
+                    })
+            );
+        }
+
+        // Load background1 sprite frames
+        if (backgorund1 && backgorund1.trim() !== "") {
+            const bgPath1 = `${backgorund1.replace(/\.png$/, '')}/spriteFrame`;
+            loadPromises.push(
+                this.loadSpriteFramesPromise(bgPath1)
+                    .then(spriteFrames => {
+                        if (spriteFrames.length > 0) {
+                            const spriteFrame = spriteFrames[0];
+                            // Set sprite for Farm1's child nodes
+                            if (this.Farm1 && this.Farm1.children.length >= 2) {
+                                const farm1Child1 = this.Farm1.children[0];
+                                const farm1Child2 = this.Farm1.children[1];
+                                this.setBackgroundSprite(farm1Child1, spriteFrame);
+                                this.setBackgroundSprite(farm1Child2, spriteFrame);
+
+                                const nodeWidth = farm1Child1.getComponent(UITransform)?.contentSize.width || 0;
+                                const originalPos1 = farm1Child1.getPosition();
+                                const originalPos2 = farm1Child2.getPosition();
+                                farm1Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
+                                farm1Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
+                                this.setupContinuousMovement(farm1Child1);
+                                this.setupContinuousMovement(farm1Child2);
+                            }
+
+                            // Set sprite for Farm2's child nodes
+                            if (this.Farm2 && this.Farm2.children.length >= 2) {
+                                const farm2Child1 = this.Farm2.children[0];
+                                const farm2Child2 = this.Farm2.children[1];
+                                this.setBackgroundSprite(farm2Child1, spriteFrame);
+                                this.setBackgroundSprite(farm2Child2, spriteFrame);
+
+                                const nodeWidth = farm2Child1.getComponent(UITransform)?.contentSize.width || 0;
+                                const originalPos1 = farm2Child1.getPosition();
+                                const originalPos2 = farm2Child2.getPosition();
+                                farm2Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
+                                farm2Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
+                                this.setupContinuousMovement(farm2Child1);
+                                this.setupContinuousMovement(farm2Child2);
+                            }
+                        }
+                    })
+            );
+        }
+
+        // Load phase11 background
+        const bgDir = 'PlayGame/BackGround/phase11';
+        loadPromises.push(
+            this.loadSpriteFramesPromise(bgDir)
+                .then(spriteFrames => {
+                    if (spriteFrames.length > 0) {
+                        [this.Farm1, this.Farm2].forEach(farm => {
+                            if (!farm) return;
+                            const spriteNode = farm.getChildByName('Sprite');
                             if (!spriteNode) return;
                             ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
                                 const node = spriteNode.getChildByName(nodeName);
@@ -135,91 +163,27 @@ export class PlayGameCtrl extends Component {
                                     let sprite = node.getComponent(Sprite);
                                     if (!sprite) sprite = node.addComponent(Sprite);
                                     sprite.spriteFrame = spriteFrames[idx];
-                                    // Xoay tròn và di chuyển từ trái qua phải
                                     this.applyRotateAndMove(node, 200, 2 + idx);
                                 }
                             });
                         });
-                    } else {
-                        // Nếu không có hiệu ứng, gán spriteFrame đầu tiên cho Container1/Container2
-                        if (this.Container1 && spriteFrames[0]) this.setBackgroundSprite(this.Container1, spriteFrames[0]);
-                        if (this.Container2 && spriteFrames[0]) this.setBackgroundSprite(this.Container2, spriteFrames[0]);
                     }
-                });
-            }
+                })
+        );
 
-            // Load backgorund1 for Farm1 and Farm2 child nodes
-            const backgorund1 = GameDataManager.getInstance()?.data.ItemSelect.backgorund1;
-            if (backgorund1 && backgorund1.trim() !== "") {
-                const bgPath1 = `${backgorund1.replace(/\.png$/, '')}/spriteFrame`;
-                this.loadSpriteFrameFromResources(bgPath1, (spriteFrame) => {
-                    if (spriteFrame) {
-                        // Set sprite for Farm1's child nodes
-                        if (this.Farm1 && this.Farm1.children.length >= 2) {
-                            const farm1Child1 = this.Farm1.children[0];
-                            const farm1Child2 = this.Farm1.children[1];
-                            this.setBackgroundSprite(farm1Child1, spriteFrame);
-                            this.setBackgroundSprite(farm1Child2, spriteFrame);
-
-                            // Set initial positions for seamless movement while preserving widget settings
-                            const nodeWidth = farm1Child1.getComponent(UITransform)?.contentSize.width || 0;
-                            const originalPos1 = farm1Child1.getPosition();
-                            const originalPos2 = farm1Child2.getPosition();
-                            farm1Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
-                            farm1Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
-                            this.setupContinuousMovement(farm1Child1);
-                            this.setupContinuousMovement(farm1Child2);
-                        }
-
-                        // Set sprite for Farm2's child nodes
-                        if (this.Farm2 && this.Farm2.children.length >= 2) {
-                            const farm2Child1 = this.Farm2.children[0];
-                            const farm2Child2 = this.Farm2.children[1];
-                            this.setBackgroundSprite(farm2Child1, spriteFrame);
-                            this.setBackgroundSprite(farm2Child2, spriteFrame);
-                            // Set initial positions for seamless movement while preserving widget settings
-                            const nodeWidth = farm2Child1.getComponent(UITransform)?.contentSize.width || 0;
-                            const originalPos1 = farm2Child1.getPosition();
-                            const originalPos2 = farm2Child2.getPosition();
-                            farm2Child1.setPosition(new Vec3(0, originalPos1.y, originalPos1.z));
-                            farm2Child2.setPosition(new Vec3(nodeWidth, originalPos2.y, originalPos2.z));
-                            this.setupContinuousMovement(farm2Child1);
-                            this.setupContinuousMovement(farm2Child2);
-                        }
-                    }
-                });
-            }
-
-            const bgDir = 'PlayGame/BackGround/phase11';
-            resources.loadDir(bgDir, SpriteFrame, (err, spriteFrames: SpriteFrame[]) => {
-                if (err || !spriteFrames || spriteFrames.length === 0) {
-                    console.error('[PlayGameCtrl] Không load được spriteFrame background:', err);
-                    return;
-                }
-                [this.Farm1, this.Farm2].forEach(farm => {
-                    if (!farm) return;
-                    const spriteNode = farm.getChildByName('Sprite');
-                    if (!spriteNode) return;
-                    ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
-                        const node = spriteNode.getChildByName(nodeName);
-                        if (!node) return;
-                        if (spriteFrames.length > idx) {
-                            let sprite = node.getComponent(Sprite);
-                            if (!sprite) sprite = node.addComponent(Sprite);
-                            sprite.spriteFrame = spriteFrames[idx];
-                            // Xoay tròn và di chuyển từ trái qua phải
-                            this.applyRotateAndMove(node, 200, 2 + idx);
-                        }
-                    });
-                });
+        // Execute all promises in parallel
+        Promise.all(loadPromises)
+            .then(() => {
+                this.Loading.active = false;
+                this.cacheDropTargetRects();
+                this.loadJsonData();
+                this.node.on('reset-all-items', this.resetAllItems, this);
+                themeEventTarget.on('theme-selected', this.applyThemeColors, this);
+            })
+            .catch(error => {
+                console.error('[PlayGameCtrl] Error loading resources:', error);
+                this.Loading.active = false;
             });
-        });
-        this.Loading.active = false;
-
-        this.cacheDropTargetRects();
-        this.loadJsonData();
-        this.node.on('reset-all-items', this.resetAllItems, this);
-        themeEventTarget.on('theme-selected', this.applyThemeColors, this);
     }
 
     loadAnimClips(callback: () => void) {
@@ -474,7 +438,6 @@ export class PlayGameCtrl extends Component {
         console.log("itemSizeW: ", itemSizeW);
         let col = this.nodeCategoryFigure.getComponent(Layout).constraintNum;
         this.nodeCategoryFigure.getComponent(UITransform).width = (itemSizeW * col + 20 * (col - 1));
-        debugger
     }
 
     cacheDropTargetRects() {
@@ -615,5 +578,16 @@ export class PlayGameCtrl extends Component {
         this.carouselNodeGroups.push(nodes);
     }
 
-
+    private loadSpriteFramesPromise(path: string): Promise<SpriteFrame[]> {
+        return new Promise((resolve, reject) => {
+            resources.loadDir(path, SpriteFrame, (err, spriteFrames) => {
+                if (err) {
+                    console.error(`[PlayGameCtrl] Error loading sprite frames from ${path}:`, err);
+                    reject(err);
+                    return;
+                }
+                resolve(spriteFrames || []);
+            });
+        });
+    }
 }
