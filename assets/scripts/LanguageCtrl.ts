@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, EventTouch, director, Label } from 'cc';
+import { _decorator, Component, Node, EventTouch, director, Label, Scene, Director } from 'cc';
 import { I18n } from './I18n';
 import { GameDataManager } from './GameDataManager';
 
@@ -8,17 +8,50 @@ const { ccclass, property } = _decorator;
 export class LanguageCtrl extends Component {
     @property(Node) PopupLanguage: Node; // Node popup ngôn ngữ
 
-    async onLoad() {
+    // Thêm biến static để lưu trữ tất cả các scene
+    private static allScenes: Scene[] = [];
+    private static instance: LanguageCtrl = null;
+
+    onLoad() {
+        // Set instance
+        if (!LanguageCtrl.instance) {
+            LanguageCtrl.instance = this;
+        }
+
         const savedLang = GameDataManager.getInstance().data.language || 'english';
-        await I18n.loadLanguage(savedLang);
-        I18n.updateAllLabels(director.getScene());
-        this.PopupLanguage.children.forEach((langNode) => {
-            if (langNode.name !== 'CloseLanguage') {
-                langNode.on(Node.EventType.TOUCH_END, this.onLanguageSelected, this);
-            }
+        I18n.loadLanguage(savedLang).then(() => {
+            I18n.updateAllLabels(director.getScene());
+            this.PopupLanguage.children.forEach((langNode) => {
+                if (langNode.name !== 'CloseLanguage') {
+                    langNode.on(Node.EventType.TOUCH_END, this.onLanguageSelected, this);
+                }
+            });
+            this.updateCheckbox(savedLang);
         });
-        this.updateCheckbox(savedLang);
+
+        // Thêm scene hiện tại vào danh sách
+        const currentScene = director.getScene();
+        if (currentScene && !LanguageCtrl.allScenes.includes(currentScene)) {
+            LanguageCtrl.allScenes.push(currentScene);
+        }
+
+        // Listen for scene changes
+        director.on(Director.EVENT_AFTER_SCENE_LAUNCH, this.onSceneLoaded, this);
     }
+
+    onDestroy() {
+        // Remove scene change listener
+        director.off(Director.EVENT_AFTER_SCENE_LAUNCH, this.onSceneLoaded, this);
+    }
+
+    private onSceneLoaded(scene: Scene) {
+        if (scene && !LanguageCtrl.allScenes.includes(scene)) {
+            LanguageCtrl.allScenes.push(scene);
+            // Update labels in the new scene
+            I18n.updateAllLabels(scene);
+        }
+    }
+
     onHidePopupLanguage() {
         this.PopupLanguage.active = false;
     }
@@ -35,15 +68,25 @@ export class LanguageCtrl extends Component {
             // Tải lại ngôn ngữ mới
             await I18n.loadLanguage(langCode);
             GameDataManager.getInstance().updateField('language', langCode);
-            // Cập nhật label trong toàn bộ scene
-            I18n.updateAllLabels(director.getScene());
+            
+            // Cập nhật tất cả các scene
+            LanguageCtrl.updateAllScenes();
+            
             // Cập nhật lại label trong PopupLanguage nếu có
             if (this.PopupLanguage) {
                 I18n.updateAllLabels(this.PopupLanguage);
             }
-
         } catch (error) {
         }
+    }
+
+    // Thêm phương thức static để cập nhật tất cả các scene
+    private static updateAllScenes() {
+        LanguageCtrl.allScenes.forEach(scene => {
+            if (scene && scene.isValid) {
+                I18n.updateAllLabels(scene);
+            }
+        });
     }
 
     // Cập nhật checkbox cho node ngôn ngữ đã chọn

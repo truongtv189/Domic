@@ -4,6 +4,7 @@ import { GameDataManager } from '../GameDataManager';
 import { ThemeCtrl, themeEventTarget } from './ThemeCtrl';
 import { LoadingCtrl } from '../LoadingCtrl';
 import { AudioManager } from '../AudioManager';
+import { I18n } from '../I18n';
 const { ccclass, property } = _decorator;
 @ccclass('PlayGameCtrl')
 export class PlayGameCtrl extends Component {
@@ -41,6 +42,9 @@ export class PlayGameCtrl extends Component {
         if (!this.nodeCategoryFigure) {
             return;
         }
+
+        // Update all labels in the scene
+        I18n.updateAllLabels(director.getScene());
 
         // Convert loadAnimClips to Promise
         const loadAnimClipsPromise = new Promise<void>((resolve) => {
@@ -410,6 +414,10 @@ export class PlayGameCtrl extends Component {
             const itemNode = instantiate(this.itemPrefab);
             itemNode.parent = this.nodeCategoryFigure;
             itemSizeW = itemNode.getComponent(UITransform).width;
+
+            // Update labels in the item node
+            I18n.updateAllLabels(itemNode);
+
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
                 const shouldShowAds = data.isAds === true && !watched[data.core];
