@@ -1,4 +1,5 @@
 import { _decorator, Component, ProgressBar, Label, director, Sprite, resources, SpriteFrame } from 'cc';
+import { LoadingState } from './LoadingState';
 const { ccclass, property } = _decorator;
 
 @ccclass('LoadingCtrl')
@@ -14,6 +15,7 @@ export class LoadingCtrl extends Component {
 
     private static instance: LoadingCtrl = null!;
     private currentSpriteFrame: SpriteFrame = null!;
+    private loadingState: LoadingState = null!;
 
     onLoad() {
         // Ensure only one instance exists
@@ -22,7 +24,14 @@ export class LoadingCtrl extends Component {
             return;
         }
         LoadingCtrl.instance = this;
+        this.loadingState = LoadingState.getInstance();
         this.loadRandomSprite();
+        
+        // Set initial progress from saved state
+        const savedProgress = this.loadingState.getCurrentProgress();
+        if (savedProgress > 0) {
+            this.updateProgress(savedProgress);
+        }
     }
 
     loadRandomSprite() {
@@ -49,6 +58,8 @@ export class LoadingCtrl extends Component {
         if (this.progressBar) {
             this.progressBar.progress = value;
             this.progressLabel.string = `${Math.floor(value * 100)}%`;
+            // Save progress to state
+            this.loadingState.setCurrentProgress(value);
         }
     }
 

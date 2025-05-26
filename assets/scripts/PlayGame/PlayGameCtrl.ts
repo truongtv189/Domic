@@ -43,6 +43,16 @@ export class PlayGameCtrl extends Component {
             return;
         }
 
+        // Set black color for dropTargets if isDis is true
+        if (GameDataManager.getInstance().data.ItemSelect.isDis === true) {
+            this.dropTargets.forEach(target => {
+                const sprite = target.getComponent(Sprite);
+                if (sprite) {
+                    sprite.color = new Color(0, 0, 0, 255);
+                }
+            });
+        }
+
         // Update all labels in the scene
         I18n.updateAllLabels(director.getScene());
 
@@ -72,7 +82,7 @@ export class PlayGameCtrl extends Component {
                     })
             );
         }
-
+        this.loadJsonData();
         // Load background sprite frames
         if (backgorund) {
             const bgDir = backgorund.replace(/\.png$/, '').replace(/\/spriteFrame$/, '');
@@ -178,15 +188,12 @@ export class PlayGameCtrl extends Component {
         // Execute all promises in parallel
         Promise.all(loadPromises)
             .then(() => {
-                this.Loading.active = false;
                 this.cacheDropTargetRects();
-                this.loadJsonData();
                 this.node.on('reset-all-items', this.resetAllItems, this);
                 themeEventTarget.on('theme-selected', this.applyThemeColors, this);
             })
             .catch(error => {
                 console.error('[PlayGameCtrl] Error loading resources:', error);
-                this.Loading.active = false;
             });
     }
 
@@ -288,12 +295,15 @@ export class PlayGameCtrl extends Component {
                 this.createImages();
 
                 // Hide loading after everything is done
+                this.Loading.active = false;
             } else {
                 console.error('[PlayGameCtrl] Invalid JSON data structure');
+                this.Loading.active = false;
             }
 
         } catch (err) {
             console.error('[PlayGameCtrl] Error loading JSON data:', err);
+            this.Loading.active = false;
         }
     }
 
@@ -416,7 +426,7 @@ export class PlayGameCtrl extends Component {
             itemSizeW = itemNode.getComponent(UITransform).width;
 
             // Update labels in the item node
-            I18n.updateAllLabels(itemNode);
+            // I18n.updateAllLabels(itemNode);
 
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
@@ -442,8 +452,6 @@ export class PlayGameCtrl extends Component {
             });
 
         }
-
-        console.log("itemSizeW: ", itemSizeW);
         let col = this.nodeCategoryFigure.getComponent(Layout).constraintNum;
         this.nodeCategoryFigure.getComponent(UITransform).width = (itemSizeW * col + 20 * (col - 1));
     }

@@ -120,7 +120,7 @@
     {
       "code": "phase11",
       "name": "PHASE11",
-      "image": "image/phase6",
+      "image": "image/phase100",
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase11-0",
       "backgorund1": "",
@@ -224,7 +224,7 @@
     {
       "code": "phase100",
       "name": "PHASE100",
-      "image": "image/phase6",
+      "image": "image/phase100",
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase11-0",
       "backgorund1": "",
