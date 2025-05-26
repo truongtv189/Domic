@@ -9,22 +9,7 @@
     { "image": "theme/theme7", "isAds": true, "color": "003CD5", "color2": "D781FF", "core": "theme7" },
     { "image": "theme/theme8", "isAds": true, "color": "FFFF00", "color2": "FFF475", "core": "theme8" },
     { "image": "theme/theme9", "isAds": true, "color": "52FF00", "color2": "FFF475", "core": "theme9" },
-    { "image": "theme/theme10", "isAds": true, "color": "FF555C", "color2": "F1F16C", "core": "theme10" },
-    { "image": "theme/theme11", "isAds": true, "color": "", "color2": "", "core": "theme11" },
-    { "image": "theme/theme12", "isAds": true, "color": "", "color2": "", "core": "theme12" },
-    { "image": "theme/theme13", "isAds": true, "color": "", "color2": "", "core": "theme13" },
-    { "image": "theme/theme14", "isAds": true, "color": "", "color2": "", "core": "theme14" },
-    { "image": "theme/theme15", "isAds": true, "color": "", "color2": "", "core": "theme15" },
-    { "image": "theme/theme16", "isAds": true, "color": "", "color2": "", "core": "theme16" },
-    { "image": "theme/theme17", "isAds": true, "color": "", "color2": "", "core": "theme17" },
-    { "image": "theme/theme18", "isAds": true, "color": "", "color2": "", "core": "theme18" },
-    { "image": "theme/theme19", "isAds": true, "color": "", "color2": "", "core": "theme19" },
-    { "image": "theme/theme20", "isAds": true, "color": "", "color2": "", "core": "theme20" },
-    { "image": "theme/theme21", "isAds": true, "color": "", "color2": "", "core": "theme21" },
-    { "image": "theme/theme22", "isAds": true, "color": "", "color2": "", "core": "theme22" },
-    { "image": "theme/theme23", "isAds": true, "color": "", "color2": "", "core": "theme23" },
-    { "image": "theme/theme24", "isAds": true, "color": "", "color2": "", "core": "theme24" },
-    { "image": "theme/theme25", "isAds": true, "color": "", "color2": "", "core": "theme25" },
-    { "image": "theme/theme26", "isAds": true, "color": "", "color2": "", "core": "theme26" }
+    { "image": "theme/theme10", "isAds": true, "color": "FF555C", "color2": "F1F16C", "core": "theme10" }
+   
   ]
 }

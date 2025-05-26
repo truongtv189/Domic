@@ -129,7 +129,7 @@ export class CategoryPageCtrl extends Component {
             content.setPosition(0, content.position.y, content.position.z);
             // Nếu muốn scroll đến giữa khi content lớn hơn viewport
             this.scheduleOnce(() => {
-                scrollView.scrollToPercentHorizontal(0.5, 0, false);
+                scrollView.scrollToLeft(0); // ✅ cuộn về đầu bên trái
             }, 0);
         }
     }
@@ -203,5 +203,5 @@ export class CategoryPageCtrl extends Component {
             }
         });
     }
-    
+
 }

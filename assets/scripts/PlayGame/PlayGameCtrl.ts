@@ -71,15 +71,14 @@ export class PlayGameCtrl extends Component {
         const loadPromises: Promise<any>[] = [loadAnimClipsPromise];
 
         // Load figure sprite frames
+        let figureSpriteFramesPromise: Promise<SpriteFrame[]> | null = null;
         if (figure) {
             const imagePath = `PlayGame/${figure}`;
+            figureSpriteFramesPromise = this.loadSpriteFramesPromise(imagePath);
             loadPromises.push(
-                this.loadSpriteFramesPromise(imagePath)
-                    .then(spriteFrames => {
-                        if (spriteFrames.length > 0) {
-                            this.setSprites(this.dropTargets, spriteFrames[0]);
-                        }
-                    })
+                figureSpriteFramesPromise.then(spriteFrames => {
+                    // Không gọi setSprites ở đây nữa
+                })
             );
         }
         this.loadJsonData();
@@ -187,10 +186,17 @@ export class PlayGameCtrl extends Component {
 
         // Execute all promises in parallel
         Promise.all(loadPromises)
-            .then(() => {
+            .then(async () => {
                 this.cacheDropTargetRects();
                 this.node.on('reset-all-items', this.resetAllItems, this);
                 themeEventTarget.on('theme-selected', this.applyThemeColors, this);
+                // Đảm bảo animClips đã load xong, giờ mới setSprites
+                if (figureSpriteFramesPromise) {
+                    const spriteFrames = await figureSpriteFramesPromise;
+                    if (spriteFrames.length > 0) {
+                        this.setSprites(this.dropTargets, spriteFrames[0]);
+                    }
+                }
             })
             .catch(error => {
                 console.error('[PlayGameCtrl] Error loading resources:', error);
@@ -248,7 +254,6 @@ export class PlayGameCtrl extends Component {
                 console.warn(`[PlayGameCtrl] setSprites: node at index ${i} is null or undefined`);
                 continue;
             }
-
             let sprite = spriteNode.getComponent(Sprite);
             if (!sprite) {
                 console.log(`[PlayGameCtrl] Adding Sprite component to node at index ${i}`);
@@ -607,3 +612,4 @@ export class PlayGameCtrl extends Component {
         });
     }
 }
+

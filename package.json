@@ -5,6 +5,7 @@
     "version": "3.8.6"
   },
   "dependencies": {
-    "crypto-js": "^4.2.0"
+    "crypto-js": "^4.2.0",
+    "json5": "^2.2.3"
   }
 }
