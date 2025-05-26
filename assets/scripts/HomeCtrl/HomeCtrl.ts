@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, Label } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, Label, BlockInputEvents } from 'cc';
 import { I18n } from '../I18n';
 import AdsManager from '../AdsPlatform/AdsManager';
 import { GameDataManager } from '../GameDataManager';
@@ -14,12 +14,20 @@ export class HomeCtrl extends Component {
     @property(Prefab)
     popUpSettingPrefabs: Prefab;
     @property(Node)
+    nodeOverlay: Node;
+    @property(Node)
     popUpSetting: Node;
     @property(Prefab)
     LoadingContainer: Prefab = null;
     @property(Node) Loading: Node
     async start() {
         this.Loading.active = true;
+        this.nodeOverlay.active = false;
+        
+        // Thêm BlockInputEvents component vào nodeOverlay
+        if (!this.nodeOverlay.getComponent(BlockInputEvents)) {
+            this.nodeOverlay.addComponent(BlockInputEvents);
+        }
 
         const supportedLanguages = ['english', 'french', 'spanish', 'france', 'portuguese', 'deutsch', 'russian', 'turkey'];
         const langMap: Record<string, string> = {
@@ -56,21 +64,35 @@ export class HomeCtrl extends Component {
     }
 
     onShowPopupSetting() {
-         AudioManager.getInstance().playClickClip()
+        AudioManager.getInstance().playClickClip()
+        // Đóng PopUpLanguage nếu đang mở
+        if (this.PopUpLanguage.active) {
+            this.PopUpLanguage.active = false;
+            this.nodeOverlay.active = false;
+        }
+
         const loadingNode = instantiate(this.popUpSettingPrefabs);
         this.popUpSetting.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
         this.popUpSetting.active = true;
+        this.nodeOverlay.active = true;
 
         // Cập nhật label trong Prefab khi nó đã được tạo
         this.updateLabelsInPrefab(loadingNode);
     }
     onOpenLanguage() {
-         AudioManager.getInstance().playClickClip()
+        AudioManager.getInstance().playClickClip()
+        // Đóng popUpSetting nếu đang mở
+        if (this.popUpSetting.active) {
+            this.popUpSetting.active = false;
+            this.nodeOverlay.active = false;
+        }
+
         const loadingNode = instantiate(this.PopUpLanguagePrefab);
         this.PopUpLanguage.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
         this.PopUpLanguage.active = true;
+        this.nodeOverlay.active = true;
 
         // Cập nhật label trong Prefab khi nó đã được tạo
         this.updateLabelsInPrefab(loadingNode);

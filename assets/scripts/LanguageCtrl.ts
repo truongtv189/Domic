@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, EventTouch, director, Label, Scene, Director } from 'cc';
+import { _decorator, Component, Node, EventTouch, director, Label, Scene, Director, find } from 'cc';
 import { I18n } from './I18n';
 import { GameDataManager } from './GameDataManager';
 
@@ -54,6 +54,11 @@ export class LanguageCtrl extends Component {
 
     onHidePopupLanguage() {
         this.PopupLanguage.active = false;
+        // Tìm và ẩn nodeOverlay
+        const nodeOverlay = find('Canvas/nodeOverlay');
+        if (nodeOverlay) {
+            nodeOverlay.active = false;
+        }
     }
     async onLanguageSelected(event: EventTouch) {
         const selectedNode = event.target as Node;

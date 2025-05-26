@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, find } from 'cc';
 import { GameDataManager } from '../GameDataManager';
 import { AudioManager } from '../AudioManager';
 const { ccclass, property } = _decorator;
@@ -12,6 +12,7 @@ export class PopupSetting extends Component {
     @property(Node) offSoundEffects: Node;
     @property(Node) onSoundEffects: Node;
     @property(Node) NodePopupSetting: Node;
+
     onLoad() {
         this.offVibrate.active = false;
         this.offBackGroundMusic.active = false;
@@ -58,6 +59,10 @@ export class PopupSetting extends Component {
     ClickHideSetting() {
         AudioManager.getInstance().playClickClip()
         this.NodePopupSetting.active = false;
+        const nodeOverlay = find('Canvas/nodeOverlay');
+        if (nodeOverlay) {
+            nodeOverlay.active = false;
+        }
     }
 }
 
