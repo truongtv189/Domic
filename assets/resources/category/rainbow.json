@@ -32,14 +32,14 @@
         "id": 5,
         "core": "rainbow5",
         "image": "rainbow/rainbow5",
-        "_deltaTime": 0.585,
+        "_deltaTime": 2.8,
         "isAds": true
       },
       {
         "id": 6,
         "core": "rainbow6",
         "image": "rainbow/rainbow6",
-        "_deltaTime":4.8,
+        "_deltaTime":4,
         "isAds": true
       },
       {
@@ -61,21 +61,21 @@
         "id": 9,
         "core": "rainbow9",
         "image": "rainbow/rainbow9",
-        "_deltaTime": 0.7,
+        "_deltaTime":5,
         "isAds": true
       },
       {
         "id": 10,
         "core": "rainbow10",
         "image": "rainbow/rainbow10",
-        "_deltaTime": 3,
+        "_deltaTime":5.355,
         "isAds": true
       },
       {
         "id": 11,
         "core": "rainbow11",
         "image": "rainbow/rainbow11",
-        "_deltaTime": 0.6,
+        "_deltaTime":2,
         "isAds": true
       },
       {
@@ -124,7 +124,7 @@
         "id": 18,
         "core": "rainbow18",
         "image": "rainbow/rainbow18",
-        "_deltaTime": 1.7,
+        "_deltaTime":1.889,
         "isAds": true
       },
       {

@@ -15,6 +15,7 @@ interface DragData {
     isAds: boolean;
     _spriteFrames?: SpriteFrame[];
     _audioClip?: AudioClip;
+    animation: string;
 }
 
 @ccclass('DraggableItem')
@@ -287,6 +288,12 @@ export class DraggableItem extends Component {
             // Load assets và đợi LoadingPlayAudio
             this.loadAssetsAndWaitForLoading(this.dragData.image);
             matchedDropZone.on(Node.EventType.TOUCH_END, this.onDropZoneClick, this, true);
+            
+            // Làm xạm màu item gốc sau khi thả thành công
+            const selfSprite = this.node.getComponent(Sprite);
+            if (selfSprite) {
+                selfSprite.color = new Color(180, 180, 180, 255); // màu xám
+            }
         } else {
             if (this.originalParent) {
                 this.node.setParent(this.originalParent);
@@ -364,7 +371,17 @@ export class DraggableItem extends Component {
     private loadAssetsAndWaitForLoading(imagePath: string) {
         // Use preloaded assets from dragData
         if (this.dragData._spriteFrames && this.dragData._spriteFrames.length > 0) {
-            this._spriteFrames = this.dragData._spriteFrames;
+            // Sort sprite frames by numeric order in filename
+            this._spriteFrames = [...this.dragData._spriteFrames].sort((a, b) => {
+                const nameA = a.name;
+                const nameB = b.name;
+                
+                // Extract numbers from filenames (e.g., "Char16-1" -> 1)
+                const numA = parseInt(nameA.split('-')[1]);
+                const numB = parseInt(nameB.split('-')[1]);
+                
+                return numA - numB;
+            });
 
             // Set initial frame
             if (this.sprite && this._spriteFrames[0]) {
@@ -381,8 +398,27 @@ export class DraggableItem extends Component {
             if (loadingPlayAudio) {
                 loadingPlayAudio.resetLoadingState();
                 loadingPlayAudio.setOnLoadComplete(() => {
-                    this.startPlayback(this._spriteFrames, this.dragData._audioClip, this.dragData._deltaTime);
+                    // Check if animation is empty string
+                    if (this.dragData.animation === "") {
+                        // If animation is empty, just play audio if available
+                        if (this._audioSource && this.dragData._audioClip) {
+                            this._audioSource.play();
+                        }
+                    } else {
+                        // If animation exists, start normal playback
+                        this.startPlayback(this._spriteFrames, this.dragData._audioClip, this.dragData._deltaTime);
+                    }
                 });
+            } else {
+                // If no LoadingPlayAudio, handle playback directly
+                if (this.dragData.animation === "") {
+                    // If animation is empty, just play audio if available
+                    if (this._audioSource && this.dragData._audioClip) {
+                        this._audioSource.play();
+                    }
+                } else {
+                    this.startPlayback(this._spriteFrames, this.dragData._audioClip, this.dragData._deltaTime);
+                }
             }
         } else {
             console.warn('[DraggableItem] No preloaded assets found for:', imagePath);
@@ -424,37 +460,45 @@ export class DraggableItem extends Component {
     }
 
     private startPlayback(spriteFrames: SpriteFrame[], audioClip: AudioClip, duration: number) {
+        if (!spriteFrames || spriteFrames.length === 0) return;
+
         this._spriteFrames = spriteFrames;
         this._frameIndex = 0;
         this._timer = 0;
         this._isPlaying = true;
         this._deltaTime = duration / spriteFrames.length;
-        // Bắt đầu audio và animation
-        if (this._audioSource && this.sprite && this.sprite.node.isValid) {
-            this._audioSource.play();
-            this.sprite.spriteFrame = this._spriteFrames[this._frameIndex];
-        } else {
 
+        // Start audio if available
+        if (this._audioSource && audioClip) {
+            this._audioSource.play();
+        }
+
+        // Set initial frame
+        if (this.sprite && this.sprite.node.isValid) {
+            this.sprite.spriteFrame = this._spriteFrames[this._frameIndex];
         }
     }
 
     update(dt: number) {
         if (!this.isDropped || !this.sprite || !this.sprite.node.isValid || !this._isPlaying) return;
 
-        this._timer += dt;
-        if (this._timer >= this._deltaTime) {
-            this._timer -= this._deltaTime;
-            this._frameIndex++;
-            if (this._frameIndex < this._spriteFrames.length) {
-                this.sprite.spriteFrame = this._spriteFrames[this._frameIndex];
-            } else {
-                this._frameIndex = 0;
-                if (this.sprite && this._spriteFrames.length > 0) {
-                    this.sprite.spriteFrame = this._spriteFrames[0];
-                }
-                if (this._audioSource) {
-                    this._audioSource.stop();
-                    this._audioSource.play();
+        // Only update frames if animation is not empty
+        if (this.dragData.animation !== "") {
+            this._timer += dt;
+            if (this._timer >= this._deltaTime) {
+                this._timer -= this._deltaTime;
+                this._frameIndex++;
+                if (this._frameIndex < this._spriteFrames.length) {
+                    this.sprite.spriteFrame = this._spriteFrames[this._frameIndex];
+                } else {
+                    this._frameIndex = 0;
+                    if (this.sprite && this._spriteFrames.length > 0) {
+                        this.sprite.spriteFrame = this._spriteFrames[0];
+                    }
+                    if (this._audioSource) {
+                        this._audioSource.stop();
+                        this._audioSource.play();
+                    }
                 }
             }
         }

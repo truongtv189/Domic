@@ -4,7 +4,7 @@
       "id": 1,
       "core": "mustard1",
       "image": "mustard/mustard1",
-      "_deltaTime": 1.347,
+      "_deltaTime": 3,
       "isAds": true
     },
     {
@@ -132,13 +132,7 @@
       "image": "mustard/mustard19",
       "_deltaTime": 4,
       "isAds": true
-    },
-    {
-      "id": 20,
-      "core": "mustard20",
-      "image": "mustard/mustard20",
-      "_deltaTime": 5,
-      "isAds": true
     }
+   
   ]
 }

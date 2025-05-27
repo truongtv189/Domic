@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform, Color, tween, v3, AudioClip, Vec2, Layout } from 'cc';
+import { _decorator, Component, Node, Prefab, resources, SpriteFrame, instantiate, JsonAsset, AnimationClip, Animation, Sprite, director, Vec3, Rect, UITransform, Color, tween, v3, AudioClip, Vec2, Layout, view } from 'cc';
 import { DraggableItem } from './DraggableItem';
 import { GameDataManager } from '../GameDataManager';
 import { ThemeCtrl, themeEventTarget } from './ThemeCtrl';
@@ -201,12 +201,13 @@ export class PlayGameCtrl extends Component {
             .catch(error => {
                 console.error('[PlayGameCtrl] Error loading resources:', error);
             });
+
+        view.on('canvas-resize', this.onResized, this);
     }
 
     loadAnimClips(callback: () => void) {
         let path = GameDataManager.getInstance().data.ItemSelect.animation;
         if (!path) {
-            console.warn('[PlayGameCtrl] Animation path is null or empty. Skipping load.');
             callback();
             return;
         }
@@ -329,9 +330,26 @@ export class PlayGameCtrl extends Component {
                         return;
                     }
 
-                    // Store sprite frames from index 1 onwards
-                    if (spriteFrames && spriteFrames.length > 1) {
-                        data._spriteFrames = spriteFrames.slice(1);
+                    // Sort sprite frames alphabetically by filename
+                    if (spriteFrames && spriteFrames.length > 0) {
+                        const sortedFrames = spriteFrames.sort((a, b) => {
+                            const nameA = a.name.toLowerCase();
+                            const nameB = b.name.toLowerCase();
+                            return nameA.localeCompare(nameB);
+                        });
+                        data._spriteFrames = sortedFrames;
+
+                        // Set sprite frames to drop targets
+                        if (this.dropTargets.length > 0) {
+                            this.dropTargets.forEach((target, index) => {
+                                if (index < sortedFrames.length) {
+                                    const sprite = target.getComponent(Sprite);
+                                    if (sprite) {
+                                        sprite.spriteFrame = sortedFrames[index];
+                                    }
+                                }
+                            });
+                        }
                     } else {
                         console.warn(`[Image preload] Not enough sprites found in folder ${data.image}`);
                     }
@@ -455,19 +473,27 @@ export class PlayGameCtrl extends Component {
                     console.warn(`[PlayGameCtrl] Failed to set sprite frame for item ${i}`);
                 }
             });
-
         }
+        // Gọi hàm cập nhật layout sau khi tạo xong item
+        this.updateCategoryFigureLayout();
+    }
+
+    updateCategoryFigureLayout() {
         const layout = this.nodeCategoryFigure.getComponent(Layout);
-        const spacingX = layout.spacingX; // spacing giữa các item
+        const spacingX = layout.spacingX;
         const parentNode = this.nodeCategoryFigure.parent;
         const parentWidth = parentNode.getComponent(UITransform).width;
-        // Luôn ưu tiên 8 cột nếu vừa, nếu không thì giảm xuống tối đa có thể
         const desiredCol = 8;
-        const maxCol = Math.floor((parentWidth + spacingX) / (itemSizeW + spacingX));
+        // Lấy lại width item (nếu có ít nhất 1 item)
+        const itemSizeW = this.nodeCategoryFigure.children[0]?.getComponent(UITransform).width || 0;
+        const maxCol = itemSizeW > 0 ? Math.floor((parentWidth + spacingX) / (itemSizeW + spacingX)) : desiredCol;
         const col = Math.min(desiredCol, maxCol, this.imageData.length);
-        layout.constraintNum = col; // cập nhật lại số cột
-        // Cập nhật lại width cho nodeCategoryFigure
+        layout.constraintNum = col;
         this.nodeCategoryFigure.getComponent(UITransform).width = (itemSizeW * col + spacingX * (col - 1));
+    }
+
+    onResized() {
+        this.updateCategoryFigureLayout();
     }
 
     cacheDropTargetRects() {
@@ -552,6 +578,7 @@ export class PlayGameCtrl extends Component {
         this.node.off('reset-all-items', this.resetAllItems, this);
         this.node.off('reset-all-items', this.resetAllItems, this);
         themeEventTarget.off('theme-selected', this.applyThemeColors, this);
+        view.off('canvas-resize', this.onResized, this);
     }
     // Thêm hàm hiệu ứng
     applyRotateAndMove(node: Node, moveRange: number, duration: number) {

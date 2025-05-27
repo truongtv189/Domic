@@ -146,41 +146,7 @@
       "image": "kino/kino21",
       "_deltaTime": 0.573,
       "isAds": true
-    },
-    {
-      "id": 22,
-      "core": "kino22",
-      "image": "kino/kino22",
-      "_deltaTime": 1.323,
-      "isAds": true
-    },
-    {
-      "id": 23,
-      "core": "kino23",
-      "image": "kino/kino23",
-      "_deltaTime": 0.573,
-      "isAds": true
-    },
-    {
-      "id": 24,
-      "core": "kino24",
-      "image": "kino/kino24",
-      "_deltaTime": 0.979,
-      "isAds": true
-    },
-    {
-      "id": 25,
-      "core": "kino25",
-      "image": "kino/kino25",
-      "_deltaTime": 0.9,
-      "isAds": true
-    },
-    {
-      "id": 26,
-      "core": "kino26",
-      "image": "kino/kino26",
-      "_deltaTime": 3,
-      "isAds": true
     }
+
   ]
 }
