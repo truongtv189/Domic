@@ -457,8 +457,17 @@ export class PlayGameCtrl extends Component {
             });
 
         }
-        let col = this.nodeCategoryFigure.getComponent(Layout).constraintNum;
-        this.nodeCategoryFigure.getComponent(UITransform).width = (itemSizeW * col + 20 * (col - 1));
+        const layout = this.nodeCategoryFigure.getComponent(Layout);
+        const spacingX = layout.spacingX; // spacing giữa các item
+        const parentNode = this.nodeCategoryFigure.parent;
+        const parentWidth = parentNode.getComponent(UITransform).width;
+        // Luôn ưu tiên 8 cột nếu vừa, nếu không thì giảm xuống tối đa có thể
+        const desiredCol = 8;
+        const maxCol = Math.floor((parentWidth + spacingX) / (itemSizeW + spacingX));
+        const col = Math.min(desiredCol, maxCol, this.imageData.length);
+        layout.constraintNum = col; // cập nhật lại số cột
+        // Cập nhật lại width cho nodeCategoryFigure
+        this.nodeCategoryFigure.getComponent(UITransform).width = (itemSizeW * col + spacingX * (col - 1));
     }
 
     cacheDropTargetRects() {
