@@ -1,15 +1,14 @@
 {
   "THEME": [
-    { "image": "theme/theme1", "isAds": false, "color1": "892727", "color2": "FF7C7C", "core": "theme1" },
-    { "image": "theme/theme2", "isAds": true, "color1": "892727", "color2": "FF7C7C", "core": "theme2" },
-    { "image": "theme/theme3", "isAds": false, "color": "FFFFFF", "color2": "7A7A7A", "core": "theme3" },
-    { "image": "theme/theme4", "isAds": false, "color": "00A3FF", "color2": "29FFFF", "core": "theme4" },
-    { "image": "theme/theme5", "isAds": true, "color": "FFF292", "color2": "00FF14", "core": "theme5" },
-    { "image": "theme/theme6", "isAds": true, "color": "FF6529", "color2": "FFF4A5", "core": "theme6" },
-    { "image": "theme/theme7", "isAds": true, "color": "003CD5", "color2": "D781FF", "core": "theme7" },
-    { "image": "theme/theme8", "isAds": true, "color": "FFFF00", "color2": "FFF475", "core": "theme8" },
-    { "image": "theme/theme9", "isAds": true, "color": "52FF00", "color2": "FFF475", "core": "theme9" },
-    { "image": "theme/theme10", "isAds": true, "color": "FF555C", "color2": "F1F16C", "core": "theme10" }
-   
+    { "image": "theme/theme1", "isAds": false, "color1": "#FFFFFF", "color2": "#FFFFFF", "core": "theme1" },
+    { "image": "theme/theme2", "isAds": true, "color1": "#892727", "color2": "#FF7C7C", "core": "theme2" },
+    { "image": "theme/theme3", "isAds": false, "color1": "#FFFFFF", "color2": "#7A7A7A", "core": "theme3" },
+    { "image": "theme/theme4", "isAds": false, "color1": "#00A3FF", "color2": "#29FFFF", "core": "theme4" },
+    { "image": "theme/theme5", "isAds": true, "color1": "#FFF292", "color2": "#00FF14", "core": "theme5" },
+    { "image": "theme/theme6", "isAds": true, "color1": "#FF6529", "color2": "#FFF4A5", "core": "theme6" },
+    { "image": "theme/theme7", "isAds": true, "color1": "#003CD5", "color2": "#D781FF", "core": "theme7" },
+    { "image": "theme/theme8", "isAds": true, "color1": "#FFFF00", "color2": "#FFF475", "core": "theme8" },
+    { "image": "theme/theme9", "isAds": true, "color1": "#52FF00", "color2": "#FFF475", "core": "theme9" },
+    { "image": "theme/theme10", "isAds": true, "color1": "#FF555C", "color2": "#F1F16C", "core": "theme10" }
   ]
 }

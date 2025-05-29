@@ -20,15 +20,14 @@ export class HomeCtrl extends Component {
     @property(Prefab)
     LoadingContainer: Prefab = null;
     @property(Node) Loading: Node
-    async start() {
+    async onLoad() {
         this.Loading.active = true;
         this.nodeOverlay.active = false;
-        
+
         // Thêm BlockInputEvents component vào nodeOverlay
         if (!this.nodeOverlay.getComponent(BlockInputEvents)) {
             this.nodeOverlay.addComponent(BlockInputEvents);
         }
-
         const supportedLanguages = ['english', 'french', 'spanish', 'france', 'portuguese', 'deutsch', 'russian', 'turkey'];
         const langMap: Record<string, string> = {
             en: 'english',
@@ -46,19 +45,22 @@ export class HomeCtrl extends Component {
             return supportedLanguages.includes(mapped) ? mapped : null;
         }
 
+        const savedLang = GameDataManager.getInstance().data.language;
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const urlLang = urlParams.get('lang');
         const adsLang = AdsManager.getLanguage?.();
         const normalizedAdsLang = normalizeLang(adsLang);
-        let currentLang = normalizedAdsLang || 'english';
-        GameDataManager.getInstance().updateField("language", currentLang);
-
+        const normalizedUrlLang = normalizeLang(urlLang);
+        // Ưu tiên: URL > AdsManager > Saved Language > English
+        let currentLang = normalizedUrlLang || normalizedAdsLang || savedLang || 'english';
+        if (currentLang !== savedLang) {
+            GameDataManager.getInstance().updateField("language", currentLang);
+        }
         // Load language
         await I18n.loadLanguage(currentLang);
-
-        // Cập nhật tất cả Label sau khi load ngôn ngữ
         this.updateLabelsInPrefab(this.node);
+        // Cập nhật tất cả Label sau khi load ngôn ngữ
 
         this.Loading.active = false;
     }
@@ -70,7 +72,6 @@ export class HomeCtrl extends Component {
             this.PopUpLanguage.active = false;
             this.nodeOverlay.active = false;
         }
-
         const loadingNode = instantiate(this.popUpSettingPrefabs);
         this.popUpSetting.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);

@@ -15,6 +15,9 @@ interface ThemeItem {
     image: string;
     isAds: boolean;
     core?: string; // Thêm core để lưu trạng thái đã xem ads
+    color1?: string;
+    color?: string;
+    color2: string;
 }
 
 @ccclass('ThemeCtrl')
@@ -98,14 +101,18 @@ export class ThemeCtrl extends Component {
 
     async loadJsonData() {
         try {
+            console.log('Loading theme data...');
             const jsonAsset = await this.loadResource<JsonAsset>('theme'); // resources/theme.json
             const raw = jsonAsset.json;
             if (raw && raw.THEME && Array.isArray(raw.THEME)) {
+                console.log('Loaded theme data:', raw.THEME);
                 this.imageData = raw.THEME;
                 await this.createImages();
             } else {
+                console.error('Invalid theme data format');
             }
         } catch (err) {
+            console.error('Error loading theme data:', err);
         }
     }
 
@@ -181,6 +188,18 @@ export class ThemeCtrl extends Component {
 
     private handleThemeSelection(itemNode: Node, data: ThemeItem) {
         if (this.selectedItem === itemNode) return;
+        console.log('Handling theme selection for data:', data);
+        
+        // Validate theme data
+        if (!data.color1 && !data.color) {
+            console.error('No primary color found in theme data');
+            return;
+        }
+        if (!data.color2) {
+            console.error('No secondary color found in theme data');
+            return;
+        }
+
         // Ẩn check ở item cũ
         const oldCheck = this.selectedItem?.getChildByName("Check");
         if (oldCheck) oldCheck.active = false;
@@ -192,8 +211,15 @@ export class ThemeCtrl extends Component {
         this.selectedItem = itemNode;
         this.ScrollView.active = false;
 
+        // Create a copy of the theme data to ensure all required properties
+        const themeData = {
+            color1: data.color1 || data.color,
+            color2: data.color2
+        };
+
         // Emit sự kiện theme đã được chọn
-        themeEventTarget.emit('theme-selected', data);
+        console.log('Emitting theme-selected event with data:', themeData);
+        themeEventTarget.emit('theme-selected', themeData);
     }
 
     onClickHideTheme() {

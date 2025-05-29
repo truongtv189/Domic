@@ -82,23 +82,33 @@ export class GameDataManager {
             watchedAdsItems: {}
         };
 
-        let raw: any = {};
-        const encrypted = localStorage.getItem(KEY);
-        if (encrypted) {
-            const decrypted = this.decrypt(encrypted);
-            try {
-                raw = JSON.parse(decrypted);
-                if (typeof raw.selectedLogo === 'string') {
-                    try {
-                        raw.selectedLogo = JSON.parse(raw.selectedLogo);
-                    } catch {
-                        raw.selectedLogo = { imagePath: "", imageName: "" };
+        try {
+            const encrypted = localStorage.getItem(KEY);
+            if (encrypted) {
+                const decrypted = this.decrypt(encrypted);
+                if (decrypted) {
+                    const raw = JSON.parse(decrypted);
+                    // Create merged data but preserve language if it exists
+                    const mergedData = { ...defaultData };
+                    // Copy all fields except language
+                    Object.keys(raw).forEach(key => {
+                        if (key !== 'language') {
+                            mergedData[key] = raw[key];
+                        }
+                    });
+                    // Set language from saved data if it exists
+                    if (raw.language) {
+                        mergedData.language = raw.language;
                     }
+                    console.log('GameDataManager - Loaded language:', mergedData.language);
+                    return mergedData;
                 }
-            } catch (e) { }
+            }
+        } catch (e) {
+            console.error('GameDataManager - Error loading game data:', e);
         }
 
-        return { ...defaultData, ...raw };
+        return defaultData;
     }
     // Gọi hàm này khi game khởi động
     checkAndApplyDataFromQuery() {
@@ -112,9 +122,22 @@ export class GameDataManager {
             const decrypted = CryptoJS.AES.decrypt(encrypted, SECRET_KEY).toString(CryptoJS.enc.Utf8);
             const parsed = JSON.parse(decrypted);
             const manager = GameDataManager.getInstance();
+            
+            // Preserve current language
+            const currentLang = manager.data.language;
+            
+            // Apply new data
             Object.assign(manager.data, parsed);
+            
+            // Restore language if it was changed
+            if (currentLang && manager.data.language !== currentLang) {
+                console.log('GameDataManager - Preserving language:', currentLang);
+                manager.data.language = currentLang;
+            }
+            
             manager.save();
         } catch (e) {
+            console.error('GameDataManager - Error applying data from query:', e);
         }
     }
     public static version: string = "0015";
@@ -177,6 +200,12 @@ export class GameDataManager {
     }
 
     public updateField<K extends keyof GameDataType>(key: K, value: GameDataType[K]) {
+        console.log(`GameDataManager - Updating field ${key} to:`, value);
+        // Special handling for language to prevent accidental resets
+        if (key === 'language' && !value) {
+            console.warn('GameDataManager - Attempted to set language to empty value, ignoring');
+            return;
+        }
         this.data[key] = value;
         this.save();
     }
@@ -190,9 +219,22 @@ export class GameDataManager {
         return (this.data as any)[key];
     }
     public save() {
-        const str = JSON.stringify(this.data);
-        const encrypted = this.encrypt(str);
-        localStorage.setItem(KEY, encrypted);
+        try {
+            console.log('GameDataManager - Saving data with language:', this.data.language);
+            const str = JSON.stringify(this.data);
+            const encrypted = this.encrypt(str);
+            localStorage.setItem(KEY, encrypted);
+            
+            // Verify save
+            const savedData = this.load();
+            console.log('GameDataManager - Verified saved language:', savedData.language);
+            
+            if (savedData.language !== this.data.language) {
+                console.error('GameDataManager - Language save verification failed. Expected:', this.data.language, 'Got:', savedData.language);
+            }
+        } catch (e) {
+            console.error('GameDataManager - Error saving game data:', e);
+        }
     }
 
 

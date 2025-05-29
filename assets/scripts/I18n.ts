@@ -3,6 +3,11 @@ export class I18n {
     static currentLang: string = 'english'; // Ngôn ngữ mặc định
     static translations: { [key: string]: string } = {}; // Lưu trữ bản dịch
 
+    // Khởi tạo ngôn ngữ mặc định
+    static async initialize() {
+        await this.loadLanguage(this.currentLang);
+    }
+
     // Tải ngôn ngữ từ file JSON trong thư mục resources
     static async loadLanguage(langCode: string) {
         try {

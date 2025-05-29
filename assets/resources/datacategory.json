@@ -21,7 +21,7 @@
       "backgorund": "PlayGame/BackGround/game-bg-Kino-Sprunked",
       "backgorund1": "",
       "figure": "figure/kino",
-      "animation": "",
+      "animation": "Animator/animationKiNo",
       "loadingCategory": "Images/Icon/LoadingIcon/fame1",
       "isDis": false,
       "isRotateMove": false
@@ -120,7 +120,7 @@
     {
       "code": "phase11",
       "name": "PHASE11",
-      "image": "image/phase100",
+      "image": "image/phase11",
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase11-0",
       "backgorund1": "",

@@ -133,6 +133,13 @@
         "image": "phase2/19",
         "_deltaTime": 1.2,
         "isAds": true
+      },
+      {
+        "id": 20,
+        "core": "phase20",
+        "image": "phase2/20",
+        "_deltaTime": 1.2,
+        "isAds": true
       }
 
     ]

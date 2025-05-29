@@ -11,7 +11,7 @@
         "id": 2,
         "core": "rainbow2",
         "image": "rainbow/rainbow2",
-        "_deltaTime": 1.204,
+        "_deltaTime": 1,
         "isAds": true
       },
       {
@@ -46,14 +46,14 @@
         "id": 7,
         "core": "rainbow7",
         "image": "rainbow/rainbow7",
-        "_deltaTime": 4,
+        "_deltaTime": 2.1,
         "isAds": true
       },
       {
         "id": 8,
         "core": "rainbow8",
         "image": "rainbow/rainbow8",
-        "_deltaTime": 2.8
+        "_deltaTime":1.221
         ,
         "isAds": true
       },
@@ -61,28 +61,28 @@
         "id": 9,
         "core": "rainbow9",
         "image": "rainbow/rainbow9",
-        "_deltaTime":5,
+        "_deltaTime":3.2,
         "isAds": true
       },
       {
         "id": 10,
         "core": "rainbow10",
         "image": "rainbow/rainbow10",
-        "_deltaTime":5.355,
+        "_deltaTime":0.83,
         "isAds": true
       },
       {
         "id": 11,
         "core": "rainbow11",
         "image": "rainbow/rainbow11",
-        "_deltaTime":2,
+        "_deltaTime":0.7,
         "isAds": true
       },
       {
         "id": 12,
         "core": "rainbow12",
         "image": "rainbow/rainbow12",
-        "_deltaTime": 1.8,
+        "_deltaTime": 0.6,
         "isAds": true
       },
       {
