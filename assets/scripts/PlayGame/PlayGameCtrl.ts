@@ -447,15 +447,40 @@ export class PlayGameCtrl extends Component {
     updateCategoryFigureLayout() {
         const layout = this.nodeCategoryFigure.getComponent(Layout);
         const spacingX = layout.spacingX;
+        const spacingY = layout.spacingY || 0;
         const parentNode = this.nodeCategoryFigure.parent;
         const parentWidth = parentNode.getComponent(UITransform).width;
-        const desiredCol = 8;
-        // Lấy lại width item (nếu có ít nhất 1 item)
-        const itemSizeW = this.nodeCategoryFigure.children[0]?.getComponent(UITransform).width || 0;
-        const maxCol = itemSizeW > 0 ? Math.floor((parentWidth + spacingX) / (itemSizeW + spacingX)) : desiredCol;
-        const col = Math.min(desiredCol, maxCol, this.imageData.length);
+        const parentHeight = parentNode.getComponent(UITransform).height;
+        const itemNodes = this.nodeCategoryFigure.children;
+        if (itemNodes.length === 0) return;
+
+        // Lấy kích thước item mẫu
+        const itemSample = itemNodes[0];
+        const itemSizeW = itemSample.getComponent(UITransform).width;
+        const itemSizeH = itemSample.getComponent(UITransform).height;
+
+        // Tính số cột tối đa vừa với node cha
+        const maxCol = Math.floor((parentWidth + spacingX) / (itemSizeW + spacingX));
+        // Tối thiểu 1 cột, tối đa là số item
+        const col = Math.max(1, Math.min(maxCol, itemNodes.length));
         layout.constraintNum = col;
+
+        // Tính số hàng
+        const row = Math.ceil(itemNodes.length / col);
+
+        // Tính lại chiều rộng/chiều cao nodeCategoryFigure cho vừa vặn
         this.nodeCategoryFigure.getComponent(UITransform).width = (itemSizeW * col + spacingX * (col - 1));
+        this.nodeCategoryFigure.getComponent(UITransform).height = (itemSizeH * row + spacingY * (row - 1));
+
+        // Nếu muốn scale nhỏ lại để vừa chiều cao node cha (nếu quá nhiều hàng)
+        const totalHeight = itemSizeH * row + spacingY * (row - 1);
+        let scale = 1;
+        if (totalHeight > parentHeight) {
+            scale = parentHeight / totalHeight;
+        }
+        itemNodes.forEach(child => {
+            child.setScale(scale, scale);
+        });
     }
     onResized() {
         this.updateCategoryFigureLayout();
@@ -463,7 +488,14 @@ export class PlayGameCtrl extends Component {
     }
     private updateDropTargetsSize() {
         if (!this.dropTargets || this.dropTargets.length === 0) return;
-        const globalScale = GlobalScaleManager.instance?.getCurrentScale() || 1;
+        const canvasWidth = view.getVisibleSize().width;
+        let globalScale = GlobalScaleManager.instance?.getCurrentScale() || 1;
+
+        // Responsive: desktop/tablet vs mobile
+        if (canvasWidth <= 720) {
+            globalScale = 1; // Không scale nhỏ lại trên mobile
+        }
+
         this.dropTargets.forEach(target => {
             if (!target) return;
             if (!target['_originalSize']) {
