@@ -37,12 +37,10 @@ export class DraggableItem extends Component {
     private static dropZoneMap: Map<Node, DraggableItem> = new Map();
     private currentTargetNode: Node | null = null;
     private static originalSpriteFrames: Map<Node, SpriteFrame> = new Map();
-
     // Add public method to store original sprite frame
     public static storeOriginalSpriteFrame(target: Node, spriteFrame: SpriteFrame) {
         DraggableItem.originalSpriteFrames.set(target, spriteFrame);
     }
-
     onLoad() {
         this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.node.on(Node.EventType.TOUCH_START, this.onClickOriginalItem, this);
@@ -51,7 +49,6 @@ export class DraggableItem extends Component {
         this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
         this.originalPosition = this.node.getPosition().clone();
         this.originalParent = this.node.parent;
-
         // Store original spriteFrames for all drop targets
         this.dropTargets.forEach(target => {
             const sprite = target.getComponent(Sprite);
@@ -64,10 +61,8 @@ export class DraggableItem extends Component {
 
             }
         });
-
         // Thêm listener cho sự kiện reset
         director.on(RESET_AUDIO_FRAME_EVENT, this.handleReset, this);
-
         // Kiểm tra trạng thái đã xem ads dựa vào core của item
         this.scheduleOnce(() => {
             if (this.dragData && this.dragData.core) {
@@ -136,10 +131,8 @@ export class DraggableItem extends Component {
         const touchPos = event.getUILocation();
         const newPos = new Vec3(touchPos.x + this.offset.x, touchPos.y + this.offset.y, 0);
         this.node.setPosition(newPos);
-
         const worldPos = this.node.getWorldPosition();
         let newTargetNode: Node | null = null;
-
         for (const dropZone of this.dropTargets) {
             const dropBox = dropZone.getComponent(UITransform);
             if (!dropBox) continue;
@@ -231,7 +224,6 @@ export class DraggableItem extends Component {
                 );
                 newTransform.anchorPoint = dropZoneTransform.anchorPoint;
             }
-
             // Sao chép các thuộc tính Widget từ dropZone
             if (dropZoneWidget) {
                 const newWidget = animationNode.addComponent(Widget);
@@ -253,14 +245,12 @@ export class DraggableItem extends Component {
                 // Cập nhật widget ngay lập tức
                 newWidget.updateAlignment();
             }
-
             // Đặt vị trí về trung tâm của dropZone
             animationNode.setPosition(Vec3.ZERO);
             // Thiết lập Sprite với kích thước phù hợp
             const newSprite = animationNode.addComponent(Sprite);
             newSprite.sizeMode = Sprite.SizeMode.CUSTOM;
             newSprite.trim = false;
-
             // Đảm bảo scale để fit với dropZone và giữ tỷ lệ
             if (dropZoneTransform) {
                 const size = dropZoneTransform.contentSize;
@@ -269,7 +259,6 @@ export class DraggableItem extends Component {
                 animationNode.setScale(new Vec3(scale, scale, 1));
             }
             const audioSource = animationNode.addComponent(AudioSource);
-
             // Ẩn dropZone sprite
             const dropZoneSprite = matchedDropZone.getComponent(Sprite);
             if (dropZoneSprite) {
@@ -288,7 +277,6 @@ export class DraggableItem extends Component {
             // Load assets và đợi LoadingPlayAudio
             this.loadAssetsAndWaitForLoading(this.dragData.image);
             matchedDropZone.on(Node.EventType.TOUCH_END, this.onDropZoneClick, this, true);
-            
             // Làm xạm màu item gốc sau khi thả thành công
             const selfSprite = this.node.getComponent(Sprite);
             if (selfSprite) {
@@ -332,7 +320,6 @@ export class DraggableItem extends Component {
         this._audioSource = null!;
         this.sprite = null!;
     }
-
     private onDropZoneClick() {
         if (!this.isDropped || !this.targetDropZone) return;
         // Xóa animation node cũ
@@ -340,7 +327,6 @@ export class DraggableItem extends Component {
         if (animNode) {
             animNode.destroy();
         }
-
         // Trả lại màu bình thường cho sprite gốc
         const sprite = this.node.getComponent(Sprite);
         if (sprite) {
@@ -386,7 +372,7 @@ export class DraggableItem extends Component {
             }
 
             this._spriteFrames = sortedFrames;
-
+            debugger
             // Set initial frame
             if (this.sprite && this._spriteFrames[0]) {
                 this.sprite.spriteFrame = this._spriteFrames[0];

@@ -102,27 +102,10 @@ export class PlayGameCtrl extends Component {
                 this.loadSpriteFramesPromise(bgDir)
                     .then(spriteFrames => {
                         if (spriteFrames.length > 0) {
-                            const isRotateMove = GameDataManager.getInstance()?.data?.ItemSelect?.isRotateMove;
-                            if (isRotateMove) {
-                                [this.Container1, this.Container2].forEach(container => {
-                                    if (!container) return;
-                                    const spriteNode = container.getChildByName('Sprite');
-                                    if (!spriteNode) return;
-                                    ['Node1', 'Node2', 'Node3'].forEach((nodeName, idx) => {
-                                        const node = spriteNode.getChildByName(nodeName);
-                                        if (!node) return;
-                                        if (spriteFrames.length > idx) {
-                                            let sprite = node.getComponent(Sprite);
-                                            if (!sprite) sprite = node.addComponent(Sprite);
-                                            sprite.spriteFrame = spriteFrames[idx];
-                                            this.applyRotateAndMove(node, 200, 2 + idx);
-                                        }
-                                    });
-                                });
-                            } else {
-                                if (this.Container1 && spriteFrames[0]) this.setBackgroundSprite(this.Container1, spriteFrames[0]);
-                                if (this.Container2 && spriteFrames[0]) this.setBackgroundSprite(this.Container2, spriteFrames[0]);
-                            }
+                            // Dùng chung 1 spriteFrame cho cả Container1 và Container2
+                            const sharedSpriteFrame = spriteFrames[0];
+                            if (this.Container1 && sharedSpriteFrame) this.setBackgroundSprite(this.Container1, sharedSpriteFrame);
+                            if (this.Container2 && sharedSpriteFrame) this.setBackgroundSprite(this.Container2, sharedSpriteFrame);
                         }
                     })
             );
@@ -208,6 +191,8 @@ export class PlayGameCtrl extends Component {
                 if (figureSpriteFramesPromise) {
                     const spriteFrames = await figureSpriteFramesPromise;
                     if (spriteFrames.length > 0) {
+                        // Sắp xếp spriteFrames theo tên (a-b)
+                        spriteFrames.sort((a, b) => a.name.localeCompare(b.name));
                         this.setDropTargetsSprites(spriteFrames);
                     }
                 }
@@ -593,7 +578,6 @@ export class PlayGameCtrl extends Component {
         }
         const color1 = this.hexToColor(themeData.color1 || themeData.color);
         const color2 = this.hexToColor(themeData.color2);
-        console.log('Converted colors:', { color1, color2 });
         for (let i = 0; i < this.dropTargets.length; i++) {
             const drop = this.dropTargets[i];
             const sprite = drop.getComponent(Sprite);
