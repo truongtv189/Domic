@@ -459,13 +459,20 @@ export class PlayGameCtrl extends Component {
         const itemSizeW = itemSample.getComponent(UITransform).width;
         const itemSizeH = itemSample.getComponent(UITransform).height;
 
-        // Tính số cột tối đa vừa với node cha
-        const maxCol = Math.floor((parentWidth + spacingX) / (itemSizeW + spacingX));
-        // Tối thiểu 1 cột, tối đa là số item
-        const col = Math.max(1, Math.min(maxCol, itemNodes.length));
+        // Lấy kích thước canvas
+        const canvasWidth = view.getVisibleSize().width;
+
+        let col = 1;
+        if (canvasWidth > 720) {
+            col = 7; // Cố định 4 cột khi màn hình lớn
+        } else {
+            // Tính số cột tối đa vừa với node cha
+            const maxCol = Math.floor((parentWidth + spacingX) / (itemSizeW + spacingX));
+            col = Math.max(1, Math.min(maxCol, itemNodes.length));
+        }
         layout.constraintNum = col;
 
-        // Tính số hàng
+        // Tính số hàng dựa vào số item và số cột
         const row = Math.ceil(itemNodes.length / col);
 
         // Tính lại chiều rộng/chiều cao nodeCategoryFigure cho vừa vặn
@@ -662,12 +669,10 @@ export class PlayGameCtrl extends Component {
         if (nodes.some(n => !n)) return;
         const parent = spriteNode.parent;
         if (parent) {
-            const parentWidth = parent.getComponent(UITransform)?.contentSize.width || 1280;
             const nodeWidth = nodes[0].getComponent(UITransform)?.contentSize.width || 100;
             const totalSpacing = nodeWidth * this.NODE_SPACING * (this.NODE_COUNT - 1);
             const totalWidth = (nodeWidth * this.NODE_COUNT) + totalSpacing;
             const startX = -totalWidth / 2 + nodeWidth / 2;
-
             // Cập nhật vị trí cho từng node
             nodes.forEach((node, index) => {
                 if (node) {
