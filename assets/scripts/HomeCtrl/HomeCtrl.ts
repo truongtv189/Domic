@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, Label, BlockInputEvents } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, Label, BlockInputEvents, director } from 'cc';
 import { I18n } from '../I18n';
 import AdsManager from '../AdsPlatform/AdsManager';
 import { GameDataManager } from '../GameDataManager';
@@ -59,8 +59,9 @@ export class HomeCtrl extends Component {
         }
         // Load language
         await I18n.loadLanguage(currentLang);
-        this.updateLabelsInPrefab(this.node);
-        // Cập nhật tất cả Label sau khi load ngôn ngữ
+
+        // Cập nhật tất cả Label trong scene
+        this.updateLabelsInPrefab(director.getScene());
 
         this.Loading.active = false;
     }
@@ -104,10 +105,11 @@ export class HomeCtrl extends Component {
         prefabNode.children.forEach((childNode) => {
             const label = childNode.getComponent(Label);
             if (label) {
-                const labelKey = childNode.name;  // Giả sử tên node là key label
-                const translatedString = I18n.t(labelKey); // Lấy bản dịch của label từ I18n
-                if (translatedString) {
-                    label.string = translatedString; // Cập nhật label
+                const labelKey = childNode.name;
+                // Chỉ dịch nếu có key trong file dịch
+                const translatedString = I18n.t(labelKey);
+                if (translatedString && translatedString !== labelKey) {
+                    label.string = translatedString;
                 }
             }
             // Đệ quy kiểm tra các node con
