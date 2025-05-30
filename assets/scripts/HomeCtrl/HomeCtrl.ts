@@ -23,7 +23,6 @@ export class HomeCtrl extends Component {
     async onLoad() {
         this.Loading.active = true;
         this.nodeOverlay.active = false;
-
         // Thêm BlockInputEvents component vào nodeOverlay
         if (!this.nodeOverlay.getComponent(BlockInputEvents)) {
             this.nodeOverlay.addComponent(BlockInputEvents);
@@ -44,7 +43,6 @@ export class HomeCtrl extends Component {
             const mapped = langMap[lower] || lower;
             return supportedLanguages.includes(mapped) ? mapped : null;
         }
-
         const savedLang = GameDataManager.getInstance().data.language;
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -59,10 +57,8 @@ export class HomeCtrl extends Component {
         }
         // Load language
         await I18n.loadLanguage(currentLang);
-
         // Cập nhật tất cả Label trong scene
         this.updateLabelsInPrefab(director.getScene());
-
         this.Loading.active = false;
     }
 
@@ -78,7 +74,6 @@ export class HomeCtrl extends Component {
         loadingNode.setPosition(0, 0, 0);
         this.popUpSetting.active = true;
         this.nodeOverlay.active = true;
-
         // Cập nhật label trong Prefab khi nó đã được tạo
         this.updateLabelsInPrefab(loadingNode);
     }
@@ -89,17 +84,14 @@ export class HomeCtrl extends Component {
             this.popUpSetting.active = false;
             this.nodeOverlay.active = false;
         }
-
         const loadingNode = instantiate(this.PopUpLanguagePrefab);
         this.PopUpLanguage.addChild(loadingNode);
         loadingNode.setPosition(0, 0, 0);
         this.PopUpLanguage.active = true;
         this.nodeOverlay.active = true;
-
         // Cập nhật label trong Prefab khi nó đã được tạo
         this.updateLabelsInPrefab(loadingNode);
     }
-
     // Hàm cập nhật các label trong prefab khi nó được instantiate
     updateLabelsInPrefab(prefabNode: Node) {
         prefabNode.children.forEach((childNode) => {

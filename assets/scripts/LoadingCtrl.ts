@@ -63,6 +63,18 @@ export class LoadingCtrl extends Component {
         }
     }
 
+    resetLoading() {
+        if (this.progressBar) {
+            this.progressBar.progress = 0;
+        }
+        if (this.progressLabel) {
+            this.progressLabel.string = "0%";
+        }
+        if (this.loadingState) {
+            this.loadingState.setCurrentProgress(0);
+        }
+    }
+
     onDestroy() {
         if (LoadingCtrl.instance === this) {
             LoadingCtrl.instance = null!;

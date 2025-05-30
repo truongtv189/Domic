@@ -208,7 +208,7 @@ export class PlayGameCtrl extends Component {
                 if (figureSpriteFramesPromise) {
                     const spriteFrames = await figureSpriteFramesPromise;
                     if (spriteFrames.length > 0) {
-                        this.setSprites(this.dropTargets, spriteFrames[0]);
+                        this.setDropTargetsSprites(spriteFrames);
                     }
                 }
             })
@@ -327,7 +327,6 @@ export class PlayGameCtrl extends Component {
                         resolve();
                         return;
                     }
-
                     // Sort sprite frames alphabetically by filename
                     if (spriteFrames && spriteFrames.length > 0) {
                         const sortedFrames = spriteFrames.sort((a, b) => {
@@ -336,26 +335,12 @@ export class PlayGameCtrl extends Component {
                             return nameA.localeCompare(nameB);
                         });
                         data._spriteFrames = sortedFrames;
-
-                        // Set sprite frames to drop targets
-                        if (this.dropTargets.length > 0) {
-                            this.dropTargets.forEach((target, index) => {
-                                if (index < sortedFrames.length) {
-                                    const sprite = target.getComponent(Sprite);
-                                    if (sprite) {
-                                        sprite.spriteFrame = sortedFrames[index];
-                                    }
-                                }
-                            });
-                        }
-                    } else {
                     }
-
+                    // Không gán spriteFrame cho dropTargets ở đây nữa!
                     // Load audio clip
                     const audioPath = `audio/${data.image}`;
                     resources.load(audioPath, AudioClip, (err, audioClip) => {
-                        if (err) {
-                        } else {
+                        if (!err && audioClip) {
                             data._audioClip = audioClip;
                         }
                         loadedItems++;
@@ -368,13 +353,11 @@ export class PlayGameCtrl extends Component {
 
         await Promise.all(preloadPromises);
     }
-
     private updateLoadingProgress(progress: number) {
         if (this.loadingCtrl) {
             this.loadingCtrl.updateProgress(progress);
         }
     }
-
     setBackgroundSprite(targetNode: Node, spriteFrame: SpriteFrame) {
         if (!targetNode || !spriteFrame) {
             return;
@@ -436,10 +419,8 @@ export class PlayGameCtrl extends Component {
             const itemNode = instantiate(this.itemPrefab);
             itemNode.parent = this.nodeCategoryFigure;
             itemSizeW = itemNode.getComponent(UITransform).width;
-
             // Update labels in the item node
             // I18n.updateAllLabels(itemNode);
-
             const adsNode = itemNode.getChildByName("ADS");
             if (adsNode) {
                 const shouldShowAds = data.isAds === true && !watched[data.core];
@@ -463,7 +444,6 @@ export class PlayGameCtrl extends Component {
         // Gọi hàm cập nhật layout sau khi tạo xong item
         this.updateCategoryFigureLayout();
     }
-
     updateCategoryFigureLayout() {
         const layout = this.nodeCategoryFigure.getComponent(Layout);
         const spacingX = layout.spacingX;
@@ -477,17 +457,13 @@ export class PlayGameCtrl extends Component {
         layout.constraintNum = col;
         this.nodeCategoryFigure.getComponent(UITransform).width = (itemSizeW * col + spacingX * (col - 1));
     }
-
     onResized() {
         this.updateCategoryFigureLayout();
         this.updateDropTargetsSize();
     }
-
     private updateDropTargetsSize() {
         if (!this.dropTargets || this.dropTargets.length === 0) return;
-        
         const globalScale = GlobalScaleManager.instance?.getCurrentScale() || 1;
-        
         this.dropTargets.forEach(target => {
             if (!target) return;
             if (!target['_originalSize']) {
@@ -539,6 +515,11 @@ export class PlayGameCtrl extends Component {
     }
     onGoHome() {
         AudioManager.getInstance().playClickClip()
+        const loadingCtrl = this.Loading.getComponentInChildren(LoadingCtrl);
+        if (loadingCtrl) {
+            loadingCtrl.resetLoading();
+        }
+        this.Loading.active = true;
         director.loadScene('Home');
     }
     resetAllItems() {
@@ -684,6 +665,18 @@ export class PlayGameCtrl extends Component {
     private onGlobalScaleChanged(scale: number) {
         this.updateCategoryFigureLayout();
         this.updateDropTargetsSize();
+    }
+
+    setDropTargetsSprites(spriteFrames: SpriteFrame[]) {
+        if (!this.dropTargets || !spriteFrames) return;
+        for (let i = 0; i < this.dropTargets.length; i++) {
+            const node = this.dropTargets[i];
+            const spriteFrame = spriteFrames[i % spriteFrames.length]; // Lặp lại nếu thiếu frame
+            if (!node || !spriteFrame) continue;
+            let sprite = node.getComponent(Sprite);
+            if (!sprite) sprite = node.addComponent(Sprite);
+            sprite.spriteFrame = spriteFrame;
+        }
     }
 }
 

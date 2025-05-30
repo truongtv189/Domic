@@ -13,19 +13,12 @@ export class CategoryPageCtrl extends Component {
     pageView: ScrollView = null;
     @property(Prefab)
     itemPrefab: Prefab = null;
-    @property(Prefab)
-    LoadingContainer: Prefab = null;
-    @property(Node)
-    Loading: Node;
+
+  
     private spriteCache: Map<string, SpriteFrame> = new Map();
 
     protected onLoad(): void {
-        const loadingNode = instantiate(this.LoadingContainer);
-        this.Loading.addChild(loadingNode);
-        loadingNode.setPosition(0, 0, 0);
-        this.Loading.active = true;
         this.loadJsonData();
-        this.Loading.active = false;
     }
 
     // Load JSON data
@@ -168,7 +161,6 @@ export class CategoryPageCtrl extends Component {
                         GameDataManager.getInstance().updateField('watchedAdsItems', watched);
                         GameDataManager.getInstance().updateField('ItemSelect', logoData);
 
-                        this.Loading.active = true;
                         AudioManager.getInstance().stopBGM();
                         setTimeout(() => {
                             director.loadScene('playgame');
@@ -178,7 +170,6 @@ export class CategoryPageCtrl extends Component {
             } else {
                 // Handle non-ads items
                 GameDataManager.getInstance().updateField('ItemSelect', logoData);
-                this.Loading.active = true;
                 AudioManager.getInstance().stopBGM();
                 setTimeout(() => {
                     director.loadScene('playgame');
