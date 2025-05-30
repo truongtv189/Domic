@@ -372,16 +372,20 @@ export class DraggableItem extends Component {
         // Use preloaded assets from dragData
         if (this.dragData._spriteFrames && this.dragData._spriteFrames.length > 0) {
             // Sort sprite frames by numeric order in filename
-            this._spriteFrames = [...this.dragData._spriteFrames].sort((a, b) => {
+            let sortedFrames = [...this.dragData._spriteFrames].sort((a, b) => {
                 const nameA = a.name;
                 const nameB = b.name;
-                
-                // Extract numbers from filenames (e.g., "Char16-1" -> 1)
                 const numA = parseInt(nameA.split('-')[1]);
                 const numB = parseInt(nameB.split('-')[1]);
-                
                 return numA - numB;
             });
+
+            // Bỏ phần tử cuối mảng
+            if (sortedFrames.length > 1) {
+                sortedFrames = sortedFrames.slice(0, sortedFrames.length - 1);
+            }
+
+            this._spriteFrames = sortedFrames;
 
             // Set initial frame
             if (this.sprite && this._spriteFrames[0]) {
@@ -398,21 +402,16 @@ export class DraggableItem extends Component {
             if (loadingPlayAudio) {
                 loadingPlayAudio.resetLoadingState();
                 loadingPlayAudio.setOnLoadComplete(() => {
-                    // Check if animation is empty string
                     if (this.dragData.animation === "") {
-                        // If animation is empty, just play audio if available
                         if (this._audioSource && this.dragData._audioClip) {
                             this._audioSource.play();
                         }
                     } else {
-                        // If animation exists, start normal playback
                         this.startPlayback(this._spriteFrames, this.dragData._audioClip, this.dragData._deltaTime);
                     }
                 });
             } else {
-                // If no LoadingPlayAudio, handle playback directly
                 if (this.dragData.animation === "") {
-                    // If animation is empty, just play audio if available
                     if (this._audioSource && this.dragData._audioClip) {
                         this._audioSource.play();
                     }
