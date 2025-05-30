@@ -135,78 +135,133 @@
     },
     {
       "id": 20,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake20",
+      "image": "retake/retake20",
+>>>>>>> truongtv
       "_deltaTime": 2.1,
       "isAds": true
     },
     {
       "id": 21,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake21",
+      "image": "retake/retake21",
+>>>>>>> truongtv
       "_deltaTime": 1.8,
       "isAds": true
     },
     {
       "id": 22,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake22",
+      "image": "retake/retake22",
+>>>>>>> truongtv
       "_deltaTime": 1.8,
       "isAds": true
     },
     {
       "id": 23,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake23",
+      "image": "retake/retake23",
+>>>>>>> truongtv
       "_deltaTime": 0.55,
       "isAds": true
     },
     {
       "id": 24,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake24",
+      "image": "retake/retake24",
+>>>>>>> truongtv
       "_deltaTime": 2,
       "isAds": true
     },
     {
       "id": 25,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake25",
+      "image": "retake/retake25",
+>>>>>>> truongtv
       "_deltaTime": 1.9,
       "isAds": true
     },
     {
       "id": 26,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake26",
+      "image": "retake/retake26",
+>>>>>>> truongtv
       "_deltaTime": 1.7,
       "isAds": true
     },
     {
       "id": 27,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake27",
+      "image": "retake/retake27",
+>>>>>>> truongtv
       "_deltaTime": 1.039,
       "isAds": true
     },
     {
       "id": 28,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake28",
+      "image": "retake/retake28",
+>>>>>>> truongtv
       "_deltaTime": 1.267,
       "isAds": true
     },
     {
       "id": 29,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake29",
+      "image": "retake/retake29",
+>>>>>>> truongtv
       "_deltaTime": 2.5,
       "isAds": true
     },
     {
       "id": 30,
+<<<<<<< HEAD
       "core": "retake19",
       "image": "retake/retake19",
+=======
+      "core": "retake30",
+      "image": "retake/retake30",
+>>>>>>> truongtv
       "_deltaTime": 0.647,
       "isAds": true
     }

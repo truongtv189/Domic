@@ -91,6 +91,10 @@ export class PlayGameCtrl extends Component {
             loadPromises.push(
                 figureSpriteFramesPromise.then(spriteFrames => {
                     // Không gọi setSprites ở đây nữa
+<<<<<<< HEAD
+=======
+                    this.setSprites(this.dropTargets, spriteFrames[0] || null);
+>>>>>>> truongtv
                 })
             );
         }
@@ -697,6 +701,28 @@ export class PlayGameCtrl extends Component {
             let sprite = node.getComponent(Sprite);
             if (!sprite) sprite = node.addComponent(Sprite);
             sprite.spriteFrame = spriteFrame;
+<<<<<<< HEAD
+=======
+
+            // Thêm đoạn này để phát animation nếu có
+            if (this.animClips && this.animClips.length > 0) {
+                const randomClip = this.animClips[Math.floor(Math.random() * this.animClips.length)];
+                if (randomClip) {
+                    let anim = node.getComponent(Animation);
+                    if (!anim) anim = node.addComponent(Animation);
+                    anim.addClip(randomClip);
+                    anim.defaultClip = randomClip;
+                    anim.play(randomClip.name);
+                    // Đặt thời gian random nếu muốn
+                    const state = anim.getState(randomClip.name);
+                    if (state) {
+                        const randomTime = Math.random() * randomClip.duration;
+                        state.time = randomTime;
+                        state.sample();
+                    }
+                }
+            }
+>>>>>>> truongtv
         }
     }
 }

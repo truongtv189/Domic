@@ -370,14 +370,21 @@ export class DraggableItem extends Component {
             if (sortedFrames.length > 1) {
                 sortedFrames = sortedFrames.slice(0, sortedFrames.length - 1);
             }
+<<<<<<< HEAD
 
             this._spriteFrames = sortedFrames;
             debugger
+=======
+            this._spriteFrames = sortedFrames;
+>>>>>>> truongtv
             // Set initial frame
             if (this.sprite && this._spriteFrames[0]) {
                 this.sprite.spriteFrame = this._spriteFrames[0];
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> truongtv
             // Set audio clip if available
             if (this._audioSource && this.dragData._audioClip) {
                 this._audioSource.clip = this.dragData._audioClip;

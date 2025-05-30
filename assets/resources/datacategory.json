@@ -79,9 +79,15 @@
       "isRotateMove": false
     },
     {
+<<<<<<< HEAD
       "code": "original",
       "name": "ORIGINAL",
       "image": "image/original",
+=======
+      "code": "originnal",
+      "name": "ORIGINNAL",
+      "image": "image/originnal",
+>>>>>>> truongtv
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-Origin",
       "backgorund1": "",
@@ -112,6 +118,7 @@
       "backgorund": "PlayGame/BackGround/game-bg-phase5",
       "backgorund1": "",
       "figure": "figure/phase5",
+<<<<<<< HEAD
       "animation": "animation",
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": true,
@@ -126,10 +133,29 @@
       "backgorund1": "",
       "figure": "figure/phase6",
       "animation": "animation",
+=======
+      "animation": "",
+>>>>>>> truongtv
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": true,
       "isRotateMove": false
     },
+<<<<<<< HEAD
+=======
+    // {
+    //   "code": "phase11",
+    //   "name": "PHASE11",
+    //   "image": "image/phase11",
+    //   "isAds": false,
+    //   "backgorund": "PlayGame/BackGround/game-bg-phase11-0",
+    //   "backgorund1": "",
+    //   "figure": "figure/phase6",
+    //   "animation": "animation",
+    //   "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+    //   "isDis": true,
+    //   "isRotateMove": false
+    // },
+>>>>>>> truongtv
     {
       "code": "prosty",
       "name": "PROSTY",
@@ -145,13 +171,22 @@
     },
     {
       "code": "phase10",
+<<<<<<< HEAD
       "name": "PHASE510",
+=======
+      "name": "PHASE10",
+>>>>>>> truongtv
       "image": "image/phase10",
       "isAds": false,
       "backgorund": "PlayGame/BackGround/game-bg-phase10-1",
       "backgorund1": "",
+<<<<<<< HEAD
       "figure": "figure/",
       "animation": "animation",
+=======
+      "figure": "figure/phase10",
+      "animation": "",
+>>>>>>> truongtv
       "loadingCategory": "Images/Icon/LoadingIcon/fame5",
       "isDis": true,
       "isRotateMove": false
@@ -169,6 +204,7 @@
       "isDis": true,
       "isRotateMove": false
     },
+<<<<<<< HEAD
     {
       "code": "phase99",
       "name": "PHASE99",
@@ -182,6 +218,21 @@
       "isDis": true,
       "isRotateMove": true
     },
+=======
+    // {
+    //   "code": "phase99",
+    //   "name": "PHASE99",
+    //   "image": "image/phase99",
+    //   "isAds": false,
+    //   "backgorund": "PlayGame/BackGround/game-bg-phase99",
+    //   "backgorund1": "",
+    //   "figure": "figure/phase99",
+    //   "animation": "animation",
+    //   "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+    //   "isDis": true,
+    //   "isRotateMove": true
+    // },
+>>>>>>> truongtv
     {
       "code": "spooky",
       "name": "SPOOKY",
@@ -221,6 +272,7 @@
       "isDis": false,
       "isRotateMove": false
     },
+<<<<<<< HEAD
     {
       "code": "phase100",
       "name": "PHASE100",
@@ -234,6 +286,21 @@
       "isDis": true,
       "isRotateMove": true
     },
+=======
+    // {
+    //   "code": "phase100",
+    //   "name": "PHASE100",
+    //   "image": "image/phase100",
+    //   "isAds": false,
+    //   "backgorund": "PlayGame/BackGround/game-bg-phase11-0",
+    //   "backgorund1": "",
+    //   "figure": "figure/phase6",
+    //   "animation": "",
+    //   "loadingCategory": "Images/Icon/LoadingIcon/fame5",
+    //   "isDis": true,
+    //   "isRotateMove": true
+    // },
+>>>>>>> truongtv
     {
       "code": "phase2",
       "name": "PHASE2",
@@ -276,7 +343,11 @@
     {
       "code": "prozen",
       "name": "PROZEN",
+<<<<<<< HEAD
       "image": "image/frozen",
+=======
+      "image": "image/prozen",
+>>>>>>> truongtv
       "isAds": false,
       "backgorund": "PlayGame/BackGround/DuoMix-bg-elsa",
       "backgorund1": "",

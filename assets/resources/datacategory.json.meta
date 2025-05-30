@@ -1,1 +1,15 @@
+<<<<<<< HEAD
 {"ver":"2.0.1","importer":"json","imported":true,"uuid":"d5ea90e0-d2dc-461d-ac51-c8868c14199f","files":[".json"],"subMetas":{},"userData":{}}
+=======
+{
+  "ver": "2.0.1",
+  "importer": "json",
+  "imported": true,
+  "uuid": "d5ea90e0-d2dc-461d-ac51-c8868c14199f",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {},
+  "userData": {}
+}
+>>>>>>> truongtv
